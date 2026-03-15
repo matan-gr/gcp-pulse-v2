@@ -1,0 +1,64 @@
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Google+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Google Sans', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Refined Google Enterprise Palette */
+  --color-brand-primary: #1a73e8; /* Google Blue */
+  --color-brand-secondary: #188038; /* Google Green */
+  --color-brand-accent: #d93025; /* Google Red (slightly muted) */
+  --color-brand-yellow: #f9ab00; /* Google Yellow (slightly muted) */
+  
+  /* Backgrounds - Light (Refined) */
+  --color-bg-app: #f8f9fa; 
+  --color-bg-card: #ffffff;
+  --color-bg-sidebar: #f8f9fa;
+  
+  /* Backgrounds - Dark (Refined) */
+  --color-bg-app-dark: #0f0f0f; 
+  --color-bg-card-dark: #1a1a1a; 
+  --color-bg-sidebar-dark: #0f0f0f;
+}
+
+body {
+  font-family: var(--font-sans);
+  @apply antialiased text-sm text-[#202124] dark:text-[#ffffff] bg-[var(--color-bg-app)] dark:bg-[var(--color-bg-app-dark)];
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  @apply tracking-tight;
+}
+
+/* Component Classes */
+@layer components {
+  .glass-card {
+    @apply bg-white dark:bg-[#1a1a1a] rounded-lg transition-all duration-300 border border-[#dadce0] dark:border-[#3c4043];
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  }
+  
+  .glass-card:hover {
+    box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+    @apply border-[#1a73e8];
+  }
+
+  .sidebar-link {
+    @apply w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 text-[#5f6368] dark:text-[#9aa0a6] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] hover:text-[#202124] dark:hover:text-[#e8eaed] font-medium text-xs;
+  }
+
+  .sidebar-link-active {
+    @apply bg-[#e8f0fe] dark:bg-[#8ab4f8]/10 text-[#1a73e8] dark:text-[#8ab4f8] font-semibold;
+  }
+  
+  .category-badge {
+    @apply px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 border border-[#dadce0] dark:border-[#5f6368] text-[#5f6368] dark:text-[#9aa0a6] bg-[#f8f9fa] dark:bg-[#3c4043];
+  }
+}
