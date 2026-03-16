@@ -17,14 +17,14 @@ export const InsightCharts: React.FC<InsightChartsProps> = ({ data }) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
-        className="bg-white dark:bg-[#202124] p-4 rounded-[24px] border border-[#dadce0] dark:border-[#3c4043] shadow-sm"
+        className="bg-white dark:bg-slate-900 p-4 rounded-[24px] border border-[#dadce0] dark:border-slate-700 shadow-sm"
       >
-        <h3 className="text-[11px] font-bold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-widest mb-4 text-center">Risk Assessment</h3>
+        <h3 className="text-[11px] font-bold text-[#5f6368] dark:text-slate-300 uppercase tracking-widest mb-4 text-center">Risk Assessment</h3>
         <div className="h-[250px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data.riskAnalysis}>
-              <PolarGrid stroke="#e8eaed" className="dark:stroke-[#3c4043]" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: '#5f6368', fontSize: 10 }} className="dark:fill-[#9aa0a6]" />
+              <PolarGrid stroke="#e8eaed" className="dark:stroke-slate-700" />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: '#5f6368', fontSize: 10 }} className="dark:fill-slate-300" />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
               <Radar
                 name="Risk Score"
@@ -54,9 +54,9 @@ export const InsightCharts: React.FC<InsightChartsProps> = ({ data }) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.3 }}
-        className="bg-white dark:bg-[#202124] p-6 rounded-[24px] border border-[#dadce0] dark:border-[#3c4043] shadow-sm flex flex-col items-center justify-center"
+        className="bg-white dark:bg-slate-900 p-6 rounded-[24px] border border-[#dadce0] dark:border-slate-700 shadow-sm flex flex-col items-center justify-center"
       >
-        <h3 className="text-[11px] font-bold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-widest mb-8 text-center">Action Priority Score</h3>
+        <h3 className="text-[11px] font-bold text-[#5f6368] dark:text-slate-300 uppercase tracking-widest mb-8 text-center">Action Priority Score</h3>
         
         <div className="relative w-52 h-52 flex items-center justify-center">
             {/* Circular Progress Background */}
@@ -68,7 +68,7 @@ export const InsightCharts: React.FC<InsightChartsProps> = ({ data }) => {
                     stroke="currentColor"
                     strokeWidth="14"
                     fill="transparent"
-                    className="text-[#f1f3f4] dark:text-[#3c4043]"
+                    className="text-[#f1f3f4] dark:text-slate-700"
                 />
                 <motion.circle
                     initial={{ strokeDashoffset: 590 }}
@@ -92,7 +92,7 @@ export const InsightCharts: React.FC<InsightChartsProps> = ({ data }) => {
                     transition={{ delay: 0.5, duration: 0.8 }}
                     className="flex flex-col items-center"
                 >
-                    <span className="text-5xl font-black text-[#202124] dark:text-[#e8eaed] tracking-tighter">
+                    <span className="text-5xl font-black text-[#202124] dark:text-slate-100 tracking-tighter">
                         {data.actionPriority}
                     </span>
                     <span className={`text-[11px] font-black uppercase mt-2 tracking-widest px-3 py-1 rounded-lg border ${
@@ -106,7 +106,7 @@ export const InsightCharts: React.FC<InsightChartsProps> = ({ data }) => {
             </div>
         </div>
         
-        <p className="text-center text-[12px] text-[#5f6368] dark:text-[#9aa0a6] mt-8 max-w-[220px] leading-relaxed font-medium opacity-80">
+        <p className="text-center text-[12px] text-[#5f6368] dark:text-slate-300 mt-8 max-w-[220px] leading-relaxed font-medium opacity-80">
           AI-calculated urgency based on business impact and technical complexity.
         </p>
       </motion.div>

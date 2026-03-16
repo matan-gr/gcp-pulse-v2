@@ -42,7 +42,7 @@ export const YouTubeView: React.FC<YouTubeViewProps> = ({ items, loading, onClea
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between mb-8 bg-white/80 dark:bg-[#202124]/80 backdrop-blur-md p-6 rounded-3xl border border-white/20 dark:border-[#3c4043]/50 shadow-lg">
+      <div className="flex items-center justify-between mb-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-6 rounded-3xl border border-white/20 dark:border-slate-700/50 shadow-lg">
         <div>
           <h2 className="text-2xl font-heading font-bold text-[#202124] dark:text-slate-100 flex items-center gap-3">
             <Youtube className="w-8 h-8 text-red-500" />
@@ -70,7 +70,7 @@ export const YouTubeView: React.FC<YouTubeViewProps> = ({ items, loading, onClea
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
-            className="group flex flex-col bg-white dark:bg-[#202124] rounded-3xl overflow-hidden border border-[#dadce0] dark:border-[#3c4043] shadow-sm hover:shadow-xl hover:border-[#1a73e8]/30 dark:hover:border-[#8ab4f8]/30 transition-all"
+            className="group flex flex-col bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-[#dadce0] dark:border-slate-700 shadow-sm hover:shadow-xl hover:border-[#1a73e8]/30 dark:hover:border-[#8ab4f8]/30 transition-all"
           >
             {item.videoId ? (
               <a 
@@ -139,9 +139,9 @@ export const YouTubeView: React.FC<YouTubeViewProps> = ({ items, loading, onClea
                     ))}
                   </div>
                 )}
-                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-[#5f6368] dark:text-[#9aa0a6]">
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-[#5f6368] dark:text-slate-300">
                   <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center gap-2 text-[#202124] dark:text-[#e8eaed] font-black">
+                    <div className="flex items-center gap-2 text-[#202124] dark:text-slate-100 font-black">
                        <Youtube size={12} className="text-[#ea4335]" />
                        {(item as any).channelTitle}
                     </div>
@@ -163,7 +163,7 @@ export const YouTubeView: React.FC<YouTubeViewProps> = ({ items, loading, onClea
                   </div>
                   <div className="flex flex-col items-end gap-1.5">
                     {(item as any).viewCount && (
-                      <div className="flex items-center gap-1.5 bg-[#f1f3f4] dark:bg-[#3c4043] px-2 py-0.5 rounded-md">
+                      <div className="flex items-center gap-1.5 bg-[#f1f3f4] dark:bg-slate-800 px-2 py-0.5 rounded-md">
                         {Intl.NumberFormat('en-US', { notation: 'compact' }).format((item as any).viewCount)}
                         <Eye className="w-3 h-3 opacity-70" />
                       </div>

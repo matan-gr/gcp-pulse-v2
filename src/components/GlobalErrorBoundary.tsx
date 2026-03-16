@@ -98,14 +98,14 @@ export class GlobalErrorBoundary extends Component<Props, State> {
               <div className="flex gap-3">
                 <button
                   onClick={this.handleReport}
-                  className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-white dark:bg-[#303134] text-[#5f6368] dark:text-[#9aa0a6] rounded-xl border border-[#dadce0] dark:border-[#3c4043] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] transition-all font-medium text-sm active:scale-95"
+                  className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-white dark:bg-slate-800 text-[#5f6368] dark:text-slate-300 rounded-xl border border-[#dadce0] dark:border-slate-700 hover:bg-[#f1f3f4] dark:hover:bg-slate-700 transition-all font-medium text-sm active:scale-95"
                 >
                   <Mail size={16} />
                   <span>Report</span>
                 </button>
                 <button
                   onClick={this.handleGoHome}
-                  className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-white dark:bg-[#303134] text-[#5f6368] dark:text-[#9aa0a6] rounded-xl border border-[#dadce0] dark:border-[#3c4043] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] transition-all font-medium text-sm active:scale-95"
+                  className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-white dark:bg-slate-800 text-[#5f6368] dark:text-slate-300 rounded-xl border border-[#dadce0] dark:border-slate-700 hover:bg-[#f1f3f4] dark:hover:bg-slate-700 transition-all font-medium text-sm active:scale-95"
                 >
                   <Home size={16} />
                   <span>Home</span>

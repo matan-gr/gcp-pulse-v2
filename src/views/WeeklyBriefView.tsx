@@ -186,60 +186,60 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
 
   const MarkdownComponents = {
     h1: ({...props}: any) => (
-      <h1 className="text-3xl font-bold text-[#202124] dark:text-[#e8eaed] mb-6 pb-4 border-b border-[#dadce0] dark:border-[#3c4043]" {...props} />
+      <h1 className="text-3xl font-bold text-[#202124] dark:text-slate-100 mb-6 pb-4 border-b border-[#dadce0] dark:border-slate-700" {...props} />
     ),
     h2: ({...props}: any) => (
-      <h2 className="text-2xl font-semibold text-[#202124] dark:text-[#e8eaed] mt-8 mb-4 flex items-center" {...props} />
+      <h2 className="text-2xl font-semibold text-[#202124] dark:text-slate-100 mt-8 mb-4 flex items-center" {...props} />
     ),
     h3: ({...props}: any) => (
-      <h3 className="text-xl font-semibold text-[#3c4043] dark:text-[#bdc1c6] mt-6 mb-3" {...props} />
+      <h3 className="text-xl font-semibold text-[#3c4043] dark:text-slate-300 mt-6 mb-3" {...props} />
     ),
     strong: ({...props}: any) => (
-      <strong className="font-semibold text-[#202124] dark:text-[#e8eaed]" {...props} />
+      <strong className="font-semibold text-[#202124] dark:text-slate-100" {...props} />
     ),
     ul: ({...props}: any) => (
-      <ul className="space-y-2 my-4 list-disc list-outside ml-5 text-[#3c4043] dark:text-[#bdc1c6]" {...props} />
+      <ul className="space-y-2 my-4 list-disc list-outside ml-5 text-[#3c4043] dark:text-slate-300" {...props} />
     ),
     ol: ({...props}: any) => (
-      <ol className="space-y-2 my-4 list-decimal list-outside ml-5 text-[#3c4043] dark:text-[#bdc1c6]" {...props} />
+      <ol className="space-y-2 my-4 list-decimal list-outside ml-5 text-[#3c4043] dark:text-slate-300" {...props} />
     ),
     li: ({...props}: any) => (
       <li className="leading-relaxed pl-1">{props.children}</li>
     ),
     table: ({...props}: any) => (
-      <div className="overflow-x-auto my-6 rounded-xl border border-[#dadce0] dark:border-[#3c4043] shadow-sm">
+      <div className="overflow-x-auto my-6 rounded-xl border border-[#dadce0] dark:border-slate-700 shadow-sm">
         <table className="w-full text-left border-collapse" {...props} />
       </div>
     ),
     thead: ({...props}: any) => (
-      <thead className="bg-[#f8f9fa] dark:bg-[#303134]" {...props} />
+      <thead className="bg-[#f8f9fa] dark:bg-slate-800" {...props} />
     ),
     th: ({...props}: any) => (
-      <th className="px-4 py-3 text-[10px] font-bold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-widest border-b border-[#dadce0] dark:border-[#3c4043]" {...props} />
+      <th className="px-4 py-3 text-[10px] font-bold text-[#5f6368] dark:text-slate-300 uppercase tracking-widest border-b border-[#dadce0] dark:border-slate-700" {...props} />
     ),
     td: ({...props}: any) => (
-      <td className="px-4 py-3 text-[13px] text-[#3c4043] dark:text-[#bdc1c6] border-b border-[#dadce0] dark:border-[#3c4043] align-top" {...props} />
+      <td className="px-4 py-3 text-[13px] text-[#3c4043] dark:text-slate-300 border-b border-[#dadce0] dark:border-slate-700 align-top" {...props} />
     ),
     tr: ({...props}: any) => (
       <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" {...props} />
     ),
     blockquote: ({...props}: any) => (
-      <blockquote className="pl-4 border-l-4 border-[#1a73e8] bg-[#e8f0fe] dark:bg-[#8ab4f8]/20 py-3 pr-4 rounded-r-xl my-6 text-[#3c4043] dark:text-[#bdc1c6] italic" {...props} />
+      <blockquote className="pl-4 border-l-4 border-[#1a73e8] bg-[#e8f0fe] dark:bg-blue-500/20 py-3 pr-4 rounded-r-xl my-6 text-[#3c4043] dark:text-slate-300 italic" {...props} />
     ),
     p: ({...props}: any) => (
-      <p className="mb-4 leading-7 text-[#3c4043] dark:text-[#bdc1c6]" {...props} />
+      <p className="mb-4 leading-7 text-[#3c4043] dark:text-slate-300" {...props} />
     ),
     a: ({...props}: any) => (
-      <a className="text-[#1a73e8] dark:text-[#8ab4f8] hover:underline font-medium break-all transition-colors" target="_blank" rel="noopener noreferrer" {...props} />
+      <a className="text-[#1a73e8] dark:text-blue-400 hover:underline font-medium break-all transition-colors" target="_blank" rel="noopener noreferrer" {...props} />
     ),
     hr: ({...props}: any) => (
-      <hr className="my-8 border-[#dadce0] dark:border-[#3c4043]" {...props} />
+      <hr className="my-8 border-[#dadce0] dark:border-slate-700" {...props} />
     ),
     code: ({...props}: any) => (
-      <code className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-sm font-mono text-[#1a73e8] dark:text-[#8ab4f8]" {...props} />
+      <code className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-sm font-mono text-[#1a73e8] dark:text-blue-400" {...props} />
     ),
     pre: ({...props}: any) => (
-      <pre className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-x-auto my-6 font-mono text-sm border border-[#dadce0] dark:border-[#3c4043]" {...props} />
+      <pre className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-x-auto my-6 font-mono text-sm border border-[#dadce0] dark:border-slate-700" {...props} />
     ),
   };
 
@@ -248,11 +248,11 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#202124] dark:text-[#e8eaed] flex items-center tracking-tight">
-            <Sparkles className="mr-3 text-[#1a73e8] dark:text-[#8ab4f8]" size={24} />
+          <h1 className="text-2xl font-bold text-[#202124] dark:text-slate-100 flex items-center tracking-tight">
+            <Sparkles className="mr-3 text-[#1a73e8] dark:text-blue-400" size={24} />
             Weekly Brief
           </h1>
-          <p className="text-[#5f6368] dark:text-[#9aa0a6] mt-1 flex items-center text-sm">
+          <p className="text-[#5f6368] dark:text-slate-300 mt-1 flex items-center text-sm">
             <Calendar size={14} className="mr-2" />
             {lastUpdated 
               ? `Generated ${lastUpdated.toLocaleDateString()} at ${lastUpdated.toLocaleTimeString()}` 
@@ -267,7 +267,7 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
             <button
               onClick={handleRefresh}
               disabled={loading}
-              className="px-3 py-1.5 bg-white dark:bg-[#303134] border border-[#dadce0] dark:border-[#3c4043] rounded-lg text-xs font-black uppercase tracking-widest text-[#3c4043] dark:text-[#e8eaed] hover:bg-[#f8f9fa] dark:hover:bg-[#3c4043] transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
+              className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-[#dadce0] dark:border-slate-700 rounded-lg text-xs font-black uppercase tracking-widest text-[#3c4043] dark:text-slate-100 hover:bg-[#f8f9fa] dark:hover:bg-slate-700 transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
             >
               <RefreshCw size={14} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
               Regenerate
@@ -285,16 +285,16 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
       </div>
 
       {/* Content */}
-      <div className="bg-white dark:bg-[#202124] rounded-xl border border-[#dadce0] dark:border-[#3c4043] shadow-sm overflow-hidden min-h-[500px] relative">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#dadce0] dark:border-slate-700 shadow-sm overflow-hidden min-h-[500px] relative">
         {!loading && !brief && !error ? (
           <div className="flex flex-col items-center justify-center h-full p-8 text-center min-h-[500px]">
-             <div className="bg-[#e8f0fe] dark:bg-[#8ab4f8]/20 p-6 rounded-xl mb-6 ring-1 ring-[#d2e3fc] dark:ring-[#8ab4f8]/30">
-               <Sparkles size={48} className="text-[#1a73e8] dark:text-[#8ab4f8]" />
+             <div className="bg-[#e8f0fe] dark:bg-blue-500/20 p-6 rounded-xl mb-6 ring-1 ring-[#d2e3fc] dark:ring-blue-500/30">
+               <Sparkles size={48} className="text-[#1a73e8] dark:text-blue-400" />
              </div>
-             <h2 className="text-2xl font-bold text-[#202124] dark:text-[#e8eaed] mb-3 tracking-tight">
+             <h2 className="text-2xl font-bold text-[#202124] dark:text-slate-100 mb-3 tracking-tight">
                Generate Your Weekly Brief
              </h2>
-             <p className="text-[#5f6368] dark:text-[#9aa0a6] max-w-md mb-8 text-base leading-relaxed">
+             <p className="text-[#5f6368] dark:text-slate-300 max-w-md mb-8 text-base leading-relaxed">
                Get a comprehensive AI-generated summary of the most important Google Cloud updates, security bulletins, and architectural changes from the last 7 days.
              </p>
              <button
@@ -306,7 +306,7 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
              </button>
           </div>
         ) : loading ? (
-          <div className="absolute inset-0 z-10 bg-white/90 dark:bg-[#202124]/90 backdrop-blur-sm flex items-center justify-center">
+          <div className="absolute inset-0 z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex items-center justify-center">
             <AILoading 
               variant="card" 
               title="Generating Weekly Brief" 
@@ -317,11 +317,11 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-            <div className="bg-[#fce8e6] dark:bg-[#ea4335]/20 p-3 rounded-lg mb-3">
-              <FileText size={24} className="text-[#ea4335] dark:text-[#f28b82]" />
+            <div className="bg-[#fce8e6] dark:bg-red-500/20 p-3 rounded-lg mb-3">
+              <FileText size={24} className="text-[#ea4335] dark:text-red-400" />
             </div>
-            <h3 className="text-lg font-bold text-[#202124] dark:text-[#e8eaed] mb-1">Failed to Generate Brief</h3>
-            <p className="text-[#5f6368] dark:text-[#9aa0a6] mb-4 text-sm">{error}</p>
+            <h3 className="text-lg font-bold text-[#202124] dark:text-slate-100 mb-1">Failed to Generate Brief</h3>
+            <p className="text-[#5f6368] dark:text-slate-300 mb-4 text-sm">{error}</p>
             <button
               onClick={handleRefresh}
               className="px-4 py-1.5 bg-[#1a73e8] text-white rounded-lg font-black uppercase tracking-widest text-xs hover:bg-[#1557b0] transition-all active:scale-95 shadow-sm"

@@ -27,25 +27,25 @@ export const SystemSettings: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-[#202124] rounded-2xl shadow-sm border border-[#dadce0] dark:border-[#3c4043] overflow-hidden">
-      <div className="p-6 border-b border-[#dadce0] dark:border-[#3c4043]">
-        <h2 className="text-xl font-bold text-[#202124] dark:text-[#e8eaed] flex items-center">
-          <Database className="mr-3 text-[#1a73e8] dark:text-[#8ab4f8]" size={24} />
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-[#dadce0] dark:border-slate-700 overflow-hidden">
+      <div className="p-6 border-b border-[#dadce0] dark:border-slate-700">
+        <h2 className="text-xl font-bold text-[#202124] dark:text-slate-100 flex items-center">
+          <Database className="mr-3 text-[#1a73e8] dark:text-blue-400" size={24} />
           System Settings
         </h2>
-        <p className="text-[#5f6368] dark:text-[#9aa0a6] mt-2">
+        <p className="text-[#5f6368] dark:text-slate-300 mt-2">
           Manage application cache and system preferences.
         </p>
       </div>
       
       <div className="p-6 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#f8f9fa] dark:bg-[#303134] rounded-xl border border-[#dadce0] dark:border-[#3c4043]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#f8f9fa] dark:bg-slate-800 rounded-xl border border-[#dadce0] dark:border-slate-700">
           <div>
-            <h3 className="text-base font-semibold text-[#202124] dark:text-[#e8eaed] flex items-center">
-              <RefreshCw className="mr-2 text-[#5f6368] dark:text-[#9aa0a6]" size={18} />
+            <h3 className="text-base font-semibold text-[#202124] dark:text-slate-100 flex items-center">
+              <RefreshCw className="mr-2 text-[#5f6368] dark:text-slate-300" size={18} />
               Force Data Refresh
             </h3>
-            <p className="text-sm text-[#5f6368] dark:text-[#9aa0a6] mt-1 max-w-md">
+            <p className="text-sm text-[#5f6368] dark:text-slate-300 mt-1 max-w-md">
               Manually clear the cache for all feeds. This allows you to fetch the absolute latest data immediately, bypassing the standard 5-minute cache window.
             </p>
           </div>

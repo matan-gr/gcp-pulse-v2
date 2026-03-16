@@ -198,7 +198,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
 
   const getBorderColor = (source: string) => {
     if (source.startsWith('Cloud Blog')) return 'border-l-blue-500';
-    if (source === 'Medium Blog') return 'border-l-slate-800 dark:border-l-slate-200';
+    if (source === 'Medium Blog') return 'border-l-slate-800 dark:border-l-slate-400';
     switch (source) {
       case 'Product Updates': return 'border-l-emerald-500';
       case 'Release Notes': return 'border-l-blue-500';
@@ -238,7 +238,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
         <div className={`${isCompact ? 'p-4' : 'p-5 sm:p-6'} flex flex-col flex-1 relative`}>
           {item.serviceName && (
             <div className="mb-3 sm:mb-4">
-              <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest bg-slate-100 dark:bg-[var(--color-border-dark)] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[var(--color-border-dark)] shadow-sm">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-sm">
                 <Box size={12} className="mr-1.5" />
                 {item.serviceName}
               </span>
@@ -255,7 +255,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
             {item.contentSnippet}
           </p>
 
-          <div className="mt-auto z-10 flex items-center justify-between relative pt-4 border-t border-slate-100 dark:border-[var(--color-border-dark)]">
+          <div className="mt-auto z-10 flex items-center justify-between relative pt-4 border-t border-slate-100 dark:border-slate-800">
             <a 
                 href={item.link} 
                 target="_blank" 
@@ -273,7 +273,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                       onSummarize(item);
                     }}
                     disabled={isSummarizing}
-                    className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-[var(--color-border-dark)] transition-colors ${iconColor}`}
+                    className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${iconColor}`}
                     title="Summarize Incident"
                 >
                   {isSummarizing ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
@@ -313,7 +313,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
         {image && !isPresentationMode && showImages && (
           <div 
             className={cn(
-              "overflow-hidden relative cursor-pointer group/image bg-slate-100 dark:bg-[var(--color-border-dark)] shrink-0",
+              "overflow-hidden relative cursor-pointer group/image bg-slate-100 dark:bg-slate-800 shrink-0",
               isListView ? "w-full sm:w-52 min-w-0 sm:min-w-[208px] h-36 sm:h-full" : "h-44 sm:h-48"
             )}
             onClick={(e) => {
@@ -377,7 +377,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                     </span>
                   )}
                </div>
-               <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-[0.2em] tabular-nums shrink-0 ml-3 bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-lg">
+               <span className="text-[10px] text-slate-400 dark:text-slate-400 font-bold uppercase tracking-[0.2em] tabular-nums shrink-0 ml-3 bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-lg">
                   {date}
                </span>
             </div>
@@ -413,7 +413,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
           {(item.source === 'Release Notes' || item.source === 'Gemini Enterprise') && displayLabels.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-2">
               {displayLabels.slice(0, 3).map((label) => (
-                <span key={label} className="inline-flex items-center px-2 py-0.5 rounded-lg text-[9px] font-black bg-slate-100 text-slate-600 dark:bg-[var(--color-border-dark)] dark:text-slate-300 border border-slate-200 dark:border-[var(--color-border-dark)] uppercase tracking-widest transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:hover:border-blue-500/30 shadow-sm">
+                <span key={label} className="inline-flex items-center px-2 py-0.5 rounded-lg text-[9px] font-black bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700 uppercase tracking-widest transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:hover:border-blue-500/30 shadow-sm">
                   <Tag size={10} className="mr-1 opacity-70" />
                   {label}
                 </span>
@@ -520,7 +520,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
           )}
         </div>
         
-        <div className={`mt-auto ${!isListView ? `pt-4 border-t border-slate-100 dark:border-[var(--color-border-dark)] ${isCompact ? 'pt-3' : 'pt-4'}` : ''}`}>
+        <div className={`mt-auto ${!isListView ? `pt-4 border-t border-slate-100 dark:border-slate-800 ${isCompact ? 'pt-3' : 'pt-4'}` : ''}`}>
             <div className="flex items-center justify-between w-full">
                 <a 
                     href={item.link} 

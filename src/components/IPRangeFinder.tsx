@@ -94,7 +94,7 @@ const IPRangeFinderContent: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-0">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors duration-300">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-700 overflow-hidden transition-colors duration-300">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-8 text-white">
           <div className="flex items-center space-x-3 mb-4">
@@ -123,7 +123,7 @@ const IPRangeFinderContent: React.FC = () => {
         {/* Content */}
         <div className="p-8 min-h-[400px]">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-500">
+            <div className="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-slate-400">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
               <p>Fetching latest IP ranges...</p>
             </div>
@@ -133,13 +133,13 @@ const IPRangeFinderContent: React.FC = () => {
               <p>Failed to load IP range data.</p>
             </div>
           ) : !region ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-500 text-center">
+            <div className="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-slate-400 text-center">
               <Cloud size={64} className="mb-4 opacity-20" />
-              <p className="text-lg font-medium text-gray-500 dark:text-gray-400">Enter a search term to start</p>
+              <p className="text-lg font-medium text-gray-500 dark:text-slate-300">Enter a search term to start</p>
               <p className="text-sm mt-2">Try "us-east1", "asia-northeast1", or "global"</p>
             </div>
           ) : filteredPrefixes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-500">
+            <div className="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-slate-400">
               <Search size={48} className="mb-4 opacity-20" />
               <p>No IP ranges found for "{region}"</p>
             </div>
@@ -189,25 +189,25 @@ const IPRangeFinderContent: React.FC = () => {
               </div>
 
               {/* Results Table */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-700 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                         <th className="px-6 py-4">IP Prefix</th>
                         <th className="px-6 py-4">Scope</th>
                         <th className="px-6 py-4">Service</th>
                         <th className="px-6 py-4 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                    <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                       {filteredPrefixes.map((prefix, idx) => {
                         const ip = prefix.ipv4Prefix || prefix.ipv6Prefix || '';
                         return (
-                          <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                          <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors group">
                             <td className="px-6 py-4">
                               <div className="flex items-center">
-                                <span className="font-mono text-sm font-medium text-gray-900 dark:text-gray-200">{ip}</span>
+                                <span className="font-mono text-sm font-medium text-gray-900 dark:text-slate-200">{ip}</span>
                                 {prefix.ipv6Prefix && (
                                   <span className={cn(
                                     "ml-2 text-[9px] px-1.5 py-0.5 rounded-md font-black uppercase tracking-widest border",
@@ -216,10 +216,10 @@ const IPRangeFinderContent: React.FC = () => {
                                 )}
                               </div>
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-slate-400">
                               {prefix.scope}
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-slate-400">
                               <span className={cn(
                                 "inline-flex items-center px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border",
                                 getCategoryStyles(prefix.service)
@@ -244,7 +244,7 @@ const IPRangeFinderContent: React.FC = () => {
                 </div>
                 
                 {filteredPrefixes.length > 0 && (
-                  <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700 text-center text-xs text-gray-500 dark:text-gray-400">
+                  <div className="px-6 py-4 bg-gray-50 dark:bg-slate-800/50 border-t border-gray-200 dark:border-slate-700 text-center text-xs text-gray-500 dark:text-slate-400">
                     Showing top {Math.min(filteredPrefixes.length, 500)} results. Data last updated: {new Date(data?.creationTime || '').toLocaleString()}
                   </div>
                 )}

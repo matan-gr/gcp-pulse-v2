@@ -122,14 +122,14 @@ export const Sidebar = React.memo<SidebarProps>(({
                       >
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-3">
-                            <Icon size={18} className={isActive ? 'text-[#1a73e8] dark:text-[#3b82f6]' : 'text-[#5f6368] dark:text-[var(--color-text-muted-dark)] group-hover:text-[#1a73e8] dark:group-hover:text-[#3b82f6]'} />
+                            <Icon size={18} className={isActive ? 'text-[#1a73e8] dark:text-blue-500' : 'text-[#5f6368] dark:text-[var(--color-text-muted-dark)] group-hover:text-[#1a73e8] dark:group-hover:text-blue-500'} />
                             <span>{item.label}</span>
                           </div>
                           {item.badge && (
                             <span className={cn(
                               "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg ml-2 border transition-all duration-300",
                               isActive 
-                                ? "bg-[#d2e3fc] dark:bg-[#8ab4f8]/30 text-[#1a73e8] dark:text-[#8ab4f8] border-[#1a73e8]/20" 
+                                ? "bg-[#d2e3fc] dark:bg-blue-500/30 text-[#1a73e8] dark:text-blue-400 border-[#1a73e8]/20" 
                                 : "bg-[#f1f3f4] dark:bg-[var(--color-bg-card-dark)] text-[#5f6368] dark:text-[var(--color-text-muted-dark)] border-[#dadce0] dark:border-[var(--color-border-dark)]"
                             )}>
                               {item.badge}
@@ -162,7 +162,7 @@ export const Sidebar = React.memo<SidebarProps>(({
                         className={`sidebar-link ${isActive ? 'sidebar-link-active' : ''}`}
                       >
                         <div className="flex items-center space-x-3">
-                          <Icon size={18} className={isActive ? 'text-[#1a73e8] dark:text-[#8ab4f8]' : 'text-[#5f6368] dark:text-[#9aa0a6] group-hover:text-[#1a73e8] dark:group-hover:text-[#8ab4f8]'} />
+                          <Icon size={18} className={isActive ? 'text-[#1a73e8] dark:text-blue-400' : 'text-[#5f6368] dark:text-slate-300 group-hover:text-[#1a73e8] dark:group-hover:text-blue-400'} />
                           <span>{item.label}</span>
                         </div>
                       </button>
