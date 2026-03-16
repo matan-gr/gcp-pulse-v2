@@ -3,6 +3,7 @@ import { FeedItem } from '../types';
 import { Layers, ArrowRight, Star, Zap, Box, Grid, ExternalLink, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { getCategoryStyles, cn } from '../utils';
+import { CardSkeleton } from '../components/SkeletonLoader';
 
 interface ArchitectureViewProps {
   items: FeedItem[];
@@ -45,10 +46,13 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-64 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
-        ))}
+      <div className="space-y-8 max-w-7xl mx-auto">
+        <div className="h-24 bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     );
   }

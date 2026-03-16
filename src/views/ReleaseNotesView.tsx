@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { FeedItem } from '../types';
 import { FeedCard } from '../components/FeedCard';
-import { SkeletonCard } from '../components/SkeletonCard';
+import { TimelineSkeleton } from '../components/SkeletonLoader';
 import { EmptyState } from '../components/EmptyState';
 import { AnalysisResult } from '../types';
 import { Loader2, SearchX, FileText } from 'lucide-react';
@@ -176,9 +176,9 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-8">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <SkeletonCard key={i} viewMode="list" />
+        <div className="space-y-12">
+          {[1, 2, 3].map((i) => (
+            <TimelineSkeleton key={i} />
           ))}
         </div>
       ) : Object.keys(sortedGroupedItems).length === 0 ? (

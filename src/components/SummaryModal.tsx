@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Sparkles, Target, Zap, Box, ExternalLink, Loader2, FileText, Lightbulb, ListChecks, TrendingUp, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import { InsightCharts } from './InsightCharts';
 import { AnalysisResult } from '../types';
@@ -62,6 +63,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
                 {streamContent ? (
                    <div className="prose prose-lg prose-blue dark:prose-invert max-w-none">
                        <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
                         components={{
                           h2: ({node, ...props}) => <h2 className="text-xl font-bold text-[#1a73e8] dark:text-blue-400 mt-8 mb-4 flex items-center border-b border-[#d2e3fc] dark:border-blue-500/30 pb-2 tracking-tight" {...props} />,
                           h3: ({node, ...props}) => <h3 className="text-lg font-semibold text-[#202124] dark:text-[var(--color-text-dark)] mt-6 mb-3 tracking-tight" {...props} />,
@@ -98,6 +100,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
                       <div className="prose prose-blue dark:prose-invert max-w-none">
                         <div className="text-[#5f6368] dark:text-[var(--color-text-muted-dark)] leading-relaxed text-[16px]">
                           <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
                             components={{
                               strong: ({node, ...props}) => <strong className="font-bold text-[#1557b0] dark:text-blue-300" {...props} />,
                               code: ({node, ...props}) => <code className="bg-[#f1f3f4] dark:bg-[var(--color-border-dark)] text-[#d93025] dark:text-red-400 px-1.5 py-0.5 rounded-md text-sm font-mono" {...props} />,
@@ -118,6 +121,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
                         <div className="prose prose-blue dark:prose-invert max-w-none">
                           <div className="text-[#5f6368] dark:text-[var(--color-text-muted-dark)] leading-relaxed text-[15px]">
                             <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
                               components={{
                                 strong: ({node, ...props}) => <strong className="font-bold text-[#1557b0] dark:text-blue-300" {...props} />,
                                 code: ({node, ...props}) => <code className="bg-[#f1f3f4] dark:bg-[var(--color-border-dark)] text-[#d93025] dark:text-red-400 px-1.5 py-0.5 rounded-md text-sm font-mono" {...props} />,
@@ -138,6 +142,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
                         </h3>
                         <div className="text-[#5f6368] dark:text-[#9aa0a6] leading-relaxed text-[15px]">
                           <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
                             components={{
                               blockquote: ({node, ...props}) => (
                                 <blockquote className="border-l-4 border-[#f9ab00] pl-4 italic my-3 text-[#b06000] dark:text-[#fde293]" {...props} />
@@ -156,8 +161,9 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
                         </h3>
                         <div className="text-[#5f6368] dark:text-[var(--color-text-muted-dark)] leading-relaxed text-[15px]">
                           <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
                             components={{
-                              strong: ({node, ...props}) => <strong className="font-bold text-[#1557b0] dark:text-blue-300 block mt-4 mb-2 text-[11px] uppercase tracking-widest" {...props} />,
+                              strong: ({node, ...props}) => <strong className="font-bold text-[#1557b0] dark:text-blue-300 inline-block mt-4 mb-1 text-[11px] uppercase tracking-widest" {...props} />,
                               ul: ({node, ...props}) => <ul className="list-none space-y-2 pl-0" {...props} />,
                               li: ({node, ...props}) => (
                                 <li className="flex items-start text-[14px]">

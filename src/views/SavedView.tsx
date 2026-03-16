@@ -1,7 +1,7 @@
 import React from 'react';
 import { FeedItem } from '../types';
 import { FeedCard } from '../components/FeedCard';
-import { SkeletonCard } from '../components/SkeletonCard';
+import { CardSkeleton } from '../components/SkeletonLoader';
 import { AnalysisResult } from '../types';
 import { Bookmark, Trash2, BookOpen, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -46,7 +46,7 @@ export const SavedView: React.FC<SavedViewProps> = ({
     return (
       <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <SkeletonCard key={i} viewMode={viewMode} />
+          <CardSkeleton key={i} viewMode={viewMode} />
         ))}
       </div>
     );

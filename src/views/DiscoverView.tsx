@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { FeedItem } from '../types';
 import { FeedCard } from '../components/FeedCard';
-import { SkeletonCard } from '../components/SkeletonCard';
+import { CardSkeleton } from '../components/SkeletonLoader';
 import { AnalysisResult } from '../types';
 import { EmptyState } from '../components/EmptyState';
 import { SearchX, Sparkles } from 'lucide-react';
@@ -71,7 +71,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
       <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <SkeletonCard key={i} viewMode="grid" />
+            <CardSkeleton key={i} viewMode="grid" />
           ))}
         </div>
       </div>

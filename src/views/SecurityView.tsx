@@ -8,6 +8,7 @@ import { getCategoryStyles, cn } from '../utils';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import { StatSkeleton, SecuritySkeleton } from '../components/SkeletonLoader';
 
 // Configure DOMPurify to open links in new tab
 if (typeof window !== 'undefined') {
@@ -60,12 +61,12 @@ export const SecurityView: React.FC<SecurityViewProps> = ({
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map(i => <div key={i} className="h-32 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
+      <div className="space-y-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {[1, 2, 3, 4].map(i => <StatSkeleton key={i} />)}
         </div>
         <div className="space-y-4">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-40 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
+          {[1, 2, 3, 4].map(i => <SecuritySkeleton key={i} />)}
         </div>
       </div>
     );

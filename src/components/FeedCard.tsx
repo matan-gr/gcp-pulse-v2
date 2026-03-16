@@ -6,6 +6,7 @@ import { Tag, ExternalLink, Sparkles, Bookmark, Loader2, Check, AlertOctagon, Ac
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import { format, differenceInDays } from 'date-fns';
@@ -425,6 +426,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
             <div className={`text-slate-600 dark:text-slate-300 ${isCompact ? 'text-[13px] leading-relaxed' : 'text-[14px] sm:text-[15px] leading-relaxed'} ${!isExpanded && !isPresentationMode ? 'max-h-[160px] overflow-hidden' : ''} prose dark:prose-invert max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0 prose-table:my-2`}>
                 <ReactMarkdown 
                   components={markdownComponents}
+                  remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw, rehypeSanitize]}
                 >
                   {item.content || item.contentSnippet || ''}

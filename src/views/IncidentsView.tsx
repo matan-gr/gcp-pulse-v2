@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useIncidentsView } from '../hooks/useIncidentsView';
 import ReactMarkdown from 'react-markdown';
 import { getCategoryStyles, cn } from '../utils';
+import { IncidentSkeleton } from '../components/SkeletonLoader';
 
 interface IncidentsViewProps {
   items: FeedItem[];
@@ -55,10 +56,12 @@ export const IncidentsView: React.FC<IncidentsViewProps> = ({ items, loading }) 
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-48 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse" />
+      <div className="space-y-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[1, 2].map(i => <IncidentSkeleton key={i} />)}
+        </div>
         <div className="space-y-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
+          {[1, 2, 3, 4].map(i => <IncidentSkeleton key={i} />)}
         </div>
       </div>
     );

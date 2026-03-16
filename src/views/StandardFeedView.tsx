@@ -1,7 +1,7 @@
 import React from 'react';
 import { FeedItem } from '../types';
 import { FeedCard } from '../components/FeedCard';
-import { SkeletonCard } from '../components/SkeletonCard';
+import { CardSkeleton } from '../components/SkeletonLoader';
 import { EmptyState } from '../components/EmptyState';
 import { AnalysisResult } from '../types';
 import { Loader2, SearchX } from 'lucide-react';
@@ -48,7 +48,7 @@ export const StandardFeedView: React.FC<StandardFeedViewProps> = ({
     }`}>
       {loading ? (
         Array.from({ length: 6 }).map((_, i) => (
-          <SkeletonCard key={i} viewMode={viewMode} />
+          <CardSkeleton key={i} viewMode={viewMode} />
         ))
       ) : visibleItems.length === 0 ? (
         <div className="col-span-full">

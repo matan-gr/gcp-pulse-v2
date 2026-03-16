@@ -4,6 +4,20 @@ import { FeedItem, AnalysisResult } from '../types';
 import { extractGCPProducts } from '../utils';
 import { getAiInstance } from '../services/geminiService';
 import { checkRateLimit, recordUsage, getRemainingTime } from '../utils/rateLimiter';
+import remarkGfm from 'remark-gfm';
+
+const cleanMarkdown = (text: string) => {
+  if (!text) return '';
+  
+  // Ensure lists have a space after the bullet and are on new lines
+  // This fixes the issue where AI might output "* **" without proper spacing
+  let cleaned = text.replace(/^(\s*[*+-])(?!\s)/gm, '$1 ');
+  
+  // Ensure there's a newline before list items if they follow text
+  cleaned = cleaned.replace(/([^\n])\n(\s*[*+-]\s)/g, '$1\n\n$2');
+  
+  return cleaned;
+};
 
 export const useSummarizer = () => {
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
@@ -77,11 +91,13 @@ export const useSummarizer = () => {
         
         Provide a structured summary in Markdown format.
         
-        Use rich formatting to make it engaging and easy to read:
+        CRITICAL MARKDOWN RULES:
+        - Use bullet points for lists. ALWAYS start a list item with a newline and ensure there is a space after the bullet (e.g., "- Item" or "* Item").
         - Use **bold** for key terms and metrics.
         - Use > Blockquotes for important warnings, critical impacts, or "Why this matters".
         - Use \`code\` for product names or technical terms.
-        - Use bullet points for lists.
+        - Ensure there is a blank line before and after every list and blockquote.
+        - DO NOT combine bullets and bolding in a way that breaks parsing (e.g., avoid "* **" without a space).
         
         Include the following sections:
         ## 🚀 Executive Summary
@@ -145,7 +161,7 @@ export const useSummarizer = () => {
           
           // Only show the markdown part in the stream (hide the JSON block if it starts appearing)
           const cleanText = fullText.split('```json')[0];
-          setSummaryModal(prev => prev ? { ...prev, streamContent: cleanText } : null);
+          setSummaryModal(prev => prev ? { ...prev, streamContent: cleanMarkdown(cleanText) } : null);
         }
       }
 
@@ -169,10 +185,10 @@ export const useSummarizer = () => {
       const productsMatch = fullText.match(/##\s*.*?Related Products\n([\s\S]*?)(?=\n##|---|$)/);
 
       const analysis: AnalysisResult = {
-        summary: summaryMatch ? summaryMatch[1].trim() : "Summary not available.",
-        impact: impactMatch ? impactMatch[1].trim() : "Impact analysis not available.",
-        strategicImportance: strategicMatch ? strategicMatch[1].trim() : "Strategic context not available.",
-        targetAudience: audienceMatch ? audienceMatch[1].trim() : "General Audience",
+        summary: summaryMatch ? cleanMarkdown(summaryMatch[1].trim()) : "Summary not available.",
+        impact: impactMatch ? cleanMarkdown(impactMatch[1].trim()) : "Impact analysis not available.",
+        strategicImportance: strategicMatch ? cleanMarkdown(strategicMatch[1].trim()) : "Strategic context not available.",
+        targetAudience: audienceMatch ? cleanMarkdown(audienceMatch[1].trim()) : "General Audience",
         actionItems: actionsMatch 
           ? actionsMatch[1].split('\n').map(s => s.replace(/^-\s*/, '').trim()).filter(Boolean) 
           : [],

@@ -2,7 +2,7 @@
 import React from 'react';
 import { FeedItem } from '../types';
 import { ProductDeprecationsTimeline } from '../components/ProductDeprecationsTimeline';
-import { ProductDeprecationsLoader } from '../components/ProductDeprecationsLoader';
+import { TimelineSkeleton } from '../components/SkeletonLoader';
 
 interface ProductDeprecationsViewProps {
   items: FeedItem[];
@@ -19,8 +19,8 @@ export const ProductDeprecationsView: React.FC<ProductDeprecationsViewProps> = (
 }) => {
   if (loading) {
     return (
-      <div className="col-span-full flex justify-center items-center min-h-[400px]">
-        <ProductDeprecationsLoader />
+      <div className="col-span-full space-y-8">
+        {[1, 2, 3].map(i => <TimelineSkeleton key={i} />)}
       </div>
     );
   }
