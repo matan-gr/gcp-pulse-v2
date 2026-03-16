@@ -17,6 +17,7 @@ import { SummaryModal } from './components/SummaryModal';
 import { PageLoader } from './components/ui/PageLoader';
 import { getAiInstance } from './services/geminiService';
 import { lazyWithRetry } from './hooks/useLazyWithRetry';
+import { WeeklyBriefProvider } from './contexts/WeeklyBriefContext';
 
 // Layout & Navigation
 import { AppLayout } from './components/layout/AppLayout';
@@ -54,7 +55,6 @@ function AppContent() {
   // Data Fetching with React Query
   const { data: feed, isLoading: feedLoading, error: queryError, refetch: refetchFeed, isRefetching: feedRefetching } = useFeed();
   const { data: deprecations, isLoading: deprecationsLoading, error: deprecationsError } = useProductDeprecations();
-  console.log("Deprecations:", deprecations);
   const { data: securityBulletins, isLoading: securityLoading, error: securityError } = useSecurityBulletins();
   const { data: architectureUpdates, isLoading: architectureLoading, error: architectureError } = useArchitectureUpdates();
   const { data: incidents, isLoading: incidentsLoading, error: incidentsError } = useIncidents();
@@ -97,6 +97,7 @@ function AppContent() {
   const [isSmartFilter, setIsSmartFilter] = useState(false);
   const [smartIndices, setSmartIndices] = useState<number[] | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [smartFilterSearch, setSmartFilterSearch] = useState('');
   
   // Use prefs for persistence
   const selectedCategories = prefs.filterCategories;
@@ -143,6 +144,14 @@ function AppContent() {
 
   const debouncedSearch = useDebounce(search, 800);
 
+  useEffect(() => {
+    if (!isSmartFilter) return;
+    const timer = setTimeout(() => {
+      setSmartFilterSearch(search);
+    }, 1500); // Longer debounce for AI filter to save quota
+    return () => clearTimeout(timer);
+  }, [search, isSmartFilter]);
+
   // Merge items for filtering and display
   const allItems = useMemo(() => {
     const itemMap = new Map<string, FeedItem>();
@@ -188,7 +197,7 @@ function AppContent() {
 
   // Smart Filter Logic
   useEffect(() => {
-    if (!isSmartFilter || !debouncedSearch || allItems.length === 0) {
+    if (!isSmartFilter || !smartFilterSearch || allItems.length === 0) {
       setSmartIndices(null);
       return;
     }
@@ -204,7 +213,7 @@ function AppContent() {
 
         const prompt = `
           You are a helpful assistant filtering a blog feed.
-          User Query: "${debouncedSearch}"
+          User Query: "${smartFilterSearch}"
           Here are the blog posts: ${JSON.stringify(itemsSummary)}
           Return a JSON array of the indices (integers) of the posts that are most relevant to the user's query.
         `;
@@ -222,16 +231,20 @@ function AppContent() {
         indices.length === 0 
           ? toast.info("No AI matches found", { description: "Try adjusting your search query." }) 
           : toast.success(`AI found ${indices.length} articles`, { description: "Showing the most relevant results." });
-      } catch (e) {
+      } catch (e: any) {
         console.error("AI Filter Error:", e);
-        toast.error("AI filtering failed", { description: "An error occurred while analyzing the articles." });
+        if (e.message?.includes('429') || e.message?.includes('RESOURCE_EXHAUSTED') || e.message?.includes('Rate exceeded') || e.message?.includes('quota')) {
+           toast.error("AI Quota Exceeded", { description: "Please try again later." });
+        } else {
+           toast.error("AI filtering failed", { description: "An error occurred while analyzing the articles." });
+        }
       } finally {
         setIsAiLoading(false);
       }
     };
 
     fetchSmartFilter();
-  }, [debouncedSearch, isSmartFilter, allItems]);
+  }, [smartFilterSearch, isSmartFilter, allItems]);
 
   // Filter Items
   const filteredItems = useMemo(() => {
@@ -243,7 +256,7 @@ function AppContent() {
     else if (activeTab === 'security') items = items.filter(item => item.source === 'Security Bulletins');
     else if (activeTab === 'architecture') items = items.filter(item => item.source === 'Architecture Center');
     else if (activeTab === 'youtube') items = items.filter(item => item.source === 'Google Cloud YouTube');
-    else if (activeTab === 'cloud-blog') items = items.filter(item => (item.source || '').startsWith('Cloud Blog'));
+    else if (activeTab === 'cloud-blog') items = items.filter(item => (item.source || '').startsWith('Cloud Blog') || item.source === 'Medium Blog');
     else if (activeTab === 'release-notes') items = items.filter(item => item.source === 'Release Notes' || item.source === 'Gemini Enterprise');
     else if (activeTab === 'updates') items = items.filter(item => item.source === 'Product Updates' || item.source === 'Google AI Research');
 
@@ -380,190 +393,192 @@ function AppContent() {
   }
 
     return (
-    <AppLayout
-      activeTab={activeTab}
-      setActiveTab={handleSetActiveTab}
-      isPresentationMode={isPresentationMode}
-      setIsPresentationMode={setIsPresentationMode}
-      isSidebarOpen={isSidebarOpen}
-      setIsSidebarOpen={setIsSidebarOpen}
-      search={search}
-      setSearch={setSearch}
-      isSmartFilter={isSmartFilter}
-      setIsSmartFilter={setIsSmartFilter}
-      isAiLoading={isAiLoading}
-      categories={categories}
-      selectedCategories={selectedCategories}
-      filterType={filterType}
-      handleCategoryChange={handleCategoryChange}
-      handleFilterTypeChange={handleFilterTypeChange}
-      dateRange={dateRange}
-      handleDateRangeChange={handleDateRangeChange}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      handleSortChange={handleSortChange}
-      viewMode={prefs.viewMode}
-      onViewModeChange={(mode) => updatePrefs({ viewMode: mode })}
-      onExportCSV={handleExportCSV}
-      isAnyFilterActive={isAnyFilterActive}
-      onClearFilters={clearAllFilters}
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Suspense fallback={<PageLoader />}>
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={
-                <ErrorBoundary componentName="DiscoverView">
-                  <DiscoverView
+    <WeeklyBriefProvider items={allItems}>
+      <AppLayout
+        activeTab={activeTab}
+        setActiveTab={handleSetActiveTab}
+        isPresentationMode={isPresentationMode}
+        setIsPresentationMode={setIsPresentationMode}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+        search={search}
+        setSearch={setSearch}
+        isSmartFilter={isSmartFilter}
+        setIsSmartFilter={setIsSmartFilter}
+        isAiLoading={isAiLoading}
+        categories={categories}
+        selectedCategories={selectedCategories}
+        filterType={filterType}
+        handleCategoryChange={handleCategoryChange}
+        handleFilterTypeChange={handleFilterTypeChange}
+        dateRange={dateRange}
+        handleDateRangeChange={handleDateRangeChange}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        handleSortChange={handleSortChange}
+        viewMode={prefs.viewMode}
+        onViewModeChange={(mode) => updatePrefs({ viewMode: mode })}
+        onExportCSV={handleExportCSV}
+        isAnyFilterActive={isAnyFilterActive}
+        onClearFilters={clearAllFilters}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Suspense fallback={<PageLoader />}>
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={
+                  <ErrorBoundary componentName="DiscoverView">
+                    <DiscoverView
+                      items={filteredItems}
+                      loading={loading}
+                      prefs={prefs}
+                      onSummarize={handleSummarize}
+                      summarizingId={summarizingId}
+                      onSave={handleSave}
+                      toggleCategorySubscription={toggleCategorySubscription}
+                      handleCategoryChange={handleCategoryChange}
+                      analyses={analyses}
+                      isPresentationMode={isPresentationMode}
+                      isAiLoading={isAiLoading}
+                      onToggleColumnVisibility={(column) => {
+                        const isHidden = prefs.hiddenColumns.includes(column);
+                        updatePrefs({
+                          hiddenColumns: isHidden 
+                            ? prefs.hiddenColumns.filter(c => c !== column)
+                            : [...prefs.hiddenColumns, column]
+                        });
+                      }}
+                      onUpdateColumnOrder={(order) => updatePrefs({ columnOrder: order })}
+                      onClearFilters={clearAllFilters}
+                      search={search}
+                    />
+                  </ErrorBoundary>
+                } />
+                <Route path="/weekly-brief" element={<WeeklyBriefView items={allItems} />} />
+                <Route path="/youtube" element={<YouTubeView items={filteredItems} loading={youtubeLoading} onClearFilters={clearAllFilters} />} />
+                <Route path="/cloud-blog" element={
+                  <StandardFeedView
                     items={filteredItems}
                     loading={loading}
-                    prefs={prefs}
+                    viewMode={prefs.viewMode}
                     onSummarize={handleSummarize}
                     summarizingId={summarizingId}
                     onSave={handleSave}
+                    savedPosts={prefs.savedPosts}
+                    subscribedCategories={prefs.subscribedCategories}
                     toggleCategorySubscription={toggleCategorySubscription}
                     handleCategoryChange={handleCategoryChange}
                     analyses={analyses}
                     isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onToggleColumnVisibility={(column) => {
-                      const isHidden = prefs.hiddenColumns.includes(column);
-                      updatePrefs({
-                        hiddenColumns: isHidden 
-                          ? prefs.hiddenColumns.filter(c => c !== column)
-                          : [...prefs.hiddenColumns, column]
-                      });
-                    }}
-                    onUpdateColumnOrder={(order) => updatePrefs({ columnOrder: order })}
                     onClearFilters={clearAllFilters}
-                    search={search}
                   />
-                </ErrorBoundary>
-              } />
-              <Route path="/weekly-brief" element={<WeeklyBriefView items={allItems} />} />
-              <Route path="/youtube" element={<YouTubeView items={filteredItems} loading={youtubeLoading} onClearFilters={clearAllFilters} />} />
-              <Route path="/cloud-blog" element={
-                <StandardFeedView
-                  items={filteredItems}
-                  loading={loading}
-                  viewMode={prefs.viewMode}
-                  onSummarize={handleSummarize}
-                  summarizingId={summarizingId}
-                  onSave={handleSave}
-                  savedPosts={prefs.savedPosts}
-                  subscribedCategories={prefs.subscribedCategories}
-                  toggleCategorySubscription={toggleCategorySubscription}
-                  handleCategoryChange={handleCategoryChange}
-                  analyses={analyses}
-                  isPresentationMode={isPresentationMode}
-                  onClearFilters={clearAllFilters}
-                />
-              } />
-              <Route path="/release-notes" element={
-                <ReleaseNotesView
-                  items={filteredItems}
-                  loading={loading}
-                  viewMode={prefs.viewMode}
-                  onSummarize={handleSummarize}
-                  summarizingId={summarizingId}
-                  onSave={handleSave}
-                  savedPosts={prefs.savedPosts}
-                  subscribedCategories={prefs.subscribedCategories}
-                  toggleCategorySubscription={toggleCategorySubscription}
-                  handleCategoryChange={handleCategoryChange}
-                  analyses={analyses}
-                  isPresentationMode={isPresentationMode}
-                  onClearFilters={clearAllFilters}
-                />
-              } />
-              <Route path="/updates" element={
-                <StandardFeedView
-                  items={filteredItems}
-                  loading={loading}
-                  viewMode={prefs.viewMode}
-                  onSummarize={handleSummarize}
-                  summarizingId={summarizingId}
-                  onSave={handleSave}
-                  savedPosts={prefs.savedPosts}
-                  subscribedCategories={prefs.subscribedCategories}
-                  toggleCategorySubscription={toggleCategorySubscription}
-                  handleCategoryChange={handleCategoryChange}
-                  analyses={analyses}
-                  isPresentationMode={isPresentationMode}
-                  onClearFilters={clearAllFilters}
-                />
-              } />
-              <Route path="/incidents" element={<IncidentsView items={filteredItems} loading={loading} />} />
-              <Route path="/deprecations" element={
-                <ProductDeprecationsView 
-                  items={filteredItems} 
-                  loading={deprecationsLoading} 
-                  onSummarize={handleSummarize}
-                  summarizingId={summarizingId}
-                />
-              } />
-              <Route path="/architecture" element={
-                <ArchitectureView 
-                  items={filteredItems} 
-                  loading={architectureLoading}
-                  onSummarize={handleSummarize}
-                  summarizingId={summarizingId}
-                  onSave={handleSave}
-                  savedPosts={prefs.savedPosts}
-                  isPresentationMode={isPresentationMode}
-                />
-              } />
-              <Route path="/security" element={
-                <SecurityView 
-                  items={filteredItems} 
-                  loading={securityLoading}
-                  onSummarize={handleSummarize}
-                  summarizingId={summarizingId}
-                />
-              } />
-              <Route path="/saved" element={
-                <SavedView
-                  items={filteredItems}
-                  loading={loading}
-                  viewMode={prefs.viewMode}
-                  onSummarize={handleSummarize}
-                  summarizingId={summarizingId}
-                  onSave={handleSave}
-                  savedPosts={prefs.savedPosts}
-                  subscribedCategories={prefs.subscribedCategories}
-                  toggleCategorySubscription={toggleCategorySubscription}
-                  handleCategoryChange={handleCategoryChange}
-                  analyses={analyses}
-                  isPresentationMode={isPresentationMode}
-                  onClearAll={clearSavedPosts}
-                  onExplore={() => handleSetActiveTab('all')}
-                />
-              } />
-              <Route path="/tools" element={<ToolsView />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
-        </motion.div>
-      </AnimatePresence>
-
-      {summaryModal && (
-        <SummaryModal 
-          isOpen={summaryModal.isOpen}
-          onClose={closeSummaryModal}
-          title={summaryModal.title}
-          analysis={summaryModal.analysis}
-          streamContent={summaryModal.streamContent}
-          isStreaming={summaryModal.isStreaming}
-          model="gemini-3-flash-preview"
-        />
-      )}
-    </AppLayout>
+                } />
+                <Route path="/release-notes" element={
+                  <ReleaseNotesView
+                    items={filteredItems}
+                    loading={loading}
+                    viewMode={prefs.viewMode}
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
+                    onSave={handleSave}
+                    savedPosts={prefs.savedPosts}
+                    subscribedCategories={prefs.subscribedCategories}
+                    toggleCategorySubscription={toggleCategorySubscription}
+                    handleCategoryChange={handleCategoryChange}
+                    analyses={analyses}
+                    isPresentationMode={isPresentationMode}
+                    onClearFilters={clearAllFilters}
+                  />
+                } />
+                <Route path="/updates" element={
+                  <StandardFeedView
+                    items={filteredItems}
+                    loading={loading}
+                    viewMode={prefs.viewMode}
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
+                    onSave={handleSave}
+                    savedPosts={prefs.savedPosts}
+                    subscribedCategories={prefs.subscribedCategories}
+                    toggleCategorySubscription={toggleCategorySubscription}
+                    handleCategoryChange={handleCategoryChange}
+                    analyses={analyses}
+                    isPresentationMode={isPresentationMode}
+                    onClearFilters={clearAllFilters}
+                  />
+                } />
+                <Route path="/incidents" element={<IncidentsView items={filteredItems} loading={loading} />} />
+                <Route path="/deprecations" element={
+                  <ProductDeprecationsView 
+                    items={filteredItems} 
+                    loading={deprecationsLoading} 
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
+                  />
+                } />
+                <Route path="/architecture" element={
+                  <ArchitectureView 
+                    items={filteredItems} 
+                    loading={architectureLoading}
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
+                    onSave={handleSave}
+                    savedPosts={prefs.savedPosts}
+                    isPresentationMode={isPresentationMode}
+                  />
+                } />
+                <Route path="/security" element={
+                  <SecurityView 
+                    items={filteredItems} 
+                    loading={securityLoading}
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
+                  />
+                } />
+                <Route path="/saved" element={
+                  <SavedView
+                    items={filteredItems}
+                    loading={loading}
+                    viewMode={prefs.viewMode}
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
+                    onSave={handleSave}
+                    savedPosts={prefs.savedPosts}
+                    subscribedCategories={prefs.subscribedCategories}
+                    toggleCategorySubscription={toggleCategorySubscription}
+                    handleCategoryChange={handleCategoryChange}
+                    analyses={analyses}
+                    isPresentationMode={isPresentationMode}
+                    onClearAll={clearSavedPosts}
+                    onExplore={() => handleSetActiveTab('all')}
+                  />
+                } />
+                <Route path="/tools" element={<ToolsView />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </motion.div>
+        </AnimatePresence>
+  
+        {summaryModal && (
+          <SummaryModal 
+            isOpen={summaryModal.isOpen}
+            onClose={closeSummaryModal}
+            title={summaryModal.title}
+            analysis={summaryModal.analysis}
+            streamContent={summaryModal.streamContent}
+            isStreaming={summaryModal.isStreaming}
+            model="gemini-3-flash-preview"
+          />
+        )}
+      </AppLayout>
+    </WeeklyBriefProvider>
   );
 }
 

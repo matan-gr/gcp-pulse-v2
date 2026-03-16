@@ -9,25 +9,29 @@ export function lazyWithRetry<T extends ComponentType<any>>(
   componentImport: () => Promise<{ default: T }>
 ) {
   return lazy(async () => {
-    const pageHasAlreadyBeenForceRefreshed = JSON.parse(
-      window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
-    );
+    let pageHasAlreadyBeenForceRefreshed = false;
+    try {
+      pageHasAlreadyBeenForceRefreshed = JSON.parse(
+        window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+      );
+    } catch (e) {
+      console.warn('Failed to access sessionStorage in lazyWithRetry:', e);
+    }
 
     try {
       const component = await componentImport();
-      window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+      try {
+        window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+      } catch (e) { /* Ignore */ }
       return component;
     } catch (error) {
       if (!pageHasAlreadyBeenForceRefreshed) {
-        // Set the flag in session storage so we don't enter an infinite loop
-        window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
-        // Refresh the page to get the latest manifest and chunks
+        try {
+          window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
+        } catch (e) { /* Ignore */ }
         window.location.reload();
-        // Return a promise that never resolves to stop execution
-        return new Promise(() => {});
+        return new Promise(() => {}) as any;
       }
-
-      // If we've already refreshed and it still fails, throw the error
       throw error;
     }
   });

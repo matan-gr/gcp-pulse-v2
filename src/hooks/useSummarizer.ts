@@ -46,8 +46,8 @@ export const useSummarizer = () => {
       console.error("Failed to fetch summary from backend cache", e);
     }
 
-    if (!checkRateLimit('summarization', 10, 30)) {
-      const waitTime = getRemainingTime('summarization', 10, 30);
+    if (!checkRateLimit('summarization', 500, 60)) {
+      const waitTime = getRemainingTime('summarization', 500, 60);
       toast.error("Rate limit exceeded", { description: `Please wait ${waitTime} minutes before summarizing another article.` });
       return;
     }
@@ -90,9 +90,9 @@ export const useSummarizer = () => {
         ## 📈 Business & Technical Impact
         (Detail the business value or technical impact. Use a blockquote for the primary impact statement.)
         
-        ## ⚠️ Risks & Considerations
-        (If relevant, detail any security, operational, or cost risks. If not relevant, state "None identified.")
-        
+        ## 🎯 Strategic Importance
+        (Explain how this fits into the broader cloud ecosystem or GCP roadmap. Why is this a significant move?)
+
         ## 👥 Role-Based Insights
         Provide specific, actionable takeaways for:
         - **SRE / DevOps**: Operational impact, reliability, monitoring, actions needed.
@@ -100,11 +100,14 @@ export const useSummarizer = () => {
         - **Architect**: Design patterns, integration strategies, trade-offs, scalability.
         - **CxO / Leadership**: Business value, cost implications, strategic alignment.
         
+        ## 🛠️ Action Items
+        (A bulleted list of 3-5 immediate steps the reader should take.)
+
         ## 🔑 Key Takeaways
         (Bulleted list of 3-5 high-impact points.)
         
         ## 🛠️ Related Products
-        (List of specific Google Cloud products mentioned. Do not include generic terms.)
+        (List of specific Google Cloud products mentioned. Format as a comma-separated list on a single line.)
 
         ---
         
@@ -160,15 +163,21 @@ export const useSummarizer = () => {
       // Parse markdown sections
       const summaryMatch = fullText.match(/##\s*.*?Executive Summary\n([\s\S]*?)(?=\n##|$)/);
       const impactMatch = fullText.match(/##\s*.*?Impact\n([\s\S]*?)(?=\n##|$)/);
+      const strategicMatch = fullText.match(/##\s*.*?Strategic Importance\n([\s\S]*?)(?=\n##|$)/);
       const audienceMatch = fullText.match(/##\s*.*?Role-Based Insights\n([\s\S]*?)(?=\n##|$)/);
+      const actionsMatch = fullText.match(/##\s*.*?Action Items\n([\s\S]*?)(?=\n##|$)/);
       const productsMatch = fullText.match(/##\s*.*?Related Products\n([\s\S]*?)(?=\n##|---|$)/);
 
       const analysis: AnalysisResult = {
         summary: summaryMatch ? summaryMatch[1].trim() : "Summary not available.",
         impact: impactMatch ? impactMatch[1].trim() : "Impact analysis not available.",
+        strategicImportance: strategicMatch ? strategicMatch[1].trim() : "Strategic context not available.",
         targetAudience: audienceMatch ? audienceMatch[1].trim() : "General Audience",
+        actionItems: actionsMatch 
+          ? actionsMatch[1].split('\n').map(s => s.replace(/^-\s*/, '').trim()).filter(Boolean) 
+          : [],
         relatedProducts: productsMatch 
-          ? productsMatch[1].split('\n').map(s => s.replace(/^-\s*/, '').trim()).filter(Boolean) 
+          ? productsMatch[1].split(',').map(s => s.trim()).filter(Boolean) 
           : [],
         chartData: chartData
       };
@@ -199,7 +208,7 @@ export const useSummarizer = () => {
     } catch (e: any) {
       console.error("Summarization failed:", e);
       
-      if (e.message?.includes('429') || e.message?.includes('RESOURCE_EXHAUSTED')) {
+      if (e.message?.includes('429') || e.message?.includes('RESOURCE_EXHAUSTED') || e.message?.includes('Rate exceeded') || e.message?.includes('quota')) {
         toast.error("Daily AI quota exceeded", { description: "Please try again later when your quota resets." });
       } else {
         toast.error("Failed to analyze article", { description: "An unexpected error occurred during analysis." });

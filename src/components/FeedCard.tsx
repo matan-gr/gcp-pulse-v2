@@ -29,36 +29,41 @@ interface FeedCardProps {
   isPresentationMode?: boolean;
   density?: 'comfortable' | 'compact';
   showImages?: boolean;
+  className?: string;
+  featured?: boolean;
 }
 
 const markdownComponents = {
-  a: ({node, ...props}: any) => <a {...props} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} />
+  a: ({node, ...props}: any) => <a {...props} className="text-blue-600 dark:text-blue-400 hover:underline font-medium" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} />,
+  img: () => null, // Hide images in markdown to prevent double images
+  p: ({node, ...props}: any) => <p {...props} className="mb-2 last:mb-0" />,
+  table: ({node, ...props}: any) => <div className="overflow-x-auto"><table {...props} className="min-w-full" /></div>,
 };
 
 export const FeedCard = React.memo<FeedCardProps>((props) => {
-  const { item } = props;
+  const { item, className } = props;
   const { ref, inView } = useInView({
     triggerOnce: true,
     rootMargin: '400px 0px',
   });
 
   return (
-    <div ref={ref} className="min-h-[100px]">
+    <div ref={ref} className={cn("min-h-[100px] h-full", className)}>
       {inView ? (
         <ErrorBoundary componentName={`FeedCard-${item.title}`}>
           <FeedCardContent {...props} />
         </ErrorBoundary>
       ) : (
-        <div className="w-full h-64 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 flex flex-col space-y-4">
+        <div className="w-full h-64 bg-white dark:bg-[var(--color-bg-card-dark)] rounded-xl border border-slate-200 dark:border-[var(--color-border-dark)] shadow-sm p-6 flex flex-col space-y-4">
             <div className="flex justify-between items-center">
-                <div className="w-24 h-6 bg-slate-100 dark:bg-slate-800 rounded-full animate-pulse" />
-                <div className="w-16 h-4 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
+                <div className="w-24 h-6 bg-slate-100 dark:bg-[var(--color-border-dark)] rounded-full animate-pulse" />
+                <div className="w-16 h-4 bg-slate-100 dark:bg-[var(--color-border-dark)] rounded animate-pulse" />
             </div>
-            <div className="w-3/4 h-6 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
+            <div className="w-3/4 h-6 bg-slate-100 dark:bg-[var(--color-border-dark)] rounded animate-pulse" />
             <div className="space-y-2">
-                <div className="w-full h-4 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
-                <div className="w-full h-4 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
-                <div className="w-2/3 h-4 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
+                <div className="w-full h-4 bg-slate-100 dark:bg-[var(--color-border-dark)] rounded animate-pulse" />
+                <div className="w-full h-4 bg-slate-100 dark:bg-[var(--color-border-dark)] rounded animate-pulse" />
+                <div className="w-2/3 h-4 bg-slate-100 dark:bg-[var(--color-border-dark)] rounded animate-pulse" />
             </div>
         </div>
       )}
@@ -80,7 +85,9 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
   analysis, 
   isPresentationMode = false, 
   density = 'comfortable', 
-  showImages = true
+  showImages = true,
+  className,
+  featured = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -96,7 +103,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
   const now = new Date();
   const hoursSince = (now.getTime() - dateObj.getTime()) / (1000 * 60 * 60);
   const isNew = hoursSince < 48;
-  const isTrending = item.source.startsWith('Cloud Blog') || item.source === 'Product Updates' || item.source === 'Google Cloud YouTube' || (item as any).viewCount > 1000;
+  const isTrending = (item.source.startsWith('Cloud Blog') || item.source === 'Medium Blog') || item.source === 'Product Updates' || item.source === 'Google Cloud YouTube' || (item as any).viewCount > 1000;
 
   const isListView = viewMode === 'list' && !isPresentationMode;
   const isIncident = item.source === 'Service Health';
@@ -156,23 +163,25 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
   }
 
   const getSourceStyles = (source: string) => {
-    if (source.startsWith('Cloud Blog')) return 'bg-[#e8f0fe] text-[#1a73e8] border-[#d2e3fc] dark:bg-[#1a73e8]/10 dark:text-[#8ab4f8] dark:border-[#8ab4f8]/20';
+    if (source.startsWith('Cloud Blog')) return 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20';
+    if (source === 'Medium Blog') return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
     switch (source) {
-      case 'Product Updates': return 'bg-[#fef7e0] text-[#b06000] border-[#feefc3] dark:bg-[#f9ab00]/10 dark:text-[#fdd663] dark:border-[#fdd663]/20';
-      case 'Updates and Innovation': return 'bg-[#fef7e0] text-[#b06000] border-[#feefc3] dark:bg-[#f9ab00]/10 dark:text-[#fdd663] dark:border-[#fdd663]/20';
-      case 'Release Notes': return 'bg-[#e6f4ea] text-[#1e8e3e] border-[#ceead6] dark:bg-[#1e8e3e]/10 dark:text-[#81c995] dark:border-[#81c995]/20';
-      case 'Security Bulletins': return 'bg-[#fce8e6] text-[#d93025] border-[#fad2cf] dark:bg-[#d93025]/10 dark:text-[#f28b82] dark:border-[#f28b82]/20';
-      case 'Architecture Center': return 'bg-[#f3e8fd] text-[#9334e6] border-[#e9d2fd] dark:bg-[#9334e6]/10 dark:text-[#c58af9] dark:border-[#c58af9]/20';
+      case 'Product Updates': return 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20';
+      case 'Updates and Innovation': return 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20';
+      case 'Release Notes': return 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20';
+      case 'Security Bulletins': return 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20';
+      case 'Architecture Center': return 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20';
       case 'Google AI Research':
-      case 'Gemini Enterprise': return 'bg-[#f3e8fd] text-[#9334e6] border-[#e9d2fd] dark:bg-[#9334e6]/10 dark:text-[#c58af9] dark:border-[#c58af9]/20';
-      case 'Product Deprecations': return 'bg-[#f1f3f4] text-[#5f6368] border-[#dadce0] dark:bg-[#3c4043] dark:text-[#9aa0a6] dark:border-[#5f6368]/30';
-      case 'Google Cloud YouTube': return 'bg-[#fce8e6] text-[#d93025] border-[#fad2cf] dark:bg-[#d93025]/10 dark:text-[#f28b82] dark:border-[#f28b82]/20';
-      default: return 'bg-[#f1f3f4] text-[#5f6368] border-[#dadce0] dark:bg-[#3c4043] dark:text-[#9aa0a6] dark:border-[#5f6368]/30';
+      case 'Gemini Enterprise': return 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-200 dark:bg-fuchsia-500/10 dark:text-fuchsia-400 dark:border-fuchsia-500/20';
+      case 'Product Deprecations': return 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20';
+      case 'Google Cloud YouTube': return 'bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20';
+      default: return 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700';
     }
   };
 
   const SourceIcon = ({ source, size = 10 }: { source: string, size?: number }) => {
     if (source.startsWith('Cloud Blog')) return <BookOpen size={size} />;
+    if (source === 'Medium Blog') return <BookOpen size={size} />;
     switch (source) {
       case 'Product Updates':
       case 'Updates and Innovation': return <Zap size={size} />;
@@ -189,6 +198,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
 
   const getBorderColor = (source: string) => {
     if (source.startsWith('Cloud Blog')) return 'border-l-blue-500';
+    if (source === 'Medium Blog') return 'border-l-slate-800 dark:border-l-slate-200';
     switch (source) {
       case 'Product Updates': return 'border-l-emerald-500';
       case 'Release Notes': return 'border-l-blue-500';
@@ -209,64 +219,64 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
-        className={`rounded-[24px] shadow-sm border ${cardBorder} dark:border-[#3c4043] flex flex-col relative overflow-hidden group hover:shadow-md transition-all duration-300 bg-white dark:bg-[#202124] ${isPresentationMode ? 'scale-105 shadow-xl' : ''}`}
+        className={`rounded-3xl shadow-sm border ${cardBorder} dark:border-[var(--color-border-dark)] flex flex-col relative overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white dark:bg-[var(--color-bg-card-dark)] ${isPresentationMode ? 'scale-105 shadow-xl' : ''}`}
       >
         {/* Status Header */}
-        <div className={`px-5 py-3 border-b ${cardBorder} dark:border-[#3c4043] ${status === 'Resolved' ? 'bg-[#e6f4ea] dark:bg-[#1e8e3e]/10' : status === 'Monitoring' ? 'bg-[#fef7e0] dark:bg-[#f9ab00]/10' : 'bg-[#fce8e6] dark:bg-[#d93025]/10'} flex justify-between items-center`}>
+        <div className={`px-5 py-3 border-b ${cardBorder} dark:border-[var(--color-border-dark)] ${status === 'Resolved' ? 'bg-emerald-50 dark:bg-emerald-500/10' : status === 'Monitoring' ? 'bg-amber-50 dark:bg-amber-500/10' : 'bg-rose-50 dark:bg-rose-500/10'} flex justify-between items-center`}>
            <div className="flex items-center space-x-2">
               {status === 'Resolved' ? <Check size={14} className={iconColor} /> : <AlertOctagon size={14} className={iconColor} />}
               <span className={`text-[11px] font-bold uppercase tracking-wider ${iconColor}`}>
                 {status}
               </span>
            </div>
-           <span className="text-[10px] text-[#5f6368] dark:text-[#9aa0a6] font-medium flex items-center">
+           <span className="text-[10px] text-slate-500 dark:text-[var(--color-text-muted-dark)] font-medium flex items-center">
               <Clock size={12} className="mr-1.5" />
               {new Date(item.isoDate).toLocaleString()}
            </span>
         </div>
 
-        <div className={`${isCompact ? 'p-3' : 'p-4 sm:p-5'} flex flex-col flex-1 relative`}>
+        <div className={`${isCompact ? 'p-4' : 'p-5 sm:p-6'} flex flex-col flex-1 relative`}>
           {item.serviceName && (
-            <div className="mb-2 sm:mb-3">
-              <span className="inline-flex items-center px-2 py-0.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-[#f1f3f4] dark:bg-[#3c4043] text-[#5f6368] dark:text-[#9aa0a6] border border-[#dadce0] dark:border-[#5f6368]">
-                <Box size={10} className="sm:w-3 sm:h-3 mr-1 sm:mr-1.5" />
+            <div className="mb-3 sm:mb-4">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest bg-slate-100 dark:bg-[var(--color-border-dark)] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[var(--color-border-dark)] shadow-sm">
+                <Box size={12} className="mr-1.5" />
                 {item.serviceName}
               </span>
             </div>
           )}
 
-          <h3 className={`font-semibold text-[#202124] dark:text-[#e8eaed] mb-1 sm:mb-1.5 z-10 relative ${isPresentationMode ? 'text-md' : isCompact ? 'text-[13px] sm:text-[14px]' : 'text-[14px] sm:text-[15px]'} leading-snug`}>
-            <a href={item.link} target="_blank" rel="noopener noreferrer" className={`hover:text-[#1a73e8] dark:hover:text-[#8ab4f8] transition-colors`}>
+          <h3 className={`font-heading font-bold text-slate-900 dark:text-white mb-2 sm:mb-3 z-10 relative ${isPresentationMode ? 'text-lg' : isCompact ? 'text-[15px] sm:text-[16px]' : 'text-[16px] sm:text-[18px]'} leading-tight`}>
+            <a href={item.link} target="_blank" rel="noopener noreferrer" className={`hover:text-blue-600 dark:hover:text-blue-400 transition-colors`}>
               {item.title}
             </a>
           </h3>
 
-          <p className={`text-[#5f6368] dark:text-[#9aa0a6] text-[12px] sm:text-[13px] mb-3 sm:mb-4 z-10 relative flex-1 leading-relaxed ${isPresentationMode ? 'line-clamp-4' : 'line-clamp-3'}`}>
+          <p className={`text-slate-600 dark:text-slate-300 text-[13px] sm:text-[14px] mb-4 sm:mb-5 z-10 relative flex-1 leading-relaxed ${isPresentationMode ? 'line-clamp-4' : 'line-clamp-3'}`}>
             {item.contentSnippet}
           </p>
 
-          <div className="mt-auto z-10 flex items-center justify-between relative pt-3 border-t border-[#dadce0] dark:border-[#3c4043]">
+          <div className="mt-auto z-10 flex items-center justify-between relative pt-4 border-t border-slate-100 dark:border-[var(--color-border-dark)]">
             <a 
                 href={item.link} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider hover:underline transition-colors ${iconColor}`}
+                className={`inline-flex items-center text-[11px] font-bold uppercase tracking-widest hover:underline transition-colors ${iconColor}`}
             >
-                View Incident <ArrowRight size={10} className="ml-1" />
+                View Incident <ArrowRight size={12} className="ml-1.5" />
             </a>
             
             {!isPresentationMode && (
-              <div className="flex space-x-1">
+              <div className="flex space-x-2">
                 <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onSummarize(item);
                     }}
                     disabled={isSummarizing}
-                    className={`p-1.5 rounded-full hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] transition-colors ${iconColor}`}
+                    className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-[var(--color-border-dark)] transition-colors ${iconColor}`}
                     title="Summarize Incident"
                 >
-                  {isSummarizing ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                  {isSummarizing ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
                 </button>
               </div>
             )}
@@ -283,16 +293,16 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
         className={cn(
-          "flex group relative rounded-2xl overflow-hidden transition-all duration-300 bg-white dark:bg-[#202124] border border-[#dadce0] dark:border-[#3c4043] shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-[#1a73e8]/30 dark:hover:border-[#8ab4f8]/30",
-          isListView ? "flex-row min-h-[140px]" : "flex-col h-full",
-          isSaved && "ring-2 ring-[#1a73e8] ring-offset-2 dark:ring-offset-[#202124]",
+          "flex group relative rounded-[2.5rem] overflow-hidden transition-all duration-700 bg-white dark:bg-[var(--color-bg-card-dark)] border border-slate-200/60 dark:border-[var(--color-border-dark)] shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:border-blue-500/30 dark:hover:border-blue-400/30",
+          isListView ? "flex-row min-h-[160px]" : "flex-col h-full w-full",
+          isSaved && "ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-[var(--color-bg-card-dark)]"
         )}
       >
         {/* Deprecation Warning Banner */}
         {isDeprecation && daysUntilEOL > 0 && (
-          <div className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider flex items-center justify-between border-b ${urgencyColor}`}>
+          <div className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest flex items-center justify-between border-b ${urgencyColor}`}>
             <span className="flex items-center">
-              <AlertOctagon size={10} className="mr-1.5" />
+              <AlertOctagon size={12} className="mr-2" />
               Deprecation Notice
             </span>
             <span>{daysUntilEOL} Days Left</span>
@@ -302,7 +312,10 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
         {/* Image Section */}
         {image && !isPresentationMode && showImages && (
           <div 
-            className={`${isListView ? 'w-full sm:w-56 min-w-0 sm:min-w-[224px]' : isCompact ? 'h-32' : 'h-40 sm:h-48'} overflow-hidden relative cursor-pointer group/image bg-[#f8f9fa] dark:bg-[#303134] border-b border-[#dadce0] dark:border-[#3c4043]`}
+            className={cn(
+              "overflow-hidden relative cursor-pointer group/image bg-slate-100 dark:bg-[var(--color-border-dark)] shrink-0",
+              isListView ? "w-full sm:w-52 min-w-0 sm:min-w-[208px] h-36 sm:h-full" : "h-44 sm:h-48"
+            )}
             onClick={(e) => {
               e.stopPropagation();
               onSummarize(item);
@@ -311,23 +324,28 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
               <img 
                   src={image} 
                   alt={item.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover/image:scale-110"
                   referrerPolicy="no-referrer"
                   loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-500 flex items-end p-4">
+                 <span className="text-white text-[10px] font-bold uppercase tracking-widest flex items-center">
+                    <Sparkles size={12} className="mr-2 text-blue-400" />
+                    AI Analysis Available
+                 </span>
+              </div>
               
               {item.videoId && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-lg group-hover/image:scale-110 transition-transform duration-300">
-                    <Play size={16} className="text-white ml-0.5 fill-white" />
+                  <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/30 shadow-2xl group-hover/image:scale-110 transition-transform duration-500">
+                    <Play size={20} className="text-white ml-1 fill-white" />
                   </div>
                 </div>
               )}
   
               {item.duration && (
-                <div className="absolute bottom-2 right-2 z-20">
-                  <span className="px-2 py-0.5 rounded-md text-[9px] font-bold bg-black/70 text-white backdrop-blur-md">
+                <div className="absolute top-3 right-3 z-20">
+                  <span className="px-2.5 py-1 rounded-full text-[9px] font-bold bg-black/60 text-white backdrop-blur-md border border-white/10 shadow-lg tracking-wider">
                     {item.duration}
                   </span>
                 </div>
@@ -335,56 +353,56 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
           </div>
         )}
         
-          <div className={`${isCompact ? 'p-3 sm:p-4' : 'p-4 sm:p-5'} flex-1 flex flex-col ${isListView ? 'justify-between' : ''}`}>
-          <div className="w-full">
-            <div className={`flex items-center justify-between w-full ${isCompact ? 'mb-2' : 'mb-3'}`}>
-               <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+          <div className={`${isCompact ? 'p-6' : 'p-6 sm:p-8'} ${featured ? 'shrink-0' : 'flex-1'} flex flex-col min-w-0 ${isListView ? 'justify-between' : ''}`}>
+          <div className="w-full min-w-0">
+            <div className={`flex items-center justify-between w-full ${isCompact ? 'mb-2' : 'mb-4'}`}>
+               <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                   {isNew && !isPresentationMode && (
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-800 uppercase tracking-widest shadow-sm">
-                      <Sparkles size={10} />
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-600 text-white dark:bg-blue-500 uppercase tracking-[0.1em] shadow-lg shadow-blue-500/20">
+                      <Sparkles size={9} className="fill-current" />
                       NEW
                     </span>
                   )}
                   <span className={cn(
-                    "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border transition-all duration-300 shadow-sm",
+                    "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all duration-300 shadow-sm group-hover:scale-105",
                     getSourceStyles(item.source)
                   )}>
                     <SourceIcon source={item.source} size={10} />
                     {item.source}
                   </span>
                   {isTrending && (
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 border border-orange-100 dark:border-orange-800 uppercase tracking-widest shadow-sm">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-600 text-white dark:bg-rose-500 border border-rose-600 uppercase tracking-widest shadow-lg shadow-rose-500/20">
                       <TrendingUp size={10} />
                       TRENDING
                     </span>
                   )}
                </div>
-               <span className="text-[10px] text-[#5f6368] dark:text-[#9aa0a6] font-bold uppercase tracking-[0.1em] tabular-nums shrink-0 ml-2">
+               <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-[0.2em] tabular-nums shrink-0 ml-3 bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-lg">
                   {date}
                </span>
             </div>
             
-            <h3 className={`font-heading font-semibold text-[#202124] dark:text-[#e8eaed] ${isCompact ? 'mb-2 text-[14px] sm:text-[15px]' : 'mb-2 text-[16px] sm:text-[18px]'} group-hover:text-[#1a73e8] dark:group-hover:text-[#8ab4f8] transition-colors leading-snug tracking-tight`}>
-                <a href={item.link} target="_blank" rel="noopener noreferrer" className="focus:outline-none">
+            <h3 className={`font-heading font-bold text-slate-900 dark:text-white ${isCompact ? 'mb-2 text-[14px] sm:text-[15px]' : 'mb-3 text-[16px] sm:text-[18px]'} group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight tracking-tight`}>
+                <a href={item.link} target="_blank" rel="noopener noreferrer" className="focus:outline-none block">
                     {item.title}
                 </a>
             </h3>
 
           {(item.channelName || item.channelTitle) && (
-            <div className="mb-2 flex items-center text-[11px] text-[#5f6368] dark:text-[#9aa0a6] space-x-2">
+            <div className="mb-3 flex items-center text-[12px] text-slate-500 dark:text-[var(--color-text-muted-dark)] space-x-2">
               <div className="flex items-center">
-                <Youtube size={12} className="mr-1 text-[#ea4335]" />
+                <Youtube size={14} className="mr-1.5 text-rose-500" />
                 <span className="font-medium">{item.channelName || item.channelTitle}</span>
               </div>
               {item.viewCount !== undefined && (
                 <div className="flex items-center">
-                  <span className="opacity-50 mx-1">•</span>
+                  <span className="opacity-40 mx-1.5">•</span>
                   <span>{new Intl.NumberFormat('en-US', { notation: "compact", compactDisplay: "short" }).format(item.viewCount)} views</span>
                 </div>
               )}
               {item.likeCount !== undefined && (
                 <div className="flex items-center">
-                  <span className="opacity-50 mx-1">•</span>
+                  <span className="opacity-40 mx-1.5">•</span>
                   <span>{new Intl.NumberFormat('en-US', { notation: "compact", compactDisplay: "short" }).format(item.likeCount)} likes</span>
                 </div>
               )}
@@ -393,9 +411,9 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
 
           {/* Product Labels for Release Notes */}
           {(item.source === 'Release Notes' || item.source === 'Gemini Enterprise') && displayLabels.length > 0 && (
-            <div className="mb-2 flex flex-wrap gap-1.5">
+            <div className="mb-3 flex flex-wrap gap-2">
               {displayLabels.slice(0, 3).map((label) => (
-                <span key={label} className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black bg-[#f1f3f4] text-[#5f6368] dark:bg-[#3c4043] dark:text-[#9aa0a6] border border-[#dadce0] dark:border-[#5f6368] uppercase tracking-widest transition-all hover:bg-[#e8f0fe] hover:text-[#1a73e8] hover:border-[#d2e3fc] shadow-sm">
+                <span key={label} className="inline-flex items-center px-2 py-0.5 rounded-lg text-[9px] font-black bg-slate-100 text-slate-600 dark:bg-[var(--color-border-dark)] dark:text-slate-300 border border-slate-200 dark:border-[var(--color-border-dark)] uppercase tracking-widest transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 dark:hover:bg-blue-500/10 dark:hover:text-blue-400 dark:hover:border-blue-500/30 shadow-sm">
                   <Tag size={10} className="mr-1 opacity-70" />
                   {label}
                 </span>
@@ -403,8 +421,8 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
             </div>
           )}
           
-          <div className={`relative ${isCompact ? 'mb-2' : 'mb-3'}`}>
-            <div className={`text-[#5f6368] dark:text-[#9aa0a6] ${isCompact ? 'text-[12px] leading-relaxed' : 'text-[13px] sm:text-[14px] leading-relaxed'} ${!isExpanded && !isPresentationMode ? 'line-clamp-[6] sm:line-clamp-[8]' : ''} prose dark:prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0`}>
+          <div className={`relative ${isCompact ? 'mb-2' : 'mb-4'}`}>
+            <div className={`text-slate-600 dark:text-slate-300 ${isCompact ? 'text-[13px] leading-relaxed' : 'text-[14px] sm:text-[15px] leading-relaxed'} ${!isExpanded && !isPresentationMode ? 'max-h-[160px] overflow-hidden' : ''} prose dark:prose-invert max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0 prose-table:my-2`}>
                 <ReactMarkdown 
                   components={markdownComponents}
                   rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -412,19 +430,22 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                   {item.content || item.contentSnippet || ''}
                 </ReactMarkdown>
             </div>
-            {((item.content && item.content.length > 300) || (item.contentSnippet && item.contentSnippet.length > 200)) && !isPresentationMode && (
+            {!isExpanded && !isPresentationMode && ((item.content && item.content.length > 100) || (item.contentSnippet && item.contentSnippet.length > 50)) && (
+                <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white dark:from-[var(--color-bg-card-dark)] to-transparent pointer-events-none" />
+            )}
+            {((item.content && item.content.length > 100) || (item.contentSnippet && item.contentSnippet.length > 50)) && !isPresentationMode && (
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                   setIsExpanded(!isExpanded);
                 }}
-                className="text-[10px] font-bold text-[#1a73e8] dark:text-[#8ab4f8] hover:text-[#1557b0] dark:hover:text-[#aecbfa] mt-1.5 flex items-center focus:outline-none uppercase tracking-widest transition-colors"
+                className="relative z-20 text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mt-1 flex items-center focus:outline-none uppercase tracking-widest transition-colors"
               >
                 {isExpanded ? (
-                  <>Less <ChevronUp size={12} className="ml-0.5" /></>
+                  <>Less <ChevronUp size={12} className="ml-1" /></>
                 ) : (
-                  <>More <ChevronDown size={12} className="ml-0.5" /></>
+                  <>More <ChevronDown size={12} className="ml-1" /></>
                 )}
               </button>
             )}
@@ -432,7 +453,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
 
           {/* Categories */}
           {!isPresentationMode && !isCompact && (
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-3 flex flex-wrap gap-2">
               {displayLabels.slice(0, 3).map((cat) => {
                 const isSubscribed = subscribedCategories.includes(cat);
                 return (
@@ -444,13 +465,13 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                       else onToggleSubscription(cat);
                     }}
                     className={cn(
-                      "px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-all duration-300 border shadow-sm hover:scale-105 active:scale-95",
+                      "px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 border shadow-sm hover:scale-105 active:scale-95",
                       isSubscribed 
-                        ? 'bg-[#1a73e8] text-white border-[#1a73e8] shadow-blue-200'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-blue-200 dark:shadow-none'
                         : getCategoryStyles(cat)
                     )}
                   >
-                      <span className="truncate max-w-[120px]">{cat}</span>
+                      <span className="truncate max-w-[140px]">{cat}</span>
                   </button>
                 );
               })}
@@ -458,35 +479,64 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
           )}
 
           {analysis && (
-            <div className={`mb-4 bg-gradient-to-br from-[#e8f0fe] to-white dark:from-[#8ab4f8]/10 dark:to-[#202124] rounded-xl border border-[#d2e3fc] dark:border-[#8ab4f8]/20 ${isCompact ? 'p-3' : 'p-4'} relative overflow-hidden group/ai shadow-sm`}>
-              <div className="flex items-center text-[10px] font-bold text-[#1a73e8] dark:text-[#8ab4f8] uppercase tracking-widest mb-1.5">
-                <Sparkles size={12} className="mr-1.5" />
-                AI Insight
+            <div className={`mb-3 bg-gradient-to-br from-blue-50 to-white dark:from-blue-500/10 dark:to-[var(--color-bg-app-dark)] rounded-2xl border border-blue-100 dark:border-blue-500/20 ${isCompact ? 'p-4' : 'p-5'} relative overflow-hidden group/ai shadow-sm`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
+                  <Sparkles size={14} className="mr-2" />
+                  AI Intelligence
+                </div>
+                <div className="flex gap-2">
+                  {analysis.chartData?.actionPriority !== undefined && (
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border",
+                      analysis.chartData.actionPriority > 70 
+                        ? "bg-rose-50 text-rose-700 border-rose-200" 
+                        : "bg-blue-50 text-blue-700 border-blue-200"
+                    )}>
+                      Priority: {analysis.chartData.actionPriority > 70 ? 'High' : 'Normal'}
+                    </span>
+                  )}
+                  {analysis.actionItems && analysis.actionItems.length > 0 && (
+                    <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 rounded-full text-[9px] font-bold uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/30">
+                      {analysis.actionItems.length} Actions
+                    </span>
+                  )}
+                </div>
               </div>
-              <p className={`text-[#202124] dark:text-[#e8eaed] leading-relaxed relative z-10 ${isCompact ? 'text-[12px] line-clamp-2' : 'text-[13px] line-clamp-3'}`}>
-                {analysis.impact}
-              </p>
+              
+              <div className="space-y-3">
+                <p className={`text-slate-800 dark:text-slate-200 leading-relaxed relative z-10 font-medium ${isCompact ? 'text-[13px] line-clamp-2' : 'text-[14px] line-clamp-3'}`}>
+                  {analysis.summary.split('\n')[0].replace(/^\*\*|\*\*$/g, '')}
+                </p>
+                
+                {!isCompact && analysis.strategicImportance && (
+                  <div className="flex items-start space-x-2 text-[12px] text-slate-500 dark:text-[var(--color-text-muted-dark)] italic border-l-2 border-blue-200 dark:border-blue-500/30 pl-3">
+                    <TrendingUp size={12} className="mt-0.5 shrink-0" />
+                    <p className="line-clamp-2">{analysis.strategicImportance}</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
         
-        <div className={`mt-auto ${!isListView ? `pt-3 border-t border-[#dadce0] dark:border-[#3c4043] ${isCompact ? 'pt-2' : 'pt-3'}` : ''}`}>
+        <div className={`mt-auto ${!isListView ? `pt-4 border-t border-slate-100 dark:border-[var(--color-border-dark)] ${isCompact ? 'pt-3' : 'pt-4'}` : ''}`}>
             <div className="flex items-center justify-between w-full">
                 <a 
                     href={item.link} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-[11px] font-bold uppercase tracking-widest text-[#5f6368] dark:text-[#9aa0a6] hover:text-[#1a73e8] dark:hover:text-[#8ab4f8] transition-colors group/link"
+                    className="inline-flex items-center text-[9px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-all group/link bg-blue-50 dark:bg-blue-500/10 px-2 py-1 rounded-lg border border-blue-100 dark:border-blue-500/20 shadow-sm hover:shadow-md"
                 >
-                    Read <ArrowRight size={12} className="ml-1 opacity-50 group-hover/link:opacity-100 transition-opacity" />
+                    Read More <ArrowRight size={10} className="ml-1 group-hover/link:translate-x-0.5 transition-transform" />
                 </a>
 
                 {!isPresentationMode && (
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-2">
                   <Tooltip content="Copy Link" position="top">
                     <button
                       onClick={handleCopyLink}
-                      className="w-8 h-8 flex items-center justify-center rounded-full text-[#5f6368] hover:text-[#202124] dark:hover:text-[#e8eaed] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] transition-colors"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all duration-300 border border-transparent hover:border-blue-100 dark:hover:border-blue-500/20"
                       aria-label="Copy Link"
                     >
                       <LinkIcon size={14} />
@@ -499,7 +549,12 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                         e.stopPropagation();
                         onSave(item);
                       }}
-                      className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isSaved ? 'text-[#1a73e8] dark:text-[#8ab4f8] bg-[#e8f0fe] dark:bg-[#8ab4f8]/20' : 'text-[#5f6368] hover:text-[#202124] dark:hover:text-[#e8eaed] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043]'}`}
+                      className={cn(
+                        "w-7 h-7 flex items-center justify-center rounded-lg transition-all duration-300 border",
+                        isSaved 
+                          ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20 shadow-inner' 
+                          : 'text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 border-transparent hover:border-blue-100 dark:hover:border-blue-500/20'
+                      )}
                       aria-label={isSaved ? "Remove from Read Later" : "Read Later"}
                     >
                       <Bookmark size={14} className={isSaved ? "fill-current" : ""} />
@@ -513,10 +568,10 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                         onSummarize(item);
                       }}
                       disabled={isSummarizing}
-                      className="inline-flex items-center px-3 py-1.5 rounded-lg bg-[#1a73e8] dark:bg-[#8ab4f8] text-white dark:text-[#202124] hover:bg-[#1557b0] dark:hover:bg-[#aecbfa] transition-colors text-[10px] font-black disabled:opacity-50 border border-transparent ml-2 uppercase tracking-widest shadow-sm hover:shadow-md"
+                      className="inline-flex items-center px-2 py-1 rounded-lg bg-slate-900 dark:bg-[var(--color-text-dark)] text-white dark:text-[var(--color-bg-app-dark)] hover:bg-slate-800 dark:hover:bg-white transition-all duration-300 text-[9px] font-black disabled:opacity-50 border border-transparent ml-1 uppercase tracking-[0.2em] shadow-sm hover:shadow-md hover:-translate-y-0.5"
                       aria-label="Generate AI Summary"
                   >
-                      {isSummarizing ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} className="mr-1.5" />}
+                      {isSummarizing ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} className="mr-1" />}
                       {isSummarizing ? '' : 'Summarize'}
                   </button>
                 </Tooltip>
@@ -524,7 +579,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                 )}
             </div>
         </div>
-      </div>
-    </motion.div>
+        </div>
+      </motion.div>
   );
 };

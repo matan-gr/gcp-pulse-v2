@@ -76,22 +76,22 @@ export const Sidebar = React.memo<SidebarProps>(({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -280, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`fixed top-0 left-0 h-full w-72 bg-[var(--color-bg-sidebar)] dark:bg-[var(--color-bg-sidebar-dark)] border-r border-[#dadce0] dark:border-[#3c4043] z-[50] flex flex-col`}
+            className={`fixed top-0 left-0 h-full w-72 bg-[var(--color-bg-sidebar)] dark:bg-[var(--color-bg-sidebar-dark)] border-r border-[#dadce0] dark:border-[var(--color-border-dark)] z-[50] flex flex-col`}
           >
             {/* Logo Area */}
-            <div className="h-16 flex items-center justify-between px-6 border-b border-[#dadce0] dark:border-[#3c4043]">
+            <div className="h-16 flex items-center justify-between px-6 border-b border-[#dadce0] dark:border-[var(--color-border-dark)]">
               <div className="flex items-center space-x-2 group cursor-pointer">
                 <div className="w-8 h-8 bg-[#1a73e8] rounded-full flex items-center justify-center">
                   <Zap size={18} className="text-white" />
                 </div>
-                <span className="text-lg font-medium text-[#202124] dark:text-[#e8eaed] tracking-tight">GCP Pulse</span>
+                <span className="text-lg font-medium text-[#202124] dark:text-[var(--color-text-dark)] tracking-tight">GCP Pulse</span>
               </div>
 
               {/* Mobile Close Button */}
               {!isDesktop && (
                 <button 
                   onClick={() => setIsOpen(false)}
-                  className="p-2 text-[#5f6368] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] rounded-full transition-all"
+                  className="p-2 text-[#5f6368] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-bg-card-dark)] rounded-full transition-all"
                 >
                   <X size={20} />
                 </button>
@@ -104,7 +104,7 @@ export const Sidebar = React.memo<SidebarProps>(({
               {/* Main Menu */}
               <div>
                 <div className="flex items-center px-4 mb-2">
-                  <span className="text-[11px] font-semibold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-wider">Platform</span>
+                  <span className="text-[11px] font-semibold text-[#5f6368] dark:text-[var(--color-text-muted-dark)] uppercase tracking-wider">Platform</span>
                 </div>
                 <div className="space-y-1">
                   {menuItems.map((item) => {
@@ -122,7 +122,7 @@ export const Sidebar = React.memo<SidebarProps>(({
                       >
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-3">
-                            <Icon size={18} className={isActive ? 'text-[#1a73e8] dark:text-[#8ab4f8]' : 'text-[#5f6368] dark:text-[#9aa0a6] group-hover:text-[#1a73e8] dark:group-hover:text-[#8ab4f8]'} />
+                            <Icon size={18} className={isActive ? 'text-[#1a73e8] dark:text-[#3b82f6]' : 'text-[#5f6368] dark:text-[var(--color-text-muted-dark)] group-hover:text-[#1a73e8] dark:group-hover:text-[#3b82f6]'} />
                             <span>{item.label}</span>
                           </div>
                           {item.badge && (
@@ -130,7 +130,7 @@ export const Sidebar = React.memo<SidebarProps>(({
                               "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg ml-2 border transition-all duration-300",
                               isActive 
                                 ? "bg-[#d2e3fc] dark:bg-[#8ab4f8]/30 text-[#1a73e8] dark:text-[#8ab4f8] border-[#1a73e8]/20" 
-                                : "bg-[#f1f3f4] dark:bg-[#3c4043] text-[#5f6368] dark:text-[#9aa0a6] border-[#dadce0] dark:border-[#3c4043]"
+                                : "bg-[#f1f3f4] dark:bg-[var(--color-bg-card-dark)] text-[#5f6368] dark:text-[var(--color-text-muted-dark)] border-[#dadce0] dark:border-[var(--color-border-dark)]"
                             )}>
                               {item.badge}
                             </span>
@@ -145,7 +145,7 @@ export const Sidebar = React.memo<SidebarProps>(({
               {/* Personal Section */}
               <div>
                 <div className="flex items-center px-4 mb-2">
-                  <span className="text-[11px] font-semibold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-wider">Workspace</span>
+                  <span className="text-[11px] font-semibold text-[#5f6368] dark:text-[var(--color-text-muted-dark)] uppercase tracking-wider">Workspace</span>
                 </div>
                 <div className="space-y-1">
                   {personalItems.map((item) => {
@@ -174,9 +174,9 @@ export const Sidebar = React.memo<SidebarProps>(({
             </nav>
             
             {/* Sidebar Footer */}
-            <div className="h-16 flex items-center border-t border-[#dadce0] dark:border-[#3c4043] px-6">
+            <div className="h-16 flex items-center border-t border-[#dadce0] dark:border-[var(--color-border-dark)] px-6">
                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center space-x-2 text-[11px] font-semibold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-wider">
+                  <div className="flex items-center space-x-2 text-[11px] font-semibold text-[#5f6368] dark:text-[var(--color-text-muted-dark)] uppercase tracking-wider">
                     <div className="w-2 h-2 rounded-full bg-[#188038] animate-pulse" />
                     <span>Live</span>
                   </div>

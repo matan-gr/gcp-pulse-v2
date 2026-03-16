@@ -19,6 +19,7 @@ export interface FeedItem {
   description?: string;
   updates?: Array<{ created: string; text: string }>;
   products?: string[];
+  cve?: string;
   eolDate?: string;
   videoId?: string;
   thumbnailUrl?: string;
@@ -51,6 +52,8 @@ export interface AnalysisResult {
   impact: string;
   relatedProducts: string[];
   targetAudience: string;
+  actionItems?: string[];
+  strategicImportance?: string;
   chartData?: ChartData;
 }
 

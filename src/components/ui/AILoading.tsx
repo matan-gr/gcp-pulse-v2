@@ -19,7 +19,7 @@ export const AILoading: React.FC<AILoadingProps> = ({
 }) => {
   if (variant === 'minimal' || variant === 'inline') {
     return (
-      <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-4 py-2 rounded-full border border-indigo-100 dark:border-indigo-900/30">
+      <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full border border-blue-100 dark:border-blue-900/30">
         <Loader2 size={16} className="animate-spin" />
         <span className="text-sm font-medium">{title}</span>
         {model && <span className="text-xs opacity-70 ml-2">({model})</span>}
@@ -34,10 +34,10 @@ export const AILoading: React.FC<AILoadingProps> = ({
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-full border-t-2 border-indigo-500 opacity-50"
+            className="absolute inset-0 rounded-full border-t-2 border-blue-500 opacity-50"
           />
-          <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-full">
-            <Icon size={24} className="text-indigo-600 dark:text-indigo-400" />
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-full">
+            <Icon size={24} className="text-blue-600 dark:text-blue-400" />
           </div>
         </div>
         <div className="text-center">
@@ -55,10 +55,10 @@ export const AILoading: React.FC<AILoadingProps> = ({
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 rounded-full border-t-2 border-indigo-500 opacity-50"
+          className="absolute inset-0 rounded-full border-t-2 border-blue-500 opacity-50"
         />
-        <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-full">
-          <Icon size={24} className="text-indigo-600 dark:text-indigo-400" />
+        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-full">
+          <Icon size={24} className="text-blue-600 dark:text-blue-400" />
         </div>
       </div>
       <div className="text-center">

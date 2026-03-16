@@ -25,6 +25,7 @@ app.set('trust proxy', 1);
 
 const FEEDS = [
   { url: "https://cloudblog.withgoogle.com/rss/", name: "Cloud Blog - Main" },
+  { url: "https://medium.com/feed/google-cloud", name: "Medium Blog" },
   { url: "https://blog.google/products/google-cloud/rss/", name: "Product Updates" },
   { url: "https://docs.cloud.google.com/feeds/gcp-release-notes.xml", name: "Release Notes" },
   { url: "https://docs.cloud.google.com/release-notes", name: "Product Deprecations" },
@@ -43,6 +44,7 @@ const parser = new Parser({
       ['yt:videoId', 'videoId'],
       ['yt:channelId', 'channelId'],
       ['author', 'author'],
+      ['content:encoded', 'contentEncoded'],
     ]
   }
 });
@@ -62,10 +64,14 @@ app.use(helmet({
 // Rate Limiting Middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 200, // Limit each IP to 200 requests per windowMs
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  message: 'Too many requests from this IP, please try again later.'
+  max: 2000, // Increased limit for smoother experience
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    status: 429,
+    error: 'Rate limit exceeded',
+    message: 'Too many requests from this IP. Please wait a moment and try again.'
+  }
 });
 app.use('/api/', limiter);
 
@@ -135,14 +141,14 @@ const processFeedItem = (item: any, sourceName: string) => {
     ...item,
     source: sourceName,
     title: cleanText(item.title),
-    contentSnippet: cleanText(item.contentSnippet || item.content),
-    content: item.content || "",
+    contentSnippet: cleanText(item.contentSnippet || item.content || item.contentEncoded),
+    content: item.content || item.contentEncoded || "",
     isoDate: item.isoDate || (item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString()),
     categories: parsedCategories
   };
 
   // Specific processing
-  if (sourceName.startsWith('Cloud Blog')) {
+  if (sourceName.startsWith('Cloud Blog') || sourceName === 'Medium Blog') {
     // Cloud Blog specific logic (e.g., extract specific tags or clean content further)
     return { ...baseItem, type: 'blog' };
   } else if (sourceName === 'Product Updates') {
@@ -661,7 +667,7 @@ const fetchAndProcessFeed = async (feedSource: any) => {
     return items;
   }
 
-  if (feedSource.name.startsWith('Cloud Blog')) {
+  if (feedSource.name.startsWith('Cloud Blog') || feedSource.name === 'Medium Blog') {
     return await fetchCloudBlogUpdates(feedSource.url, feedSource.name);
   }
 
@@ -734,7 +740,7 @@ const fetchFeeds = async () => {
         return items;
       }
 
-      if (feedSource.name.startsWith('Cloud Blog')) {
+      if (feedSource.name.startsWith('Cloud Blog') || feedSource.name === 'Medium Blog') {
         return await withRetry(async () => await fetchCloudBlogUpdates(feedSource.url, feedSource.name), feedSource.name);
       }
 
@@ -787,7 +793,7 @@ let cache: {
   data: any;
   timestamp: number;
 } | null = null;
-const CACHE_DURATION = 1000 * 60 * 60; // 60 minutes cache
+const CACHE_DURATION = 1000 * 60 * 60 * 6; // 6 hours cache
 let isFetching = false;
 let fetchPromise: Promise<any> | null = null;
 

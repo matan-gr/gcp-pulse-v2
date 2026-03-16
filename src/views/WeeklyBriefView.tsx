@@ -244,16 +244,16 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-12">
+    <div className="max-w-4xl mx-auto space-y-6 pb-8 px-4">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#202124] dark:text-[#e8eaed] flex items-center tracking-tight">
-            <Sparkles className="mr-3 text-[#1a73e8] dark:text-[#8ab4f8]" size={32} />
+          <h1 className="text-2xl font-bold text-[#202124] dark:text-[#e8eaed] flex items-center tracking-tight">
+            <Sparkles className="mr-3 text-[#1a73e8] dark:text-[#8ab4f8]" size={24} />
             Weekly Brief
           </h1>
-          <p className="text-[#5f6368] dark:text-[#9aa0a6] mt-1 flex items-center text-[15px]">
-            <Calendar size={16} className="mr-2" />
+          <p className="text-[#5f6368] dark:text-[#9aa0a6] mt-1 flex items-center text-sm">
+            <Calendar size={14} className="mr-2" />
             {lastUpdated 
               ? `Generated ${lastUpdated.toLocaleDateString()} at ${lastUpdated.toLocaleTimeString()}` 
               : loading 
@@ -262,46 +262,46 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {brief && (
             <button
               onClick={handleRefresh}
               disabled={loading}
-              className="px-4 py-2 bg-white dark:bg-[#303134] border border-[#dadce0] dark:border-[#3c4043] rounded-lg text-sm font-black uppercase tracking-widest text-[#3c4043] dark:text-[#e8eaed] hover:bg-[#f8f9fa] dark:hover:bg-[#3c4043] transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
+              className="px-3 py-1.5 bg-white dark:bg-[#303134] border border-[#dadce0] dark:border-[#3c4043] rounded-lg text-xs font-black uppercase tracking-widest text-[#3c4043] dark:text-[#e8eaed] hover:bg-[#f8f9fa] dark:hover:bg-[#3c4043] transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
             >
-              <RefreshCw size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw size={14} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
               Regenerate
             </button>
           )}
           <button
             onClick={handleExport}
             disabled={!brief || loading}
-            className="px-4 py-2 bg-[#1a73e8] text-white rounded-lg text-sm font-black uppercase tracking-widest hover:bg-[#1557b0] transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
+            className="px-3 py-1.5 bg-[#1a73e8] text-white rounded-lg text-xs font-black uppercase tracking-widest hover:bg-[#1557b0] transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
           >
-            <Download size={16} className="mr-2" />
+            <Download size={14} className="mr-2" />
             Export
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="bg-white dark:bg-[#202124] rounded-[24px] border border-[#dadce0] dark:border-[#3c4043] shadow-sm overflow-hidden min-h-[600px] relative">
+      <div className="bg-white dark:bg-[#202124] rounded-xl border border-[#dadce0] dark:border-[#3c4043] shadow-sm overflow-hidden min-h-[500px] relative">
         {!loading && !brief && !error ? (
-          <div className="flex flex-col items-center justify-center h-full p-12 text-center min-h-[600px]">
-             <div className="bg-[#e8f0fe] dark:bg-[#8ab4f8]/20 p-8 rounded-2xl mb-8 ring-1 ring-[#d2e3fc] dark:ring-[#8ab4f8]/30">
-               <Sparkles size={64} className="text-[#1a73e8] dark:text-[#8ab4f8]" />
+          <div className="flex flex-col items-center justify-center h-full p-8 text-center min-h-[500px]">
+             <div className="bg-[#e8f0fe] dark:bg-[#8ab4f8]/20 p-6 rounded-xl mb-6 ring-1 ring-[#d2e3fc] dark:ring-[#8ab4f8]/30">
+               <Sparkles size={48} className="text-[#1a73e8] dark:text-[#8ab4f8]" />
              </div>
-             <h2 className="text-3xl font-bold text-[#202124] dark:text-[#e8eaed] mb-4 tracking-tight">
+             <h2 className="text-2xl font-bold text-[#202124] dark:text-[#e8eaed] mb-3 tracking-tight">
                Generate Your Weekly Brief
              </h2>
-             <p className="text-[#5f6368] dark:text-[#9aa0a6] max-w-lg mb-10 text-lg leading-relaxed">
+             <p className="text-[#5f6368] dark:text-[#9aa0a6] max-w-md mb-8 text-base leading-relaxed">
                Get a comprehensive AI-generated summary of the most important Google Cloud updates, security bulletins, and architectural changes from the last 7 days.
              </p>
              <button
                onClick={() => generateBrief(true)}
-               className="px-8 py-4 bg-[#1a73e8] hover:bg-[#1557b0] text-white rounded-xl font-black uppercase tracking-widest text-lg shadow-sm hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center active:scale-95"
+               className="px-6 py-3 bg-[#1a73e8] hover:bg-[#1557b0] text-white rounded-lg font-black uppercase tracking-widest text-sm shadow-sm hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center active:scale-95"
              >
-               <Sparkles size={24} className="mr-3" />
+               <Sparkles size={18} className="mr-2" />
                Generate Brief
              </button>
           </div>
@@ -316,15 +316,15 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
             />
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center h-full p-12 text-center">
-            <div className="bg-[#fce8e6] dark:bg-[#ea4335]/20 p-4 rounded-xl mb-4">
-              <FileText size={32} className="text-[#ea4335] dark:text-[#f28b82]" />
+          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+            <div className="bg-[#fce8e6] dark:bg-[#ea4335]/20 p-3 rounded-lg mb-3">
+              <FileText size={24} className="text-[#ea4335] dark:text-[#f28b82]" />
             </div>
-            <h3 className="text-xl font-bold text-[#202124] dark:text-[#e8eaed] mb-2">Failed to Generate Brief</h3>
-            <p className="text-[#5f6368] dark:text-[#9aa0a6] mb-6">{error}</p>
+            <h3 className="text-lg font-bold text-[#202124] dark:text-[#e8eaed] mb-1">Failed to Generate Brief</h3>
+            <p className="text-[#5f6368] dark:text-[#9aa0a6] mb-4 text-sm">{error}</p>
             <button
               onClick={handleRefresh}
-              className="px-6 py-2 bg-[#1a73e8] text-white rounded-lg font-black uppercase tracking-widest hover:bg-[#1557b0] transition-all active:scale-95 shadow-sm"
+              className="px-4 py-1.5 bg-[#1a73e8] text-white rounded-lg font-black uppercase tracking-widest text-xs hover:bg-[#1557b0] transition-all active:scale-95 shadow-sm"
             >
               Try Again
             </button>
@@ -334,7 +334,7 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="p-8 md:p-12 max-w-4xl mx-auto"
+            className="p-6 md:p-8 max-w-3xl mx-auto"
           >
             <article className="prose prose-slate dark:prose-invert max-w-none">
               <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>

@@ -41,8 +41,12 @@ export const useSecurityView = (items: FeedItem[]) => {
 
       // Extract Products
       const products = extractGCPProducts(item.title + " " + item.contentSnippet);
+      
+      // Extract CVE
+      const cveMatch = (item.title + " " + item.contentSnippet).match(/CVE-\d{4}-\d{4,}/i);
+      const cve = cveMatch ? cveMatch[0] : undefined;
 
-      return { ...item, severity, products };
+      return { ...item, severity, products, cve };
     });
 
     return { stats, items: enrichedItems };

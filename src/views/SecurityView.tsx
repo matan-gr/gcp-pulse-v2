@@ -156,9 +156,12 @@ export const SecurityView: React.FC<SecurityViewProps> = ({
 const SecurityItemCard = ({ item, index, onSummarize, summarizingId }: { item: FeedItem, index: number, onSummarize: (item: FeedItem) => void, summarizingId: string | null }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
-  // Use content if available (rich HTML), otherwise fallback to snippet
-  const contentToRender = item.content || item.contentSnippet || '';
-  const sanitizedContent = DOMPurify.sanitize(contentToRender);
+  // Clean content and snippet
+  const cleanContent = (item.content || '').replace(/]]>/g, '');
+  const cleanSnippet = (item.contentSnippet || '').replace(/]]>/g, '');
+  
+  const sanitizedContent = DOMPurify.sanitize(cleanContent);
+  const sanitizedSnippet = DOMPurify.sanitize(cleanSnippet);
 
   const getSeverityBorder = (severity: string) => {
     switch (severity) {
@@ -185,9 +188,19 @@ const SecurityItemCard = ({ item, index, onSummarize, summarizingId }: { item: F
           <div className="space-y-3 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <SeverityBadge severity={item.severity} />
+              {item.cve && (
+                <span className="text-[9px] font-bold text-rose-700 bg-rose-50 dark:bg-rose-900/20 dark:text-rose-300 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800 uppercase tracking-widest">
+                  {item.cve}
+                </span>
+              )}
               <span className="text-[9px] font-bold text-[#5f6368] dark:text-[#9aa0a6] flex items-center bg-[#f1f3f4] dark:bg-[#3c4043] px-2 py-0.5 rounded text-center uppercase tracking-widest border border-[#dadce0] dark:border-[#5f6368]">
                 {new Date(item.isoDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
               </span>
+              {item.products && item.products.slice(0, 3).map(prod => (
+                <span key={prod} className="text-[9px] font-bold text-[#5f6368] dark:text-[#9aa0a6] flex items-center bg-[#f1f3f4] dark:bg-[#3c4043] px-2 py-0.5 rounded text-center uppercase tracking-widest border border-[#dadce0] dark:border-[#5f6368]">
+                  {prod}
+                </span>
+              ))}
             </div>
             <h3 className="text-lg font-heading font-semibold text-[#202124] dark:text-[#e8eaed] leading-snug group-hover:text-[#1a73e8] dark:group-hover:text-[#8ab4f8] transition-colors tracking-tight">
               <a href={item.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
@@ -222,10 +235,10 @@ const SecurityItemCard = ({ item, index, onSummarize, summarizingId }: { item: F
           </div>
         </div>
 
-        <div className={`relative ${isExpanded ? '' : 'max-h-24 overflow-hidden mask-linear-fade'}`}>
+        <div className={`relative ${isExpanded ? '' : 'max-h-48 overflow-hidden mask-linear-fade'}`}>
            <div 
              className="prose dark:prose-invert max-w-none text-[13px] text-[#5f6368] dark:text-[#9aa0a6] leading-relaxed prose-headings:font-bold prose-headings:text-[#202124] dark:prose-headings:text-[#e8eaed] prose-a:text-[#1a73e8] dark:prose-a:text-[#8ab4f8] prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-code:bg-[#f1f3f4] dark:prose-code:bg-[#3c4043] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none"
-             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+             dangerouslySetInnerHTML={{ __html: isExpanded ? sanitizedContent : sanitizedSnippet }}
            />
         </div>
         
@@ -240,7 +253,7 @@ const SecurityItemCard = ({ item, index, onSummarize, summarizingId }: { item: F
           )}
         </button>
 
-        {item.products.length > 0 && (
+        {item.products && item.products.length > 0 && (
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-4 border-t border-[#dadce0] dark:border-[#3c4043] mt-4">
             <span className="text-[9px] font-bold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-widest flex items-center shrink-0">
               <Tag size={10} className="mr-1.5 opacity-70" />

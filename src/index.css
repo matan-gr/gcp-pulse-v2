@@ -12,7 +12,8 @@
   --font-mono: 'JetBrains Mono', monospace;
   
   /* Refined Google Enterprise Palette */
-  --color-brand-primary: #1a73e8; /* Google Blue */
+  --color-primary: #1a73e8; /* Google Blue */
+  --color-primary-foreground: #ffffff;
   --color-brand-secondary: #188038; /* Google Green */
   --color-brand-accent: #d93025; /* Google Red (slightly muted) */
   --color-brand-yellow: #f9ab00; /* Google Yellow (slightly muted) */
@@ -22,15 +23,18 @@
   --color-bg-card: #ffffff;
   --color-bg-sidebar: #f8f9fa;
   
-  /* Backgrounds - Dark (Refined) */
-  --color-bg-app-dark: #0f0f0f; 
-  --color-bg-card-dark: #1a1a1a; 
-  --color-bg-sidebar-dark: #0f0f0f;
+  /* Backgrounds - Dark (Deep Blueish/Slate) */
+  --color-bg-app-dark: #020617; /* Slate 950 */
+  --color-bg-card-dark: #0f172a; /* Slate 900 */
+  --color-bg-sidebar-dark: #020617;
+  --color-border-dark: #1e293b; /* Slate 800 */
+  --color-text-dark: #f8fafc; /* Slate 50 */
+  --color-text-muted-dark: #94a3b8; /* Slate 400 */
 }
 
 body {
   font-family: var(--font-sans);
-  @apply antialiased text-sm text-[#202124] dark:text-[#ffffff] bg-[var(--color-bg-app)] dark:bg-[var(--color-bg-app-dark)];
+  @apply antialiased text-sm text-[#202124] dark:text-[var(--color-text-dark)] bg-[var(--color-bg-app)] dark:bg-[var(--color-bg-app-dark)];
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -41,24 +45,24 @@ h1, h2, h3, h4, h5, h6 {
 /* Component Classes */
 @layer components {
   .glass-card {
-    @apply bg-white dark:bg-[#1a1a1a] rounded-lg transition-all duration-300 border border-[#dadce0] dark:border-[#3c4043];
+    @apply bg-white dark:bg-[var(--color-bg-card-dark)] rounded-lg transition-all duration-300 border border-[#dadce0] dark:border-[var(--color-border-dark)];
     box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
   }
   
   .glass-card:hover {
     box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
-    @apply border-[#1a73e8];
+    @apply border-[#1a73e8] dark:border-[#3b82f6];
   }
 
   .sidebar-link {
-    @apply w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 text-[#5f6368] dark:text-[#9aa0a6] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] hover:text-[#202124] dark:hover:text-[#e8eaed] font-medium text-xs;
+    @apply w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-bg-card-dark)] hover:text-[#202124] dark:hover:text-[var(--color-text-dark)] font-medium text-xs;
   }
 
   .sidebar-link-active {
-    @apply bg-[#e8f0fe] dark:bg-[#8ab4f8]/10 text-[#1a73e8] dark:text-[#8ab4f8] font-semibold;
+    @apply bg-[#e8f0fe] dark:bg-[#3b82f6]/10 text-[#1a73e8] dark:text-[#60a5fa] font-semibold;
   }
   
   .category-badge {
-    @apply px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 border border-[#dadce0] dark:border-[#5f6368] text-[#5f6368] dark:text-[#9aa0a6] bg-[#f8f9fa] dark:bg-[#3c4043];
+    @apply px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 border border-[#dadce0] dark:border-[var(--color-border-dark)] text-[#5f6368] dark:text-[var(--color-text-muted-dark)] bg-[#f8f9fa] dark:bg-[var(--color-bg-card-dark)];
   }
 }

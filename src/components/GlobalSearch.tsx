@@ -70,7 +70,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
       {/* Main Search Bar */}
       <div className="relative group">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <Search className={`h-5 w-5 transition-colors ${isSmartFilter ? 'text-[#1a73e8] dark:text-[#8ab4f8]' : 'text-[#5f6368] dark:text-[#9aa0a6] group-focus-within:text-[#202124] dark:group-focus-within:text-[#e8eaed]'}`} />
+          <Search className={`h-5 w-5 transition-colors ${isSmartFilter ? 'text-[#1a73e8] dark:text-[#3b82f6]' : 'text-[#5f6368] dark:text-[var(--color-text-muted-dark)] group-focus-within:text-[#202124] dark:group-focus-within:text-[var(--color-text-dark)]'}`} />
         </div>
         <input
           ref={inputRef}
@@ -79,16 +79,16 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={isSmartFilter ? "Ask AI..." : "Search..."}
-          className={`w-full bg-[#f1f3f4] dark:bg-[#303134] border border-transparent rounded-full pl-12 pr-24 py-3 text-[15px] font-medium transition-all duration-300 outline-none ${
+          className={`w-full bg-[#f1f3f4] dark:bg-[var(--color-bg-card-dark)] border border-transparent rounded-full pl-12 pr-24 py-3 text-[15px] font-medium transition-all duration-300 outline-none ${
             isSmartFilter 
-              ? 'focus:bg-white dark:focus:bg-[#202124] focus:border-[#1a73e8] dark:focus:border-[#8ab4f8] focus:shadow-[0_1px_6px_rgba(32,33,36,0.28)] dark:focus:shadow-[0_1px_6px_rgba(0,0,0,0.5)] bg-[#e8f0fe] dark:bg-[#8ab4f8]/10' 
-              : 'focus:bg-white dark:focus:bg-[#202124] focus:border-transparent focus:shadow-[0_1px_6px_rgba(32,33,36,0.28)] dark:focus:shadow-[0_1px_6px_rgba(0,0,0,0.5)] hover:bg-white dark:hover:bg-[#303134] hover:shadow-[0_1px_6px_rgba(32,33,36,0.28)] dark:hover:shadow-[0_1px_6px_rgba(0,0,0,0.5)]'
+              ? 'focus:bg-white dark:focus:bg-[var(--color-bg-card-dark)] focus:border-[#1a73e8] dark:focus:border-[#3b82f6] focus:shadow-[0_1px_6px_rgba(32,33,36,0.28)] dark:focus:shadow-[0_1px_6px_rgba(0,0,0,0.5)] bg-[#e8f0fe] dark:bg-[#3b82f6]/10' 
+              : 'focus:bg-white dark:focus:bg-[var(--color-bg-card-dark)] focus:border-transparent focus:shadow-[0_1px_6px_rgba(32,33,36,0.28)] dark:focus:shadow-[0_1px_6px_rgba(0,0,0,0.5)] hover:bg-white dark:hover:bg-[var(--color-border-dark)] hover:shadow-[0_1px_6px_rgba(32,33,36,0.28)] dark:hover:shadow-[0_1px_6px_rgba(0,0,0,0.5)]'
           }`}
         />
         
         {/* Shortcut Hint */}
         <div className="absolute inset-y-0 right-14 flex items-center pointer-events-none z-20 hidden lg:flex">
-          <div className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-[#202124] border border-[#dadce0] dark:border-[#5f6368] rounded text-[10px] font-bold text-[#5f6368] dark:text-[#9aa0a6]">
+          <div className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-[var(--color-bg-card-dark)] border border-[#dadce0] dark:border-[var(--color-border-dark)] rounded text-[10px] font-bold text-[#5f6368] dark:text-[var(--color-text-muted-dark)]">
             <Command size={10} />
             <span>K</span>
           </div>
@@ -100,7 +100,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
           {value && (
             <button
               onClick={() => onChange('')}
-              className="p-2 text-[#5f6368] dark:text-[#9aa0a6] hover:text-[#202124] dark:hover:text-[#e8eaed] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] rounded-full transition-all"
+              className="p-2 text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:text-[#202124] dark:hover:text-[var(--color-text-dark)] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-border-dark)] rounded-full transition-all"
               title="Clear search"
             >
               <X size={16} />
@@ -113,8 +113,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
               onClick={onToggleSmartFilter}
               className={`p-2 rounded-full transition-all ${
                 isSmartFilter 
-                  ? 'bg-[#e8f0fe] text-[#1a73e8] dark:bg-[#8ab4f8]/20 dark:text-[#8ab4f8]' 
-                  : 'text-[#5f6368] dark:text-[#9aa0a6] hover:text-[#1a73e8] dark:hover:text-[#8ab4f8] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043]'
+                  ? 'bg-[#e8f0fe] text-[#1a73e8] dark:bg-[#3b82f6]/20 dark:text-[#3b82f6]' 
+                  : 'text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:text-[#1a73e8] dark:hover:text-[#3b82f6] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-border-dark)]'
               }`}
             >
               <Sparkles size={18} className={loading ? 'animate-pulse' : ''} />
@@ -132,12 +132,12 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
             exit={{ opacity: 0, y: -5 }}
             className="flex flex-wrap items-center gap-2 mt-2"
           >
-            <div className="text-[10px] font-bold text-[#5f6368] dark:text-[#9aa0a6] uppercase tracking-widest mr-1">Filters:</div>
+            <div className="text-[10px] font-bold text-[#5f6368] dark:text-[var(--color-text-muted-dark)] uppercase tracking-widest mr-1">Filters:</div>
             
             {value && (
-              <div className="flex items-center bg-[#f1f3f4] dark:bg-[#303134] text-[#5f6368] dark:text-[#9aa0a6] px-2 py-1 rounded-lg text-[9px] font-black border border-[#dadce0] dark:border-[#3c4043] uppercase tracking-widest">
+              <div className="flex items-center bg-[#f1f3f4] dark:bg-[var(--color-bg-card-dark)] text-[#5f6368] dark:text-[var(--color-text-muted-dark)] px-2 py-1 rounded-lg text-[9px] font-black border border-[#dadce0] dark:border-[var(--color-border-dark)] uppercase tracking-widest">
                 Search: {value}
-                <button onClick={() => onChange('')} className="ml-1.5 hover:text-[#202124] dark:hover:text-[#e8eaed]">
+                <button onClick={() => onChange('')} className="ml-1.5 hover:text-[#202124] dark:hover:text-[var(--color-text-dark)]">
                   <X size={10} />
                 </button>
               </div>
@@ -158,9 +158,9 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
             })}
 
             {dateRange && (
-              <div className="flex items-center bg-[#f1f3f4] dark:bg-[#303134] text-[#5f6368] dark:text-[#9aa0a6] px-2 py-1 rounded-lg text-[9px] font-black border border-[#dadce0] dark:border-[#3c4043] uppercase tracking-widest">
+              <div className="flex items-center bg-[#f1f3f4] dark:bg-[var(--color-bg-card-dark)] text-[#5f6368] dark:text-[var(--color-text-muted-dark)] px-2 py-1 rounded-lg text-[9px] font-black border border-[#dadce0] dark:border-[var(--color-border-dark)] uppercase tracking-widest">
                 Date Range
-                <button onClick={() => onDateRangeChange(null)} className="ml-1.5 hover:text-[#202124] dark:hover:text-[#e8eaed]">
+                <button onClick={() => onDateRangeChange(null)} className="ml-1.5 hover:text-[#202124] dark:hover:text-[var(--color-text-dark)]">
                   <X size={10} />
                 </button>
               </div>
@@ -169,7 +169,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
             {onClearFilters && (
               <button 
                 onClick={onClearFilters}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#292a2d] text-[#5f6368] dark:text-[#9aa0a6] hover:text-[#202124] dark:hover:text-[#e8eaed] hover:bg-[#f1f3f4] dark:hover:bg-[#3c4043] border border-[#dadce0] dark:border-[#5f6368] rounded-full text-[10px] font-bold uppercase tracking-widest ml-auto transition-all shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[var(--color-bg-card-dark)] text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:text-[#202124] dark:hover:text-[var(--color-text-dark)] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-border-dark)] border border-[#dadce0] dark:border-[var(--color-border-dark)] rounded-full text-[10px] font-bold uppercase tracking-widest ml-auto transition-all shadow-sm active:scale-95"
               >
                 <X size={12} />
                 Clear All Filters

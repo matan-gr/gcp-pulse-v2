@@ -7,7 +7,14 @@ const fetchFeed = async (): Promise<Feed> => {
   try {
     const response = await fetch('/api/feed');
     if (!response.ok) {
-      throw new Error(`Failed to fetch feed: ${response.status} ${response.statusText}`);
+      let errorMessage = `Error ${response.status}: ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        if (errorData.message) errorMessage = errorData.message;
+      } catch (e) {
+        // Fallback to status text if JSON parsing fails
+      }
+      throw new Error(errorMessage);
     }
     return response.json();
   } catch (error) {
@@ -225,7 +232,14 @@ export const useIncidents = () => {
     queryKey: ['incidents'],
     queryFn: async (): Promise<FeedItem[]> => {
       const response = await fetch('/api/incidents');
-      if (!response.ok) throw new Error('Failed to fetch incidents');
+      if (!response.ok) {
+        let errorMessage = `Error ${response.status}: ${response.statusText}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.message) errorMessage = errorData.message;
+        } catch (e) { /* Ignore */ }
+        throw new Error(errorMessage);
+      }
       const data = await response.json();
       return data;
     },
