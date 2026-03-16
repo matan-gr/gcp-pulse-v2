@@ -10,12 +10,14 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 
 // Configure DOMPurify to open links in new tab
-DOMPurify.addHook('afterSanitizeAttributes', function (node) {
-  if ('target' in node) {
-    node.setAttribute('target', '_blank');
-    node.setAttribute('rel', 'noopener noreferrer');
-  }
-});
+if (typeof window !== 'undefined') {
+  DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+    if ('target' in node) {
+      node.setAttribute('target', '_blank');
+      node.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+}
 
 interface SecurityViewProps {
   items: FeedItem[];
