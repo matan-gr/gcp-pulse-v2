@@ -4,10 +4,12 @@ import { FeedCard } from '../components/FeedCard';
 import { TimelineSkeleton } from '../components/SkeletonLoader';
 import { EmptyState } from '../components/EmptyState';
 import { AnalysisResult } from '../types';
-import { Loader2, SearchX, FileText } from 'lucide-react';
+import { Loader2, SearchX, FileText, ChevronDown } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { extractGCPProducts } from '../utils';
 import { cn } from '../utils';
+
+const ITEMS_PER_PAGE = 10;
 
 interface ReleaseNotesViewProps {
   items: FeedItem[];
@@ -42,6 +44,7 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   // Filter items to ONLY include the GCP Release Notes RSS feed
   const releaseNotesItems = useMemo(() => {
@@ -51,12 +54,12 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
   // 1. First, split the release notes into individual announcements and extract products
   const parsedReleaseNotes = useMemo(() => {
     const parsed: FeedItem[] = [];
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90); // Increased to 90 days for better history
 
     releaseNotesItems.forEach(item => {
       const date = parseISO(item.isoDate);
-      if (date < thirtyDaysAgo) return; // Skip items older than 30 days
+      if (date < ninetyDaysAgo) return; 
 
       // Robust split: look for h1, h2, or h3 tags to separate announcements
       const splitContent = item.content.split(/<h[1-3][^>]*>/i);
@@ -85,17 +88,30 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
         const detectedProducts = extractGCPProducts(title + " " + finalContent);
         const allLabels = Array.from(new Set([...detectedProducts, ...(item.categories || [])]));
 
+        // Categorization logic
+        let categoryType: 'New Feature' | 'Security' | 'Deprecation' | 'General' = 'General';
+        const lowerTitle = title.toLowerCase();
+        const lowerContent = finalContent.toLowerCase();
+        if (lowerTitle.includes('security') || lowerContent.includes('security') || lowerTitle.includes('vulnerability') || lowerContent.includes('vulnerability')) {
+          categoryType = 'Security';
+        } else if (lowerTitle.includes('deprecation') || lowerContent.includes('deprecation') || lowerTitle.includes('deprecated') || lowerContent.includes('deprecated')) {
+          categoryType = 'Deprecation';
+        } else if (lowerTitle.includes('new') || lowerTitle.includes('feature') || lowerTitle.includes('launch') || lowerContent.includes('new') || lowerContent.includes('feature')) {
+          categoryType = 'New Feature';
+        }
+
         parsed.push({
           ...item,
           id: `${item.link}-${index}`,
           content: finalContent,
           contentSnippet: finalContent.replace(/<[^>]*>/g, "").substring(0, 200) + "...",
           title: title,
-          categories: allLabels
+          categories: allLabels,
+          categoryType
         });
       });
     });
-    return parsed;
+    return parsed.sort((a, b) => new Date(b.isoDate).getTime() - new Date(a.isoDate).getTime());
   }, [releaseNotesItems]);
 
   // 2. Get unique categories for filter
@@ -108,20 +124,31 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
   }, [parsedReleaseNotes]);
 
   // 3. Group items by month and filter
+  const filteredItems = useMemo(() => {
+    return parsedReleaseNotes.filter(item => {
+      if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase()) && !item.content.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (selectedCategory !== 'All' && !item.categories?.includes(selectedCategory)) return false;
+      return true;
+    });
+  }, [parsedReleaseNotes, searchQuery, selectedCategory]);
+
+  const displayedItems = useMemo(() => {
+    return filteredItems.slice(0, visibleCount);
+  }, [filteredItems, visibleCount]);
+
+  const hasMore = visibleCount < filteredItems.length;
+
   const groupedItems = useMemo(() => {
     const groups: Record<string, FeedItem[]> = {};
 
-    parsedReleaseNotes.forEach(item => {
-      if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase()) && !item.content.toLowerCase().includes(searchQuery.toLowerCase())) return;
-      if (selectedCategory !== 'All' && !item.categories?.includes(selectedCategory)) return;
-
+    displayedItems.forEach(item => {
       const date = parseISO(item.isoDate);
       const monthKey = format(date, 'MMMM yyyy');
       if (!groups[monthKey]) groups[monthKey] = [];
       groups[monthKey].push(item);
     });
     return groups;
-  }, [parsedReleaseNotes, searchQuery, selectedCategory]);
+  }, [displayedItems]);
 
   // Sort items within each month by date (descending)
   const sortedGroupedItems = useMemo(() => {
@@ -151,6 +178,7 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
         <div className="flex flex-col md:flex-row gap-4">
           <input
             type="text"
+            aria-label="Search release notes"
             placeholder="Search features, products, or changes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -161,6 +189,7 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
           {categories.map(cat => (
             <button
               key={cat}
+              aria-label={`Filter by category ${cat}`}
               onClick={() => setSelectedCategory(cat)}
               className={cn(
                 "px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all",
@@ -192,30 +221,43 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
       ) : (
         <div className="space-y-16">
           {monthKeys.map(month => (
-            <div key={month} className="relative pl-8 border-l-2 border-slate-200 dark:border-slate-800">
-              <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-600 border-4 border-white dark:border-[#1a1b1e]" />
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{month}</h2>
+            <section key={month} className="relative pl-10 border-l-[3px] border-slate-300 dark:border-slate-700" aria-labelledby={`month-${month.replace(' ', '-')}`}>
+              <div className="absolute -left-[11.5px] top-1 w-6 h-6 rounded-full bg-blue-600 border-4 border-white dark:border-[#1a1b1e] shadow-lg shadow-blue-500/30" />
+              <h2 id={`month-${month.replace(' ', '-')}`} className="text-2xl font-black text-slate-900 dark:text-white mb-10 tracking-tight">{month}</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {sortedGroupedItems[month].map((item, index) => (
-                  <FeedCard 
-                    key={`${item.link}-${index}`} 
-                    item={item} 
-                    index={index}
-                    onSummarize={onSummarize}
-                    isSummarizing={summarizingId === item.link}
-                    onSave={onSave}
-                    isSaved={savedPosts.includes(item.link)}
-                    viewMode="list"
-                    subscribedCategories={subscribedCategories}
-                    onToggleSubscription={toggleCategorySubscription}
-                    onSelectCategory={handleCategoryChange}
-                    analysis={analyses[item.link]}
-                    isPresentationMode={isPresentationMode}
-                  />
+                  <article key={`${item.link}-${index}`}>
+                    <FeedCard 
+                      item={item} 
+                      index={index}
+                      onSummarize={onSummarize}
+                      isSummarizing={summarizingId === item.link}
+                      onSave={onSave}
+                      isSaved={savedPosts.includes(item.link)}
+                      viewMode="list"
+                      subscribedCategories={subscribedCategories}
+                      onToggleSubscription={toggleCategorySubscription}
+                      onSelectCategory={handleCategoryChange}
+                      analysis={analyses[item.link]}
+                      isPresentationMode={isPresentationMode}
+                    />
+                  </article>
                 ))}
               </div>
-            </div>
+            </section>
           ))}
+        </div>
+      )}
+
+      {hasMore && !loading && (
+        <div className="flex justify-center pt-12 pb-8">
+          <button
+            onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
+            className="flex items-center gap-2 px-8 py-3 bg-white dark:bg-[#1a1b1e] text-blue-600 dark:text-blue-400 font-bold rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all shadow-sm active:scale-95 uppercase tracking-widest text-xs"
+          >
+            <ChevronDown size={16} />
+            <span>Load More Announcements</span>
+          </button>
         </div>
       )}
     </div>

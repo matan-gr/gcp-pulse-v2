@@ -176,10 +176,11 @@ function AppContent() {
       if (aActive && !bActive) return -1;
       if (!aActive && bActive) return 1;
 
-      const timeA = new Date(a.isoDate).getTime();
-      const timeB = new Date(b.isoDate).getTime();
-      const validA = !isNaN(timeA);
-      const validB = !isNaN(timeB);
+      const timeA = a.isoDate ? new Date(a.isoDate).getTime() : 0;
+      const timeB = b.isoDate ? new Date(b.isoDate).getTime() : 0;
+      
+      const validA = !isNaN(timeA) && timeA !== 0;
+      const validB = !isNaN(timeB) && timeB !== 0;
       
       if (validA && validB) return timeB - timeA;
       if (validA && !validB) return -1;
@@ -264,8 +265,8 @@ function AppContent() {
       const smartItems = smartIndices.map(i => allItems[i]).filter(Boolean);
       const smartLinks = new Set(smartItems.map(i => i.link));
       items = items.filter(item => smartLinks.has(item.link));
-    } else if (search) {
-      const lowerSearch = search.toLowerCase();
+    } else if (debouncedSearch) {
+      const lowerSearch = debouncedSearch.toLowerCase();
       items = items.filter(item => 
         item.title.toLowerCase().includes(lowerSearch) || 
         item.contentSnippet?.toLowerCase().includes(lowerSearch) ||
@@ -297,28 +298,38 @@ function AppContent() {
     }
 
     // Sorting
-    if (sortBy === 'date') {
-      items.sort((a, b) => {
-        const timeA = new Date(a.isoDate).getTime();
-        const timeB = new Date(b.isoDate).getTime();
-        const validA = !isNaN(timeA);
-        const validB = !isNaN(timeB);
+    const sortedItems = [...items];
+    
+    // Force date descending for Updates & Innovation page as requested
+    // This ensures Product Updates and Google AI Research are interleaved by date
+    const isUpdatesTab = activeTab === 'updates';
+    const effectiveSortBy = isUpdatesTab ? 'date' : sortBy;
+    const effectiveSortDirection = isUpdatesTab ? 'desc' : sortDirection;
+
+    if (effectiveSortBy === 'date') {
+      sortedItems.sort((a, b) => {
+        const timeA = a.isoDate ? new Date(a.isoDate).getTime() : 0;
+        const timeB = b.isoDate ? new Date(b.isoDate).getTime() : 0;
+        const validA = !isNaN(timeA) && timeA !== 0;
+        const validB = !isNaN(timeB) && timeB !== 0;
         
-        if (validA && validB) return sortDirection === 'asc' ? timeA - timeB : timeB - timeA;
+        if (validA && validB) {
+          return effectiveSortDirection === 'asc' ? timeA - timeB : timeB - timeA;
+        }
         if (validA && !validB) return -1;
         if (!validA && validB) return 1;
         return 0;
       });
-    } else if (sortBy === 'category') {
-      items.sort((a, b) => {
+    } else if (effectiveSortBy === 'category') {
+      sortedItems.sort((a, b) => {
         const catA = a.categories?.[0] || '';
         const catB = b.categories?.[0] || '';
-        return sortDirection === 'asc' ? catA.localeCompare(catB) : catB.localeCompare(catA);
+        return effectiveSortDirection === 'asc' ? catA.localeCompare(catB) : catB.localeCompare(catA);
       });
     }
 
-    return items;
-  }, [allItems, search, isSmartFilter, smartIndices, selectedCategories, filterType, dateRange, activeTab, prefs.savedPosts, sortBy, sortDirection]);
+    return sortedItems;
+  }, [allItems, debouncedSearch, isSmartFilter, smartIndices, selectedCategories, filterType, dateRange, activeTab, prefs.savedPosts, sortBy, sortDirection]);
 
   const handleExportCSV = useCallback(() => {
     if (filteredItems.length === 0) {
@@ -539,6 +550,13 @@ function AppContent() {
                     loading={securityLoading}
                     onSummarize={handleSummarize}
                     summarizingId={summarizingId}
+                    onSave={handleSave}
+                    savedPosts={prefs.savedPosts}
+                    subscribedCategories={prefs.subscribedCategories}
+                    toggleCategorySubscription={toggleCategorySubscription}
+                    handleCategoryChange={handleCategoryChange}
+                    analyses={analyses}
+                    isPresentationMode={isPresentationMode}
                   />
                 } />
                 <Route path="/saved" element={

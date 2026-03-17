@@ -9,46 +9,34 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import { StatSkeleton, SecuritySkeleton } from '../components/SkeletonLoader';
-
-// Configure DOMPurify to open links in new tab
-if (typeof window !== 'undefined') {
-  DOMPurify.addHook('afterSanitizeAttributes', function (node) {
-    if ('target' in node) {
-      node.setAttribute('target', '_blank');
-      node.setAttribute('rel', 'noopener noreferrer');
-    }
-  });
-}
+import { FeedCard } from '../components/FeedCard';
 
 interface SecurityViewProps {
   items: FeedItem[];
   loading: boolean;
   onSummarize: (item: FeedItem) => void;
   summarizingId: string | null;
+  onSave: (item: FeedItem) => void;
+  savedPosts: string[];
+  subscribedCategories: string[];
+  toggleCategorySubscription: (category: string) => void;
+  handleCategoryChange: (category: string) => void;
+  analyses: Record<string, any>;
+  isPresentationMode: boolean;
 }
-
-const markdownComponents = {
-  a: ({node, ...props}: any) => <a {...props} className="text-[#1a73e8] dark:text-[#8ab4f8] hover:underline font-medium" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} />,
-  p: ({node, ...props}: any) => <p {...props} className="mb-3 last:mb-0" />,
-  ul: ({node, ...props}: any) => <ul {...props} className="list-disc pl-5 mb-3 space-y-1" />,
-  ol: ({node, ...props}: any) => <ol {...props} className="list-decimal pl-5 mb-3 space-y-1" />,
-  li: ({node, ...props}: any) => <li {...props} className="mb-1" />,
-  code: ({node, inline, ...props}: any) => (
-    <code 
-      {...props} 
-      className={cn(
-        "text-pink-600 dark:text-pink-400 bg-[#f1f3f4] dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-[0.9em]",
-        !inline && "block p-3 my-3 overflow-x-auto"
-      )} 
-    />
-  ),
-};
 
 export const SecurityView: React.FC<SecurityViewProps> = ({ 
   items, 
   loading,
   onSummarize,
-  summarizingId
+  summarizingId,
+  onSave,
+  savedPosts,
+  subscribedCategories,
+  toggleCategorySubscription,
+  handleCategoryChange,
+  analyses,
+  isPresentationMode
 }) => {
   const {
     searchTerm,
@@ -145,16 +133,24 @@ export const SecurityView: React.FC<SecurityViewProps> = ({
       </div>
 
       {/* Bulletin List */}
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-6">
         <AnimatePresence mode="popLayout">
           {filteredItems.length > 0 ? (
             filteredItems.map((item, index) => (
-              <SecurityItemCard 
+              <FeedCard 
                 key={item.id} 
                 item={item} 
                 index={index} 
                 onSummarize={onSummarize} 
-                summarizingId={summarizingId} 
+                isSummarizing={summarizingId === item.link}
+                onSave={onSave}
+                isSaved={savedPosts.includes(item.link)}
+                viewMode="list"
+                subscribedCategories={subscribedCategories}
+                onToggleSubscription={toggleCategorySubscription}
+                onSelectCategory={handleCategoryChange}
+                analysis={analyses[item.link]}
+                isPresentationMode={isPresentationMode}
               />
             ))
           ) : (
@@ -173,131 +169,6 @@ export const SecurityView: React.FC<SecurityViewProps> = ({
         </AnimatePresence>
       </div>
     </div>
-  );
-};
-
-const SecurityItemCard = ({ item, index, onSummarize, summarizingId }: { item: FeedItem, index: number, onSummarize: (item: FeedItem) => void, summarizingId: string | null }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  
-  const getSeverityBorder = (severity: string) => {
-    switch (severity) {
-      case 'Critical': return 'border-l-rose-500';
-      case 'High': return 'border-l-orange-500';
-      case 'Medium': return 'border-l-amber-500';
-      default: return 'border-l-blue-500';
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ delay: index * 0.05 }}
-      className={cn(
-        "group relative rounded-2xl border shadow-sm overflow-hidden transition-all hover:shadow-md bg-white dark:bg-slate-900 border-[#dadce0] dark:border-slate-700 hover:border-[#1a73e8]/30 dark:hover:border-[#8ab4f8]/30 border-l-[6px]",
-        getSeverityBorder(item.severity)
-      )}
-    >
-      <div className="p-5 sm:p-6">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
-          <div className="space-y-3 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <SeverityBadge severity={item.severity} />
-              {item.cve && (
-                <span className="text-[9px] font-bold text-rose-700 bg-rose-50 dark:bg-rose-900/20 dark:text-rose-300 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800 uppercase tracking-widest">
-                  {item.cve}
-                </span>
-              )}
-              <span className="text-[9px] font-bold text-[#5f6368] dark:text-slate-300 flex items-center bg-[#f1f3f4] dark:bg-slate-800 px-2 py-0.5 rounded text-center uppercase tracking-widest border border-[#dadce0] dark:border-slate-700">
-                {new Date(item.isoDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-              </span>
-              {item.products && item.products.slice(0, 3).map(prod => (
-                <span key={prod} className="text-[9px] font-bold text-[#5f6368] dark:text-slate-300 flex items-center bg-[#f1f3f4] dark:bg-slate-800 px-2 py-0.5 rounded text-center uppercase tracking-widest border border-[#dadce0] dark:border-slate-700">
-                  {prod}
-                </span>
-              ))}
-            </div>
-            <h3 className="text-lg font-heading font-semibold text-[#202124] dark:text-slate-100 leading-snug group-hover:text-[#1a73e8] dark:group-hover:text-[#8ab4f8] transition-colors tracking-tight">
-              <a href={item.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
-                {item.title}
-              </a>
-            </h3>
-          </div>
-          
-          <div className="flex items-center gap-2 flex-shrink-0 self-start">
-            <button 
-              onClick={(e) => { e.stopPropagation(); onSummarize(item); }}
-              disabled={summarizingId === item.link}
-              className="inline-flex items-center px-3 py-1.5 bg-[#1a73e8] dark:bg-[#8ab4f8] text-white dark:text-[#202124] hover:bg-[#1557b0] dark:hover:bg-[#aecbfa] rounded-lg text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50 shadow-sm"
-            >
-              {summarizingId === item.link ? (
-                <Loader2 size={12} className="animate-spin mr-1.5" />
-              ) : (
-                <Sparkles size={12} className="mr-1.5" />
-              )}
-              {summarizingId === item.link ? 'Analyzing' : 'Summarize'}
-            </button>
-            <a 
-              href={item.link} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="p-2 text-[#5f6368] hover:text-[#1a73e8] dark:hover:text-[#8ab4f8] hover:bg-[#f1f3f4] dark:hover:bg-slate-800 rounded-full transition-colors border border-[#dadce0] dark:border-slate-700"
-              title="View Official Bulletin"
-            >
-              <ExternalLink size={16} />
-            </a>
-          </div>
-        </div>
-
-        <div className={`relative ${isExpanded ? '' : 'max-h-48 overflow-hidden mask-linear-fade'}`}>
-           <div className="prose dark:prose-invert max-w-none text-[13px] text-[#5f6368] dark:text-slate-300 leading-relaxed prose-headings:font-bold prose-headings:text-[#202124] dark:prose-headings:text-slate-100 prose-a:text-[#1a73e8] dark:prose-a:text-[#8ab4f8]">
-              <ReactMarkdown 
-                components={markdownComponents}
-                rehypePlugins={[rehypeRaw, rehypeSanitize]}
-              >
-                {item.content || item.contentSnippet || ''}
-              </ReactMarkdown>
-           </div>
-        </div>
-        
-        <button 
-          onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
-          className="mt-3 text-[10px] font-bold text-[#1a73e8] dark:text-[#8ab4f8] hover:underline flex items-center uppercase tracking-widest transition-colors focus:outline-none"
-        >
-          {isExpanded ? (
-            <>Less <ChevronUp size={10} className="ml-1" /></>
-          ) : (
-            <>More <ChevronDown size={10} className="ml-1" /></>
-          )}
-        </button>
-
-        {item.products && item.products.length > 0 && (
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-4 border-t border-[#dadce0] dark:border-slate-700 mt-4">
-            <span className="text-[9px] font-bold text-[#5f6368] dark:text-slate-300 uppercase tracking-widest flex items-center shrink-0">
-              <Tag size={10} className="mr-1.5 opacity-70" />
-              Affected
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {item.products.slice(0, 6).map(prod => (
-                <span key={prod} className={cn(
-                  "px-2 py-0.5 text-[9px] rounded-md font-black uppercase tracking-widest border transition-all duration-300",
-                  getCategoryStyles(prod)
-                )}>
-                  {prod}
-                </span>
-              ))}
-              {item.products.length > 6 && (
-                <span className="px-2 py-0.5 bg-[#f1f3f4] dark:bg-slate-800 text-[#5f6368] dark:text-slate-300 text-[9px] rounded-md font-bold border border-[#dadce0] dark:border-slate-700">
-                  +{item.products.length - 6}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </motion.div>
   );
 };
 
@@ -326,31 +197,5 @@ const StatCard = ({ label, value, icon: Icon, color }: any) => {
         <p className="text-[10px] font-bold text-[#5f6368] dark:text-slate-300 uppercase tracking-widest">{label}</p>
       </div>
     </div>
-  );
-};
-
-const SeverityBadge = ({ severity }: { severity: string }) => {
-  let styles = 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800';
-  let Icon = Shield;
-
-  if (severity === 'Critical') {
-    styles = 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/20 dark:text-rose-300 dark:border-rose-800';
-    Icon = ShieldAlert;
-  } else if (severity === 'High') {
-    styles = 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800';
-    Icon = AlertTriangle;
-  } else if (severity === 'Medium') {
-    styles = 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-800';
-    Icon = ShieldCheck;
-  } else if (severity === 'Info') {
-    styles = 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/20 dark:text-slate-300 dark:border-slate-800';
-    Icon = Activity;
-  }
-
-  return (
-    <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest flex items-center border shadow-sm ${styles}`}>
-      <Icon size={12} className="mr-1.5" />
-      {severity}
-    </span>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FeedItem } from '../types';
 import { extractImage, extractGCPProducts, cn, getCategoryColor, getCategoryStyles } from '../utils';
-import { Tag, ExternalLink, Sparkles, Bookmark, Loader2, Check, AlertOctagon, Activity, Box, Link as LinkIcon, ChevronDown, ChevronUp, Clock, ArrowRight, Play, Youtube, TrendingUp, BookOpen, Zap, FileText, Shield, Layout, Cpu, AlertTriangle } from 'lucide-react';
+import { Tag, ExternalLink, Sparkles, Bookmark, Loader2, Check, AlertOctagon, Activity, Box, Link as LinkIcon, ChevronDown, ChevronUp, Clock, ArrowRight, Play, Youtube, TrendingUp, BookOpen, Zap, FileText, Shield, Layout, Cpu, AlertTriangle, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -12,8 +12,10 @@ import rehypeSanitize from 'rehype-sanitize';
 import { format, differenceInDays } from 'date-fns';
 
 import { AnalysisResult } from '../types';
+import { AIInsightCard } from './AIInsightCard';
 import { Tooltip } from './ui/Tooltip';
 import { ErrorBoundary } from './ErrorBoundary';
+import { useFeedCardLogic } from '../hooks/useFeedCardLogic';
 
 interface FeedCardProps {
   item: FeedItem;
@@ -92,76 +94,34 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
-  const image = item.thumbnailUrl || item.enclosure?.url || extractImage(item.content);
+  const {
+    image,
+    readingTime,
+    isNew,
+    isTrending,
+    isIncident,
+    isDeprecation,
+    isSecurityBulletin,
+    daysUntilEOL,
+    urgencyColor,
+    displayLabels,
+    status,
+    statusColor,
+    cardBorder,
+    iconColor
+  } = useFeedCardLogic(item, analysis);
+
   const dateObj = new Date(item.isoDate);
   const date = format(dateObj, 'MMM d');
 
-  // Calculate reading time (approx 200 words per minute)
-  const wordCount = (item.contentSnippet || '').split(/\s+/).length;
-  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-
-  // Calculate if item is "New" (within last 48 hours)
-  const now = new Date();
-  const hoursSince = (now.getTime() - dateObj.getTime()) / (1000 * 60 * 60);
-  const isNew = hoursSince < 48;
-  const isTrending = (item.source.startsWith('Cloud Blog') || item.source === 'Medium Blog') || item.source === 'Product Updates' || item.source === 'Google Cloud YouTube' || (item as any).viewCount > 1000;
-
-  const isListView = viewMode === 'list' && !isPresentationMode;
-  const isIncident = item.source === 'Service Health';
-  const isDeprecation = item.isDeprecation || item.source === 'Product Deprecations';
-  const isSecurityBulletin = item.source === 'Security Bulletins';
   const isCompact = density === 'compact' || isSecurityBulletin;
-
-  // Calculate days until deprecation if applicable
-  let daysUntilEOL = 0;
-  let urgencyColor = 'bg-slate-100 text-slate-600';
-  
-  if (isDeprecation) {
-    const futureDateMatch = item.contentSnippet?.match(/(\d{4}-\d{2}-\d{2})/);
-    if (futureDateMatch) {
-      const eolDate = new Date(futureDateMatch[0]);
-      const diffTime = eolDate.getTime() - now.getTime();
-      daysUntilEOL = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (daysUntilEOL < 30) {
-        urgencyColor = 'bg-rose-50 text-rose-700 border-rose-200 animate-pulse';
-      } else if (daysUntilEOL < 90) {
-        urgencyColor = 'bg-orange-50 text-orange-700 border-orange-200';
-      } else {
-        urgencyColor = 'bg-amber-50 text-amber-700 border-amber-200';
-      }
-    }
-  }
+  const isListView = viewMode === 'list' && !isPresentationMode;
 
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(item.link);
     toast.success("Link copied to clipboard", { description: "You can now share this article." });
   };
-
-  const detectedProducts = analysis?.relatedProducts || extractGCPProducts(item.title + " " + item.contentSnippet);
-  const displayLabels = Array.from(new Set([...detectedProducts, ...(item.categories || [])]));
-
-  // Determine Incident Status
-  let status: 'Resolved' | 'Monitoring' | 'Investigating' = 'Investigating';
-  let statusColor = 'bg-rose-50 text-rose-700 border-rose-200';
-  let cardBorder = 'border-rose-100';
-  let iconColor = 'text-rose-600';
-
-  if (isIncident) {
-    const text = (item.title + item.contentSnippet).toLowerCase();
-    if (text.includes('resolved')) {
-      status = 'Resolved';
-      statusColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      cardBorder = 'border-emerald-100';
-      iconColor = 'text-emerald-600';
-    } else if (text.includes('monitoring') || text.includes('identified')) {
-      status = 'Monitoring';
-      statusColor = 'bg-amber-50 text-amber-700 border-amber-200';
-      cardBorder = 'border-amber-100';
-      iconColor = 'text-amber-600';
-    }
-  }
 
   const getSourceStyles = (source: string) => {
     if (source.startsWith('Cloud Blog')) return 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20';
@@ -238,11 +198,26 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
 
         <div className={`${isCompact ? 'p-4' : 'p-5 sm:p-6'} flex flex-col flex-1 relative`}>
           {item.serviceName && (
-            <div className="mb-3 sm:mb-4">
+            <div className="mb-3 sm:mb-4 flex flex-wrap gap-2">
               <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-sm">
                 <Box size={12} className="mr-1.5" />
                 {item.serviceName}
               </span>
+              {item.categoryType && (
+                <span className={cn(
+                  "inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border shadow-sm",
+                  item.categoryType === 'Security' ? "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:border-rose-800" :
+                  item.categoryType === 'Deprecation' ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800" :
+                  item.categoryType === 'New Feature' ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800" :
+                  "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                )}>
+                  {item.categoryType === 'Security' && <ShieldAlert size={12} className="mr-1.5" />}
+                  {item.categoryType === 'Deprecation' && <AlertTriangle size={12} className="mr-1.5" />}
+                  {item.categoryType === 'New Feature' && <Zap size={12} className="mr-1.5" />}
+                  {item.categoryType === 'General' && <FileText size={12} className="mr-1.5" />}
+                  {item.categoryType}
+                </span>
+              )}
             </div>
           )}
 
@@ -294,7 +269,11 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
         className={cn(
-          "flex group relative rounded-[2.5rem] overflow-hidden transition-all duration-700 bg-white dark:bg-[var(--color-bg-card-dark)] border border-slate-200/60 dark:border-[var(--color-border-dark)] shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:border-blue-500/30 dark:hover:border-blue-400/30",
+          "flex group relative rounded-[2.5rem] overflow-hidden transition-all duration-700 bg-white dark:bg-[var(--color-bg-card-dark)] border border-slate-200/60 dark:border-[var(--color-border-dark)] shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:border-blue-500/30 dark:hover:border-blue-400/30 border-l-[6px]",
+          item.severity === 'Critical' ? "border-l-rose-500" :
+          item.severity === 'High' ? "border-l-orange-500" :
+          item.severity === 'Medium' ? "border-l-amber-500" :
+          item.severity ? "border-l-blue-500" : "border-l-transparent",
           isListView ? "flex-row min-h-[160px]" : "flex-col h-full w-full",
           isSaved && "ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-[var(--color-bg-card-dark)]"
         )}
@@ -371,6 +350,25 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                     <SourceIcon source={item.source} size={10} />
                     {item.source}
                   </span>
+                  {item.severity && (
+                    <span className={cn(
+                      "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all duration-300 shadow-sm",
+                      item.severity === 'Critical' ? "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/20 dark:text-rose-300 dark:border-rose-800" :
+                      item.severity === 'High' ? "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800" :
+                      item.severity === 'Medium' ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-800" :
+                      "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800"
+                    )}>
+                      {item.severity === 'Critical' ? <ShieldAlert size={10} /> : 
+                       item.severity === 'High' ? <AlertTriangle size={10} /> : 
+                       item.severity === 'Medium' ? <ShieldCheck size={10} /> : <Shield size={10} />}
+                      {item.severity}
+                    </span>
+                  )}
+                  {item.cve && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-900/20 dark:text-rose-300 dark:border-rose-800 uppercase tracking-widest">
+                      {item.cve}
+                    </span>
+                  )}
                   {isTrending && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-600 text-white dark:bg-rose-500 border border-rose-600 uppercase tracking-widest shadow-lg shadow-rose-500/20">
                       <TrendingUp size={10} />
@@ -481,44 +479,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
           )}
 
           {analysis && (
-            <div className={`mb-3 bg-gradient-to-br from-blue-50 to-white dark:from-blue-500/10 dark:to-[var(--color-bg-app-dark)] rounded-2xl border border-blue-100 dark:border-blue-500/20 ${isCompact ? 'p-4' : 'p-5'} relative overflow-hidden group/ai shadow-sm`}>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
-                  <Sparkles size={14} className="mr-2" />
-                  AI Intelligence
-                </div>
-                <div className="flex gap-2">
-                  {analysis.chartData?.actionPriority !== undefined && (
-                    <span className={cn(
-                      "px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border",
-                      analysis.chartData.actionPriority > 70 
-                        ? "bg-rose-50 text-rose-700 border-rose-200" 
-                        : "bg-blue-50 text-blue-700 border-blue-200"
-                    )}>
-                      Priority: {analysis.chartData.actionPriority > 70 ? 'High' : 'Normal'}
-                    </span>
-                  )}
-                  {analysis.actionItems && analysis.actionItems.length > 0 && (
-                    <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 rounded-full text-[9px] font-bold uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/30">
-                      {analysis.actionItems.length} Actions
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <p className={`text-slate-800 dark:text-slate-200 leading-relaxed relative z-10 font-medium ${isCompact ? 'text-[13px] line-clamp-2' : 'text-[14px] line-clamp-3'}`}>
-                  {analysis.summary.split('\n')[0].replace(/^\*\*|\*\*$/g, '')}
-                </p>
-                
-                {!isCompact && analysis.strategicImportance && (
-                  <div className="flex items-start space-x-2 text-[12px] text-slate-500 dark:text-[var(--color-text-muted-dark)] italic border-l-2 border-blue-200 dark:border-blue-500/30 pl-3">
-                    <TrendingUp size={12} className="mt-0.5 shrink-0" />
-                    <p className="line-clamp-2">{analysis.strategicImportance}</p>
-                  </div>
-                )}
-              </div>
-            </div>
+            <AIInsightCard analysis={analysis} isCompact={isCompact} />
           )}
         </div>
         

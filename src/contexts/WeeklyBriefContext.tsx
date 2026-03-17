@@ -7,6 +7,8 @@ import { checkRateLimit, recordUsage, getRemainingTime } from '../utils/rateLimi
 interface WeeklyBriefContextType {
   brief: string | null;
   loading: boolean;
+  progress: number;
+  status: string;
   lastUpdated: Date | null;
   error: string | null;
   generateBrief: (force?: boolean) => Promise<void>;
@@ -19,6 +21,8 @@ const CACHE_DURATION_MS = 6 * 60 * 60 * 1000; // 6 hours
 export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: FeedItem[] }> = ({ children, items }) => {
   const [brief, setBrief] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   
@@ -150,42 +154,80 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
 
       const prompt = `
         You are an elite Principal Cloud Architect, Site Reliability Engineer, and Lead Cloud Strategist at a Fortune 500 company.
-        Your mission is to produce a **masterpiece Weekly Cloud Briefing** for Google Cloud Platform (GCP).
-        This report is read by CTOs, Architects, and Engineering Leads who demand **extreme detail, technical accuracy, and strategic foresight**.
+        Your mission is to produce a **masterpiece Weekly Cloud Intelligence Briefing** for Google Cloud Platform (GCP).
+        This report is read by CTOs, Architects, and Engineering Leads who demand **extreme technical depth, absolute accuracy, and strategic foresight**.
 
-        **Your briefing must be structured to provide deep, multi-dimensional insights from these perspectives:**
+        **Your briefing must be visually stunning in Markdown and structured to provide deep, multi-dimensional insights:**
         1.  **Principal Cloud Architect / SRE**: Focus on technical implementation details, reliability engineering, complex architectural patterns, breaking changes, security vulnerabilities (CVEs), and performance benchmarks.
         2.  **Cloud Strategist & Economist**: Focus on industry shifts, competitive positioning (vs AWS/Azure), cost optimization (FinOps), and how these updates impact long-term cloud roadmaps.
         3.  **Executive Leadership**: Focus on high-level business value, strategic impact, risk management, and ROI of adopting new features.
+        
+        **MANDATORY: UPCOMING INTELLIGENCE (NEXT 7 DAYS)**
+        You MUST use the **Google Search tool** to identify:
+        -   **Upcoming Events**: Webinars, Cloud Summits, Training sessions, or major industry events (like Cloud Next or regional summits) happening between ${new Date().toLocaleDateString()} and ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}.
+        -   **Immediate Deadlines**: Any deprecations, API shutdowns, or mandatory migrations with deadlines in the next 7 days.
+        -   **Scheduled Launches**: Any announced feature rollouts or service launches scheduled for the coming week.
 
         **Input Data (${timeWindow}):**
         ${contextData}
 
-        **MANDATORY REQUIREMENTS FOR EXTRA DETAIL:**
-        1.  **Deep Research Phase:** Use the **Google Search tool** extensively. Research the top 5-7 most significant updates from the input data. Find their official documentation, whitepapers, and community discussions to add "meat" to the summary.
-        2.  **Technical Granularity:** For every major update, explain the "Under the Hood" mechanics. Don't just say "it's faster"; explain *how* (e.g., "uses new TPU v5p accelerators providing 2x training speed").
-        3.  **Cross-Source Synthesis:** Synthesize information from ALL sources provided: Cloud Blog, Medium Blog, YouTube, Release Notes, Security Bulletins, and Architecture Center. Look for patterns across these sources.
+        **CRITICAL REQUIREMENTS FOR "AMAZING" OUTPUT:**
+        1.  **Deep Research Phase:** Use the **Google Search tool** extensively. For EVERY major update (at least 7-10 items), find official documentation, whitepapers, and technical blogs to add "meat" to the summary.
+        2.  **Technical Granularity & Accuracy:** For every major update, explain the "Under the Hood" mechanics. Don't just say "it's faster"; explain *how* (e.g., "uses new TPU v5p accelerators with 459GB of HBM3 memory providing 2x training speed").
+        3.  **Reference Links (MANDATORY):** Every single item in the "Technical Deep Dive" and "Priority Alerts" sections MUST include a direct, clickable reference link to official Google Cloud documentation or the relevant source.
         4.  **Actionable Intelligence:** Every section must end with a "Recommended Action" for the reader.
         5.  **Deprecation & Security Vigilance:** 
             *   **MANDATORY:** Use the **Google Search tool** to verify the latest Security Bulletins and Deprecations.
             *   Provide a detailed impact analysis for every deprecation. What happens if the user does nothing?
-        6.  **Length & Structure:** This should be a long-form, comprehensive report (at least 1500-2000 words if the data allows). Use clear headings, sub-headings, and formatting.
+        6.  **Formatting Excellence:** 
+            *   Use **bolding** for key technical terms and product names.
+            *   Use > blockquotes for "Architect's Notes" or "Strategist's Perspective".
+            *   Use --- horizontal rules to separate major sections.
+            *   Use nested bullet points for complex technical details.
+            *   Ensure the Markdown is clean, professional, and highly readable.
 
         **Output Structure:**
         # 🛡️ GCP Pulse: Weekly Intelligence Report
         **Date:** ${new Date().toLocaleDateString()} | **Scope:** ${timeWindow}
+        
+        ---
+        
+        ### 🧭 Quick Navigation
+        - [🚀 The Week Ahead](#-the-week-ahead-upcoming-events--deadlines)
+        - [🎯 Executive Summary](#-executive-summary-the-bottom-line)
+        - [🏗️ Technical Deep Dive](#-technical-deep-dive-architecture--engineering)
+        - [⚠️ Priority Alerts](#-priority-alerts-deprecations--breaking-changes)
+        - [🛡️ Security & Reliability](#-security-compliance--reliability)
+        - [🌐 Strategic Landscape](#-strategic-landscape-market--strategy)
+        - [💰 FinOps & Value](#-finops--business-value)
+        - [📚 Intelligence Digest](#-intelligence-digest-must-read--watch)
+
+        ---
+
+        ## 🚀 The Week Ahead: Upcoming Events & Deadlines
+        [Use a Markdown table for visibility]
+        | Date | Event / Deadline | Type | Impact / Action | Link |
+        | :--- | :--- | :--- | :--- | :--- |
+        | [Date] | [Name] | [Event/Deprecation/Launch] | [Brief Description] | [Link] |
+
+        ---
 
         ## 🎯 Executive Summary: The "Bottom Line"
-        [A high-impact summary of the week's most critical developments. Focus on strategic shifts and immediate risks.]
+        [A high-impact summary of the week's most critical developments. Focus on strategic shifts and immediate risks. Use a > blockquote for the "Strategic Takeaway".]
+
+        ---
 
         ## 🏗️ Technical Deep Dive: Architecture & Engineering
-        [In-depth analysis of new features, architectural changes, and performance updates. Include code snippets or configuration examples where relevant. Link to official documentation.]
+        [In-depth analysis of new features, architectural changes, and performance updates. 
+        For EACH item:
+        - **[Product Name]: [Feature Name]**
+        - **The "How":** [Technical explanation of mechanics]
+        - **Architectural Impact:** [How it changes design patterns]
+        - **Reference:** [Link to documentation]
+        - **Recommended Action:** [What engineers should do]
+        ]
 
-        ## 🌐 Strategic Landscape: Market & Strategy
-        [How this week's news changes the game. Competitive analysis and strategic recommendations for long-term planning.]
-
-        ## 💰 FinOps & Business Value
-        [Cost implications of new features, potential savings, and business ROI analysis.]
+        ---
 
         ## ⚠️ Priority Alerts: Deprecations & Breaking Changes
         **MANDATORY:** Use a Markdown table for the overview.
@@ -195,29 +237,71 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
         | [Name] | [Deprecation/Change] | [Date] | [Critical/High] | [What to do] | [Link] |
 
         ### Detailed Mitigation Plans:
-        *   **[Product Name]**: [Deep dive into the change, why it's happening, and a step-by-step migration path].
+        *   **[Product Name]**: [Deep dive into the change, why it's happening, and a step-by-step migration path with links].
+
+        ---
 
         ## 🛡️ Security, Compliance & Reliability
-        [Detailed analysis of Security Bulletins, CVEs, and Service Health incidents. Focus on remediation.]
+        [Detailed analysis of Security Bulletins, CVEs, and Service Health incidents. Focus on remediation steps and links to bulletins.]
+
+        ---
+
+        ## 🌐 Strategic Landscape: Market & Strategy
+        [How this week's news changes the game. Competitive analysis (GCP vs AWS/Azure) and strategic recommendations for long-term planning.]
+
+        ---
+
+        ## 💰 FinOps & Business Value
+        [Cost implications of new features, potential savings, and business ROI analysis. Use bolding for monetary or percentage impacts.]
+
+        ---
 
         ## 📚 Intelligence Digest: Must-Read & Watch
-        [Curated list of the most important Blog posts (including Medium) and YouTube videos. Provide a 2-sentence "Why it's worth your time" for each.]
+        [Curated list of the most important Blog posts (including Medium) and YouTube videos. Provide a 2-sentence "Why it's worth your time" for each, plus the link.]
       `;
 
       const ai = getAiInstance();
-      const response = await ai.models.generateContent({
+      setLoading(true);
+      setProgress(10);
+      setStatus("Analyzing input data...");
+      
+      const responseStream = await ai.models.generateContentStream({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {
           tools: [{ googleSearch: {} }],
-          systemInstruction: "You are the world's leading GCP expert. Your weekly briefs are legendary for their depth, accuracy, and strategic value. You never provide shallow summaries; you always dig deep into the technical and business implications. You use the Google Search tool to verify every fact and find the most relevant official links.",
+          systemInstruction: "You are the world's leading GCP expert. Your weekly briefs are legendary for their depth, accuracy, and strategic value. You never provide shallow summaries; you always dig deep into the technical and business implications. You use the Google Search tool to verify every fact and find the most relevant official links. Your output is perfectly formatted Markdown that is both beautiful and highly functional.",
         }
       });
 
-      const text = response.text;
+      let fullText = "";
+      let chunkCount = 0;
+      for await (const chunk of responseStream) {
+        fullText += chunk.text;
+        chunkCount++;
+        
+        // Update progress based on chunk count (simple heuristic)
+        if (chunkCount < 5) {
+          setProgress(20);
+          setStatus("Searching for official documentation...");
+        } else if (chunkCount < 15) {
+          setProgress(40);
+          setStatus("Drafting technical analysis...");
+        } else if (chunkCount < 30) {
+          setProgress(70);
+          setStatus("Formatting and refining...");
+        } else {
+          setProgress(90);
+          setStatus("Finalizing...");
+        }
+      }
+      
+      setProgress(100);
+      setStatus("Done!");
+      setLoading(false);
 
-      if (text) {
-        setBrief(text);
+      if (fullText) {
+        setBrief(fullText);
         const now = new Date();
         setLastUpdated(now);
         
@@ -225,7 +309,7 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
         
         // Save to local cache
         try {
-          localStorage.setItem('GCP_PULSE_WEEKLY_BRIEF_CACHE', JSON.stringify({ content: text, timestamp: now.getTime() }));
+          localStorage.setItem('GCP_PULSE_WEEKLY_BRIEF_CACHE', JSON.stringify({ content: fullText, timestamp: now.getTime() }));
         } catch (e) {
           console.warn("Failed to save weekly brief to local cache", e);
         }
@@ -234,7 +318,7 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
         await fetch('/api/weekly-brief', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: text })
+          body: JSON.stringify({ content: fullText })
         });
       } else {
         throw new Error("No content generated from AI model");
@@ -291,7 +375,7 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
   }, [items, generateBrief, loading, error]);
 
   return (
-    <WeeklyBriefContext.Provider value={{ brief, loading, lastUpdated, error, generateBrief }}>
+    <WeeklyBriefContext.Provider value={{ brief, loading, progress, status, lastUpdated, error, generateBrief }}>
       {children}
     </WeeklyBriefContext.Provider>
   );

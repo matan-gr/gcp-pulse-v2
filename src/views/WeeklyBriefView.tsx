@@ -14,7 +14,7 @@ interface WeeklyBriefViewProps {
 }
 
 export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
-  const { brief, loading, lastUpdated, error, generateBrief } = useWeeklyBrief(items);
+  const { brief, loading, progress, status, lastUpdated, error, generateBrief } = useWeeklyBrief(items);
 
   const handleRefresh = () => {
     generateBrief(true);
@@ -185,15 +185,18 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
   };
 
   const MarkdownComponents = {
-    h1: ({...props}: any) => (
-      <h1 className="text-3xl font-bold text-[#202124] dark:text-slate-100 mb-6 pb-4 border-b border-[#dadce0] dark:border-slate-700" {...props} />
-    ),
-    h2: ({...props}: any) => (
-      <h2 className="text-2xl font-semibold text-[#202124] dark:text-slate-100 mt-8 mb-4 flex items-center" {...props} />
-    ),
-    h3: ({...props}: any) => (
-      <h3 className="text-xl font-semibold text-[#3c4043] dark:text-slate-300 mt-6 mb-3" {...props} />
-    ),
+    h1: ({children, ...props}: any) => {
+      const id = typeof children === 'string' ? children.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') : undefined;
+      return <h1 id={id} className="text-3xl font-bold text-[#202124] dark:text-slate-100 mb-6 pb-4 border-b border-[#dadce0] dark:border-slate-700" {...props}>{children}</h1>;
+    },
+    h2: ({children, ...props}: any) => {
+      const id = typeof children === 'string' ? children.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') : undefined;
+      return <h2 id={id} className="text-2xl font-semibold text-[#202124] dark:text-slate-100 mt-8 mb-4 flex items-center" {...props}>{children}</h2>;
+    },
+    h3: ({children, ...props}: any) => {
+      const id = typeof children === 'string' ? children.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') : undefined;
+      return <h3 id={id} className="text-xl font-semibold text-[#3c4043] dark:text-slate-300 mt-6 mb-3" {...props}>{children}</h3>;
+    },
     strong: ({...props}: any) => (
       <strong className="font-semibold text-[#202124] dark:text-slate-100" {...props} />
     ),
@@ -224,123 +227,157 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
       <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" {...props} />
     ),
     blockquote: ({...props}: any) => (
-      <blockquote className="pl-4 border-l-4 border-[#1a73e8] bg-[#e8f0fe] dark:bg-blue-500/20 py-3 pr-4 rounded-r-xl my-6 text-[#3c4043] dark:text-slate-300 italic" {...props} />
+      <blockquote className="pl-6 border-l-4 border-[#1a73e8] bg-[#f8faff] dark:bg-blue-500/10 py-4 pr-6 rounded-r-2xl my-8 text-[#3c4043] dark:text-slate-300 italic shadow-sm" {...props} />
     ),
     p: ({...props}: any) => (
-      <p className="mb-4 leading-7 text-[#3c4043] dark:text-slate-300" {...props} />
+      <p className="mb-6 leading-relaxed text-[#3c4043] dark:text-slate-300 text-[15px]" {...props} />
     ),
     a: ({...props}: any) => (
-      <a className="text-[#1a73e8] dark:text-blue-400 hover:underline font-medium break-all transition-colors" target="_blank" rel="noopener noreferrer" {...props} />
+      <a className="text-[#1a73e8] dark:text-blue-400 hover:text-[#1557b0] dark:hover:text-blue-300 underline underline-offset-4 decoration-2 decoration-blue-500/30 hover:decoration-blue-500 transition-all font-semibold" target="_blank" rel="noopener noreferrer" {...props} />
     ),
     hr: ({...props}: any) => (
-      <hr className="my-8 border-[#dadce0] dark:border-slate-700" {...props} />
+      <hr className="my-12 border-[#dadce0] dark:border-slate-800" {...props} />
     ),
     code: ({...props}: any) => (
-      <code className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-sm font-mono text-[#1a73e8] dark:text-blue-400" {...props} />
+      <code className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-sm font-mono text-[#d93025] dark:text-red-400 font-medium" {...props} />
     ),
     pre: ({...props}: any) => (
-      <pre className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-x-auto my-6 font-mono text-sm border border-[#dadce0] dark:border-slate-700" {...props} />
+      <pre className="p-6 bg-[#1e293b] dark:bg-slate-950 rounded-2xl overflow-x-auto my-8 font-mono text-sm border border-slate-700 shadow-xl" {...props} />
     ),
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-8 px-4">
+    <div className="max-w-5xl mx-auto space-y-8 pb-12 px-4">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-[#202124] dark:text-slate-100 flex items-center tracking-tight">
-            <Sparkles className="mr-3 text-[#1a73e8] dark:text-blue-400" size={24} />
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#dadce0] dark:border-slate-800 pb-8">
+        <div className="space-y-2">
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-2 border border-blue-100 dark:border-blue-500/20">
+            <Sparkles size={12} className="mr-1.5" />
+            AI Intelligence
+          </div>
+          <h1 className="text-4xl font-extrabold text-[#202124] dark:text-white tracking-tight leading-none">
             Weekly Brief
           </h1>
-          <p className="text-[#5f6368] dark:text-slate-300 mt-1 flex items-center text-sm">
-            <Calendar size={14} className="mr-2" />
+          <p className="text-[#5f6368] dark:text-slate-400 flex items-center text-sm font-medium">
+            <Calendar size={16} className="mr-2 text-slate-400" />
             {lastUpdated 
-              ? `Generated ${lastUpdated.toLocaleDateString()} at ${lastUpdated.toLocaleTimeString()}` 
+              ? `Updated ${lastUpdated.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` 
               : loading 
-                ? 'Generating...' 
-                : 'Ready to generate'}
+                ? 'Analyzing latest cloud signals...' 
+                : 'Your personalized GCP intelligence report'}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {brief && (
             <button
               onClick={handleRefresh}
               disabled={loading}
-              className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-[#dadce0] dark:border-slate-700 rounded-lg text-xs font-black uppercase tracking-widest text-[#3c4043] dark:text-slate-100 hover:bg-[#f8f9fa] dark:hover:bg-slate-700 transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
+              className="h-10 px-4 bg-white dark:bg-slate-800 border border-[#dadce0] dark:border-slate-700 rounded-xl text-xs font-bold text-[#3c4043] dark:text-slate-200 hover:bg-[#f8f9fa] dark:hover:bg-slate-700 transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95 group"
             >
-              <RefreshCw size={14} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw size={14} className={`mr-2 group-hover:rotate-180 transition-transform duration-500 ${loading ? 'animate-spin' : ''}`} />
               Regenerate
             </button>
           )}
           <button
             onClick={handleExport}
             disabled={!brief || loading}
-            className="px-3 py-1.5 bg-[#1a73e8] text-white rounded-lg text-xs font-black uppercase tracking-widest hover:bg-[#1557b0] transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95"
+            className="h-10 px-5 bg-[#1a73e8] text-white rounded-xl text-xs font-bold hover:bg-[#1557b0] transition-all flex items-center disabled:opacity-50 shadow-md hover:shadow-lg active:scale-95"
           >
             <Download size={14} className="mr-2" />
-            Export
+            Export Report
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#dadce0] dark:border-slate-700 shadow-sm overflow-hidden min-h-[500px] relative">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-[#dadce0] dark:border-slate-800 shadow-xl overflow-hidden min-h-[600px] relative">
         {!loading && !brief && !error ? (
-          <div className="flex flex-col items-center justify-center h-full p-8 text-center min-h-[500px]">
-             <div className="bg-[#e8f0fe] dark:bg-blue-500/20 p-6 rounded-xl mb-6 ring-1 ring-[#d2e3fc] dark:ring-blue-500/30">
-               <Sparkles size={48} className="text-[#1a73e8] dark:text-blue-400" />
+          <div className="flex flex-col items-center justify-center h-full p-12 text-center min-h-[600px]">
+             <div className="relative mb-8">
+               <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full" />
+               <div className="relative bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10">
+                 <Sparkles size={64} className="text-[#1a73e8] dark:text-blue-400" />
+               </div>
              </div>
-             <h2 className="text-2xl font-bold text-[#202124] dark:text-slate-100 mb-3 tracking-tight">
-               Generate Your Weekly Brief
+             <h2 className="text-3xl font-black text-[#202124] dark:text-white mb-4 tracking-tight">
+               Unlock Your Weekly Intelligence
              </h2>
-             <p className="text-[#5f6368] dark:text-slate-300 max-w-md mb-8 text-base leading-relaxed">
-               Get a comprehensive AI-generated summary of the most important Google Cloud updates, security bulletins, and architectural changes from the last 7 days.
+             <p className="text-[#5f6368] dark:text-slate-400 max-w-lg mb-10 text-lg leading-relaxed">
+               Our AI engine analyzes thousands of signals from official release notes, security bulletins, and architectural updates to synthesize a high-impact briefing tailored for cloud leaders.
              </p>
              <button
                onClick={() => generateBrief(true)}
-               className="px-6 py-3 bg-[#1a73e8] hover:bg-[#1557b0] text-white rounded-lg font-black uppercase tracking-widest text-sm shadow-sm hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center active:scale-95"
+               className="px-8 py-4 bg-[#1a73e8] hover:bg-[#1557b0] text-white rounded-2xl font-bold text-base shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 flex items-center active:scale-95"
              >
-               <Sparkles size={18} className="mr-2" />
-               Generate Brief
+               <Sparkles size={20} className="mr-3" />
+               Generate Intelligence Report
              </button>
           </div>
         ) : loading ? (
-          <div className="absolute inset-0 z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex items-center justify-center">
-            <AILoading 
-              variant="card" 
-              title="Generating Weekly Brief" 
-              subtitle="Analyzing the latest updates, security bulletins, and architecture changes from the last 7 days..." 
-              icon={Sparkles}
-              model="gemini-3-flash-preview"
-            />
+          <div className="absolute inset-0 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md flex items-center justify-center">
+            <div className="w-full max-w-md p-12 text-center">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="mb-10 relative inline-block"
+              >
+                <div className="absolute inset-0 bg-blue-500/30 blur-2xl animate-pulse rounded-full" />
+                <Sparkles size={80} className="text-[#1a73e8] dark:text-blue-400 relative animate-bounce" />
+              </motion.div>
+              <h2 className="text-2xl font-black text-[#202124] dark:text-white mb-3 tracking-tight">Synthesizing Intelligence</h2>
+              <p className="text-[#5f6368] dark:text-slate-400 text-sm mb-8 font-medium">{status}</p>
+              
+              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
+                <motion.div 
+                  className="bg-gradient-to-r from-blue-600 to-blue-400 h-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.5 }}
+                />
+              </div>
+              <div className="flex justify-between mt-3">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Processing Pipeline</p>
+                <p className="text-xs font-bold text-[#1a73e8] dark:text-blue-400 font-mono">{progress}%</p>
+              </div>
+            </div>
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-            <div className="bg-[#fce8e6] dark:bg-red-500/20 p-3 rounded-lg mb-3">
-              <FileText size={24} className="text-[#ea4335] dark:text-red-400" />
+          <div className="flex flex-col items-center justify-center h-full p-12 text-center">
+            <div className="bg-red-50 dark:bg-red-500/10 p-6 rounded-3xl mb-6 border border-red-100 dark:border-red-500/20">
+              <FileText size={48} className="text-[#ea4335] dark:text-red-400" />
             </div>
-            <h3 className="text-lg font-bold text-[#202124] dark:text-slate-100 mb-1">Failed to Generate Brief</h3>
-            <p className="text-[#5f6368] dark:text-slate-300 mb-4 text-sm">{error}</p>
+            <h3 className="text-2xl font-bold text-[#202124] dark:text-white mb-2">Analysis Interrupted</h3>
+            <p className="text-[#5f6368] dark:text-slate-400 mb-8 text-base max-w-sm">{error}</p>
             <button
               onClick={handleRefresh}
-              className="px-4 py-1.5 bg-[#1a73e8] text-white rounded-lg font-black uppercase tracking-widest text-xs hover:bg-[#1557b0] transition-all active:scale-95 shadow-sm"
+              className="px-6 py-3 bg-[#1a73e8] text-white rounded-2xl font-bold hover:bg-[#1557b0] transition-all active:scale-95 shadow-lg"
             >
-              Try Again
+              Restart Analysis
             </button>
           </div>
         ) : (
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="p-6 md:p-8 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="p-8 md:p-12 lg:p-16"
           >
             <article className="prose prose-slate dark:prose-invert max-w-none">
               <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
                 {brief || ''}
               </ReactMarkdown>
             </article>
+            
+            <div className="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-xs text-slate-400 font-medium italic">
+                This report was synthesized using advanced AI models and real-time cloud signals.
+              </p>
+              <div className="flex items-center gap-4">
+                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Verified Intelligence</span>
+                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+            </div>
           </motion.div>
         )}
       </div>

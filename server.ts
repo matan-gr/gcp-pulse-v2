@@ -331,6 +331,8 @@ const fetchHtmlDeprecations = async (url: string) => {
 
         const link = url + (container.attr('id') ? `#${container.attr('id')}` : "");
 
+        const guid = Buffer.from(`${title}-${isoDate}`).toString('base64').substring(0, 32);
+
         items.push({
           title: title,
           content: content,
@@ -339,7 +341,7 @@ const fetchHtmlDeprecations = async (url: string) => {
           link: link,
           categories: [labelText.charAt(0).toUpperCase() + labelText.slice(1)],
           source: 'Product Deprecations',
-          guid: `html-dep-${items.length}-${Date.now()}`
+          guid: `html-dep-${guid}`
         });
       }
     });
@@ -598,12 +600,16 @@ const fetchYouTubeItems = async (url: string, sourceName: string) => {
         const videoId = (item as any).videoId || '';
         const detail = details.find((d: any) => d.id === videoId);
         if (detail) {
+          const thumbnails = detail.snippet?.thumbnails;
+          const thumbnailUrl = thumbnails?.maxres?.url || thumbnails?.high?.url || thumbnails?.medium?.url || thumbnails?.default?.url;
+          
           return {
             ...item,
             viewCount: parseInt(detail.statistics?.viewCount || '0'),
             likeCount: parseInt(detail.statistics?.likeCount || '0'),
             duration: formatDuration(detail.contentDetails?.duration || 'PT0S'),
-            channelName: detail.snippet?.channelTitle
+            channelName: detail.snippet?.channelTitle,
+            thumbnailUrl: thumbnailUrl
           };
         }
         return item;
@@ -762,14 +768,27 @@ const fetchFeeds = async () => {
 
   const allItemsArrays = await Promise.all(feedPromises);
   let allItems = allItemsArrays.flat();
-  console.log(`Total items before enrichment: ${allItems.length}`);
   
-  // Enrich YouTube items
+  // 1. Global Deduplication across all sources
+  // We deduplicate by link if available, otherwise by title + date
+  const seen = new Set();
+  allItems = allItems.filter(item => {
+    const key = item.link || `${item.title}-${item.isoDate}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  console.log(`Total items after deduplication: ${allItems.length}`);
+  
+  // 2. Enrich YouTube items
   allItems = await enrichYouTubeItems(allItems);
 
-  allItems.forEach((item: any, index) => {
-    const baseId = item.id || item.guid || item.link || `generated`;
-    item.id = `${baseId}-${index}`;
+  // 3. Assign stable IDs
+  allItems.forEach((item: any) => {
+    if (!item.id) {
+      item.id = item.guid || item.link || Buffer.from(`${item.title}-${item.isoDate}`).toString('base64').substring(0, 32);
+    }
   });
 
   allItems.sort((a, b) => {

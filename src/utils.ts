@@ -43,10 +43,24 @@ export function lazyWithRetry<T extends React.ComponentType<any>>(
   });
 }
 
-export function extractImage(content: string): string | null {
-  if (!content) return null;
-  const match = content.match(/<img[^>]+src="([^">]+)"/);
-  return match ? match[1] : null;
+export function extractImage(content: string, link?: string): string | null {
+  if (!content && !link) return null;
+  
+  // Try to find an image tag in the content
+  if (content) {
+    const match = content.match(/<img[^>]+src="([^">]+)"/);
+    if (match) return match[1];
+  }
+  
+  // Fallback for YouTube links
+  if (link) {
+    const ytMatch = link.match(/(?:v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    if (ytMatch) {
+      return `https://i.ytimg.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    }
+  }
+  
+  return null;
 }
 
 const GCP_PRODUCTS = [
@@ -84,6 +98,23 @@ export function extractGCPProducts(text: string): string[] {
   });
   
   return Array.from(found);
+}
+
+export function classifyUpdateType(item: { title: string; content: string }): 'New Feature' | 'Security' | 'Deprecation' | 'General' {
+  const text = (item.title + " " + item.content).toLowerCase();
+  if (text.includes('deprecation') || text.includes('end of life') || text.includes('eol')) return 'Deprecation';
+  if (text.includes('security') || text.includes('vulnerability') || text.includes('cve')) return 'Security';
+  if (text.includes('new') || text.includes('introducing') || text.includes('now available') || text.includes('launch')) return 'New Feature';
+  return 'General';
+}
+
+export function getUpdateTypeStyles(type: string) {
+  switch (type) {
+    case 'New Feature': return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800';
+    case 'Security': return 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:border-rose-800';
+    case 'Deprecation': return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800';
+    default: return 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
+  }
 }
 
 export function getCategoryColor(cat: string) {

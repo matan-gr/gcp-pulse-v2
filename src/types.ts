@@ -30,6 +30,7 @@ export interface FeedItem {
   viewCount?: number;
   likeCount?: number;
   isDeprecation?: boolean;
+  categoryType?: 'New Feature' | 'Security' | 'Deprecation' | 'General';
 }
 
 export interface Feed {

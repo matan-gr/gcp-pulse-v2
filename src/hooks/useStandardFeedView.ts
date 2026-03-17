@@ -3,7 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { FeedItem } from '../types';
 
 export const useStandardFeedView = (items: FeedItem[]) => {
-  const [visibleCount, setVisibleCount] = useState(50);
+  const [visibleCount, setVisibleCount] = useState(12);
   const { ref, inView } = useInView({ threshold: 0, rootMargin: '200px' });
   
   const hasMore = items.length > visibleCount;
@@ -16,7 +16,7 @@ export const useStandardFeedView = (items: FeedItem[]) => {
 
   // Reset visible count when items change (e.g. filtering)
   useEffect(() => {
-    setVisibleCount(50);
+    setVisibleCount(12);
   }, [items]);
 
   const visibleItems = items.slice(0, visibleCount);

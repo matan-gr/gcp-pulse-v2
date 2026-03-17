@@ -142,7 +142,7 @@ export const useSummarizer = () => {
         \`\`\`
 
         Title: ${item.title}
-        Content: ${contentToSummarize.slice(0, 8000)}
+        Content: ${contentToSummarize.slice(0, 4000)}
       `;
 
       const ai = getAiInstance();

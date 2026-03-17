@@ -1,13 +1,14 @@
-import React, { useMemo } from 'react';
-import { FeedItem } from '../types';
+import React, { useMemo, useState } from 'react';
+import { FeedItem, AnalysisResult } from '../types';
 import { FeedCard } from '../components/FeedCard';
 import { CardSkeleton } from '../components/SkeletonLoader';
-import { AnalysisResult } from '../types';
 import { EmptyState } from '../components/EmptyState';
-import { SearchX, Sparkles } from 'lucide-react';
+import { SearchX, Sparkles, ChevronDown } from 'lucide-react';
 import { UserPreferences } from '../hooks/useUserPreferences';
 import { AILoading } from '../components/ui/AILoading';
 import { extractImage } from '../utils';
+
+const ITEMS_PER_PAGE = 12;
 
 interface DiscoverViewProps {
   items: FeedItem[];
@@ -41,6 +42,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
   isAiLoading,
   onClearFilters,
 }) => {
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   
   const bentoItems = useMemo(() => {
     let imageCount = 0;
@@ -59,12 +61,15 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
     });
 
     return filteredItems.map((item, index) => {
-      const image = item.thumbnailUrl || item.enclosure?.url || extractImage(item.content);
+      const image = item.thumbnailUrl || item.enclosure?.url || extractImage(item.content, item.link);
       const hasImage = !!image;
       
       return { ...item, hasImage, image };
     });
   }, [items]);
+
+  const displayedItems = bentoItems.slice(0, visibleCount);
+  const hasMore = visibleCount < bentoItems.length;
 
   if (loading) {
     return (
@@ -105,7 +110,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
 
       {/* Uniform Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {bentoItems.map((item, index) => (
+        {displayedItems.map((item, index) => (
           <FeedCard 
             key={item.id || item.link} 
             item={item} 
@@ -127,6 +132,18 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
           />
         ))}
       </div>
+
+      {hasMore && (
+        <div className="flex justify-center pt-8">
+          <button
+            onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
+            className="flex items-center gap-2 px-8 py-3 bg-white dark:bg-[var(--color-bg-card-dark)] text-[#1a73e8] dark:text-blue-400 font-bold rounded-full border border-[#dadce0] dark:border-[var(--color-border-dark)] hover:bg-[#f8f9fa] dark:hover:bg-[var(--color-bg-app-dark)] transition-all shadow-sm active:scale-95 uppercase tracking-widest text-xs"
+          >
+            <ChevronDown size={16} />
+            <span>Load More Updates</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
