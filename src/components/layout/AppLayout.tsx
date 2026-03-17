@@ -10,7 +10,8 @@ import {
   Zap,
   MessageSquarePlus,
   X,
-  Filter
+  Filter,
+  BookOpen
 } from 'lucide-react';
 import { GlobalSearch } from '../GlobalSearch';
 import { useTheme } from '../../hooks/useTheme';
@@ -183,6 +184,18 @@ export const AppLayout = React.memo<AppLayoutProps>(({
 
             {/* Right: Controls */}
             <div className="flex items-center gap-2 sm:gap-3">
+               {/* User Guide Link */}
+               <Tooltip content="User Guide" position="bottom">
+                 <a 
+                   href="/user-guide.html"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   className="p-1.5 rounded-full text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-bg-card-dark)] transition-all border border-[#dadce0] dark:border-[var(--color-border-dark)] bg-white dark:bg-[var(--color-bg-card-dark)] flex items-center justify-center"
+                 >
+                   <BookOpen size={16} />
+                 </a>
+               </Tooltip>
+
                {/* Author Link */}
                <Tooltip content="Contact Author" position="bottom">
                  <a 
