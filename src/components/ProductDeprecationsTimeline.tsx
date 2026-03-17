@@ -333,7 +333,7 @@ const TimelineCard = ({
   summarizingId?: string | null
 }) => {
   const isLeft = index % 2 === 0;
-  const isSummarizing = summarizingId === item.link;
+  const isSummarizing = summarizingId === (item.id || item.link);
   
   const borderColors = {
     red: 'border-l-4 border-l-red-500',

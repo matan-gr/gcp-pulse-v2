@@ -31,12 +31,14 @@ export const useSummarizer = () => {
   } | null>(null);
 
   const handleSummarize = async (item: FeedItem) => {
+    const itemId = item.id || item.link;
+
     // 1. Check local state first
-    if (analyses[item.link]) {
+    if (analyses[itemId]) {
       setSummaryModal({
         isOpen: true,
         title: item.title,
-        analysis: analyses[item.link],
+        analysis: analyses[itemId],
         isStreaming: false
       });
       return;
@@ -44,10 +46,10 @@ export const useSummarizer = () => {
 
     // 2. Check backend cache
     try {
-      const res = await fetch(`/api/summaries/${encodeURIComponent(item.link)}`);
+      const res = await fetch(`/api/summaries/${encodeURIComponent(itemId)}`);
       if (res.ok) {
         const cachedAnalysis = await res.json();
-        setAnalyses(prev => ({ ...prev, [item.link]: cachedAnalysis }));
+        setAnalyses(prev => ({ ...prev, [itemId]: cachedAnalysis }));
         setSummaryModal({
           isOpen: true,
           title: item.title,
@@ -66,7 +68,7 @@ export const useSummarizer = () => {
       return;
     }
 
-    setSummarizingId(item.link);
+    setSummarizingId(itemId);
     setSummaryModal({
       isOpen: true,
       title: item.title,
@@ -110,11 +112,16 @@ export const useSummarizer = () => {
         (Explain how this fits into the broader cloud ecosystem or GCP roadmap. Why is this a significant move?)
 
         ## 👥 Role-Based Insights
-        Provide specific, actionable takeaways for:
+        Provide specific, actionable takeaways grouped into Technical and Business perspectives:
+        
+        ### 🛠️ Technical Perspectives
         - **SRE / DevOps**: Operational impact, reliability, monitoring, actions needed.
         - **Developer**: API changes, new features, code required, migration steps.
         - **Architect**: Design patterns, integration strategies, trade-offs, scalability.
+        
+        ### 💼 Business Perspectives
         - **CxO / Leadership**: Business value, cost implications, strategic alignment.
+        - **Product / Strategy**: Market positioning, customer impact, feature adoption.
         
         ## 🛠️ Action Items
         (A bulleted list of 3-5 immediate steps the reader should take.)
@@ -176,13 +183,13 @@ export const useSummarizer = () => {
         }
       }
 
-      // Parse markdown sections
-      const summaryMatch = fullText.match(/##\s*.*?Executive Summary\n([\s\S]*?)(?=\n##|$)/);
-      const impactMatch = fullText.match(/##\s*.*?Impact\n([\s\S]*?)(?=\n##|$)/);
-      const strategicMatch = fullText.match(/##\s*.*?Strategic Importance\n([\s\S]*?)(?=\n##|$)/);
-      const audienceMatch = fullText.match(/##\s*.*?Role-Based Insights\n([\s\S]*?)(?=\n##|$)/);
-      const actionsMatch = fullText.match(/##\s*.*?Action Items\n([\s\S]*?)(?=\n##|$)/);
-      const productsMatch = fullText.match(/##\s*.*?Related Products\n([\s\S]*?)(?=\n##|---|$)/);
+      // Parse markdown sections with more robust regex that handles subheaders (###) and variations
+      const summaryMatch = fullText.match(/##\s*.*?(?:Executive Summary|Summary).*?\n([\s\S]*?)(?=\n##\s|$)/i);
+      const impactMatch = fullText.match(/##\s*.*?(?:Impact).*?\n([\s\S]*?)(?=\n##\s|$)/i);
+      const strategicMatch = fullText.match(/##\s*.*?(?:Strategic Importance|Strategic).*?\n([\s\S]*?)(?=\n##\s|$)/i);
+      const audienceMatch = fullText.match(/##\s*.*?(?:Role-Based Insights|Insights|Audience).*?\n([\s\S]*?)(?=\n##\s|$)/i);
+      const actionsMatch = fullText.match(/##\s*.*?(?:Action Items|Actions).*?\n([\s\S]*?)(?=\n##\s|$)/i);
+      const productsMatch = fullText.match(/##\s*.*?(?:Related Products|Products).*?\n([\s\S]*?)(?=\n##\s|---|$)/i);
 
       const analysis: AnalysisResult = {
         summary: summaryMatch ? cleanMarkdown(summaryMatch[1].trim()) : "Summary not available.",
@@ -198,14 +205,14 @@ export const useSummarizer = () => {
         chartData: chartData
       };
 
-      setAnalyses(prev => ({ ...prev, [item.link]: analysis }));
+      setAnalyses(prev => ({ ...prev, [itemId]: analysis }));
       
       // Save to backend cache
       try {
         await fetch('/api/summaries', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: item.link, analysis })
+          body: JSON.stringify({ id: itemId, analysis })
         });
       } catch (e) {
         console.error("Failed to save summary to backend cache", e);

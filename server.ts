@@ -26,7 +26,14 @@ app.set('trust proxy', 1);
 const FEEDS = [
   { url: "https://cloudblog.withgoogle.com/rss/", name: "Cloud Blog - Main" },
   { url: "https://medium.com/feed/google-cloud", name: "Medium Blog" },
+  { url: "https://cloud.google.com/blog/products/ai-machine-learning/rss", name: "Cloud Blog - AI/ML" },
+  { url: "https://cloud.google.com/blog/products/data-analytics/rss", name: "Cloud Blog - Data" },
+  { url: "https://cloud.google.com/blog/products/databases/rss", name: "Cloud Blog - Databases" },
+  { url: "https://cloud.google.com/blog/products/containers-kubernetes/rss", name: "Cloud Blog - Containers" },
+  { url: "https://cloud.google.com/blog/products/networking/rss", name: "Cloud Blog - Networking" },
+  { url: "https://cloud.google.com/blog/products/security-identity/rss", name: "Cloud Blog - Security" },
   { url: "https://blog.google/products/google-cloud/rss/", name: "Product Updates" },
+  { url: "https://cloudblog.withgoogle.com/rss/", name: "Press Corner" },
   { url: "https://docs.cloud.google.com/feeds/gcp-release-notes.xml", name: "Release Notes" },
   { url: "https://docs.cloud.google.com/release-notes", name: "Product Deprecations" },
   { url: "https://docs.cloud.google.com/feeds/google-cloud-security-bulletins.xml", name: "Security Bulletins" },
@@ -225,11 +232,41 @@ const fetchXmlFeed = async (url: string) => {
     let text = await response.text();
     
     // Sanitize XML: replace unescaped & with &amp;
-    // This is specific to XML parsing issues
     text = text.replace(/&(?!(amp|lt|gt|quot|apos|#[0-9]+|#x[0-9a-fA-F]+);)/g, '&amp;');
     
-    const feed = await parser.parseString(text);
-    return feed;
+    // Fix "Unencoded <" error: escape < that are not part of a tag
+    // This is a common issue in some Google Cloud feeds
+    // We look for < that are not followed by a valid tag character (a-z, A-Z, /, ?, !)
+    text = text.replace(/<(?![a-zA-Z\/!?])/g, '&lt;');
+
+    try {
+      const feed = await parser.parseString(text);
+      return feed;
+    } catch (parseError) {
+      console.warn(`rss-parser failed for ${url}, falling back to cheerio:`, parseError);
+      // Fallback to cheerio if rss-parser fails (more robust for malformed XML/HTML)
+      const $ = cheerio.load(text, { xmlMode: true });
+      const items: any[] = [];
+      
+      $('item, entry').each((i, el) => {
+        const entry = $(el);
+        const title = entry.find('title').text();
+        const link = entry.find('link').attr('href') || entry.find('link').text() || entry.find('guid').text() || "";
+        const content = entry.find('content\\:encoded').text() || entry.find('content').text() || entry.find('description').text() || entry.find('summary').text() || "";
+        const isoDate = entry.find('pubDate').text() || entry.find('published').text() || entry.find('updated').text() || new Date().toISOString();
+        
+        items.push({
+          title,
+          link,
+          content,
+          contentSnippet: content.substring(0, 200),
+          isoDate,
+          guid: entry.find('guid').text() || entry.find('id').text() || link || `fallback-${i}`
+        });
+      });
+      
+      return { items };
+    }
   } catch (error) {
     console.error(`Error fetching XML feed from ${url}:`, error);
     throw error;
@@ -365,8 +402,15 @@ const fetchSecurityBulletins = async (url: string) => {
     $('entry').each((i, el) => {
       const entry = $(el);
       const title = cleanText(entry.find('title').text());
-      const content = entry.find('content').html() || entry.find('summary').html() || "";
-      const contentSnippet = cleanText(entry.find('content').text() || entry.find('summary').text());
+      let content = entry.find('content').html() || entry.find('summary').html() || "";
+      let contentSnippet = cleanText(entry.find('content').text() || entry.find('summary').text());
+      
+      // Strip redundant "Description:" prefix often found in security bulletins
+      // Handle HTML tags that might wrap the "Description" header or prefix
+      content = content.replace(/<(h[1-6]|p|strong|b|div)[^>]*>\s*Description:?\s*<\/\1>/gi, '');
+      content = content.replace(/^(\s*(?:<[^>]+>)*\s*)Description:?\s*/i, '$1');
+      contentSnippet = contentSnippet.replace(/^\s*Description:?\s*/i, '');
+
       const isoDate = entry.find('updated').text() || entry.find('published').text() || new Date().toISOString();
       const link = entry.find('link').attr('href') || "";
       const id = entry.find('id').text() || link || `sec-bull-${i}`;

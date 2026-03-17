@@ -143,8 +143,19 @@ export const useSecurityBulletins = () => {
           if (severity !== 'Unknown') categories.push(severity);
           if (item.categories) categories.push(...item.categories);
 
+          // Clean up duplicated "Description" prefix often found in security bulletins
+          let cleanContent = item.content || '';
+          let cleanSnippet = item.contentSnippet || '';
+          
+          // Remove standalone "Description" headers or prefixes
+          cleanContent = cleanContent.replace(/<(h[1-6]|p|strong|b|div)[^>]*>\s*Description:?\s*<\/\1>/gi, '');
+          cleanContent = cleanContent.replace(/^(\s*(?:<[^>]+>)*\s*)Description:?\s*/i, '$1');
+          cleanSnippet = cleanSnippet.replace(/^\s*Description:?\s*/i, '');
+
           return {
             ...item,
+            content: cleanContent,
+            contentSnippet: cleanSnippet,
             isoDate: realDateStr,
             pubDate: realDateStr,
             categories: Array.from(new Set(categories))

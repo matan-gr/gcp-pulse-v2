@@ -138,7 +138,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
                       {/* Impact Analysis */}
                       <section className="bg-[#fef7e0] dark:bg-[#f9ab00]/10 p-8 rounded-[24px] border border-[#fce8b2] dark:border-[#f9ab00]/30 shadow-sm">
                         <h3 className="text-[11px] font-bold text-[#e37400] dark:text-[#fdd663] uppercase tracking-widest mb-5 flex items-center">
-                          <Zap size={14} className="mr-2" /> Business Impact
+                          <Zap size={14} className="mr-2" /> Impact Analysis
                         </h3>
                         <div className="text-[#5f6368] dark:text-[#9aa0a6] leading-relaxed text-[15px]">
                           <ReactMarkdown
@@ -163,7 +163,8 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                              strong: ({node, ...props}) => <strong className="font-bold text-[#1557b0] dark:text-blue-300 inline-block mt-4 mb-1 text-[11px] uppercase tracking-widest" {...props} />,
+                              h3: ({node, ...props}) => <h3 className="text-[12px] font-bold text-[#202124] dark:text-[var(--color-text-dark)] uppercase tracking-wider mt-6 mb-2 flex items-center border-b border-[#dadce0] dark:border-[var(--color-border-dark)] pb-1" {...props} />,
+                              strong: ({node, ...props}) => <strong className="font-bold text-[#1557b0] dark:text-blue-300 inline-block mt-3 mb-1 text-[11px] uppercase tracking-widest" {...props} />,
                               ul: ({node, ...props}) => <ul className="list-none space-y-2 pl-0" {...props} />,
                               li: ({node, ...props}) => (
                                 <li className="flex items-start text-[14px]">

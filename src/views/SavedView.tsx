@@ -116,14 +116,14 @@ export const SavedView: React.FC<SavedViewProps> = ({
                 item={item} 
                 index={index}
                 onSummarize={onSummarize}
-                isSummarizing={summarizingId === item.link}
+                isSummarizing={summarizingId === (item.id || item.link)}
                 onSave={() => onSave(item)}
                 isSaved={true}
                 viewMode={viewMode}
                 subscribedCategories={subscribedCategories}
                 onToggleSubscription={toggleCategorySubscription}
                 onSelectCategory={handleCategoryChange}
-                analysis={analyses[item.link]}
+                analysis={analyses[item.id || item.link]}
                 isPresentationMode={isPresentationMode}
               />
             </motion.div>

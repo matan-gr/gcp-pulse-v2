@@ -162,11 +162,11 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
                   </a>
                   <button 
                     onClick={() => onSummarize(featuredItem)}
-                    disabled={summarizingId === featuredItem.link}
+                    disabled={summarizingId === (featuredItem.id || featuredItem.link)}
                     className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border border-slate-700 transition-colors flex items-center disabled:opacity-50"
                   >
-                    <Zap size={18} className={`mr-2 ${summarizingId === featuredItem.link ? 'animate-spin' : 'text-yellow-400'}`} />
-                    {summarizingId === featuredItem.link ? 'Analyzing...' : 'AI Summary'}
+                    <Zap size={18} className={`mr-2 ${summarizingId === (featuredItem.id || featuredItem.link) ? 'animate-spin' : 'text-yellow-400'}`} />
+                    {summarizingId === (featuredItem.id || featuredItem.link) ? 'Analyzing...' : 'AI Summary'}
                   </button>
                 </div>
               </div>
@@ -190,9 +190,10 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
               item={item} 
               index={index}
               onSummarize={onSummarize}
-              isSummarizing={summarizingId === item.link}
+              isSummarizing={summarizingId === (item.id || item.link)}
               onSave={onSave}
               isSaved={savedPosts.includes(item.link)}
+              summarizingId={summarizingId}
             />
           ))}
         </AnimatePresence>
@@ -211,7 +212,8 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
   );
 };
 
-const ArchitectureCard = ({ item, index, onSummarize, isSummarizing, onSave, isSaved }: any) => {
+const ArchitectureCard = ({ item, index, onSummarize, isSummarizing, onSave, isSaved, summarizingId }: any) => {
+  const currentIsSummarizing = isSummarizing || summarizingId === (item.id || item.link);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -263,11 +265,11 @@ const ArchitectureCard = ({ item, index, onSummarize, isSummarizing, onSave, isS
           <div className="flex gap-2">
             <button 
               onClick={() => onSummarize(item)}
-              disabled={isSummarizing}
+              disabled={currentIsSummarizing}
               className="p-2 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors disabled:opacity-50"
               title="AI Summary"
             >
-              <Zap size={18} className={isSummarizing ? "animate-spin" : ""} />
+              <Zap size={18} className={currentIsSummarizing ? "animate-spin" : ""} />
             </button>
           </div>
           

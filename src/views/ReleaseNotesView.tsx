@@ -231,14 +231,14 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
                       item={item} 
                       index={index}
                       onSummarize={onSummarize}
-                      isSummarizing={summarizingId === item.link}
+                      isSummarizing={summarizingId === (item.id || item.link)}
                       onSave={onSave}
                       isSaved={savedPosts.includes(item.link)}
                       viewMode="list"
                       subscribedCategories={subscribedCategories}
                       onToggleSubscription={toggleCategorySubscription}
                       onSelectCategory={handleCategoryChange}
-                      analysis={analyses[item.link]}
+                      analysis={analyses[item.id || item.link]}
                       isPresentationMode={isPresentationMode}
                     />
                   </article>

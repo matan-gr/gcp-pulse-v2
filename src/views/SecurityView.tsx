@@ -47,6 +47,14 @@ export const SecurityView: React.FC<SecurityViewProps> = ({
     filteredItems
   } = useSecurityView(items);
 
+  const [visibleCount, setVisibleCount] = useState(10);
+  const displayedItems = filteredItems.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredItems.length;
+
+  React.useEffect(() => {
+    setVisibleCount(10);
+  }, [searchTerm, severityFilter]);
+
   if (loading) {
     return (
       <div className="space-y-6 max-w-7xl mx-auto">
@@ -135,21 +143,21 @@ export const SecurityView: React.FC<SecurityViewProps> = ({
       {/* Bulletin List */}
       <div className="grid grid-cols-1 gap-6">
         <AnimatePresence mode="popLayout">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item, index) => (
+          {displayedItems.length > 0 ? (
+            displayedItems.map((item, index) => (
               <FeedCard 
                 key={item.id} 
                 item={item} 
                 index={index} 
                 onSummarize={onSummarize} 
-                isSummarizing={summarizingId === item.link}
+                isSummarizing={summarizingId === (item.id || item.link)}
                 onSave={onSave}
                 isSaved={savedPosts.includes(item.link)}
                 viewMode="list"
                 subscribedCategories={subscribedCategories}
                 onToggleSubscription={toggleCategorySubscription}
                 onSelectCategory={handleCategoryChange}
-                analysis={analyses[item.link]}
+                analysis={analyses[item.id || item.link]}
                 isPresentationMode={isPresentationMode}
               />
             ))
@@ -168,6 +176,18 @@ export const SecurityView: React.FC<SecurityViewProps> = ({
           )}
         </AnimatePresence>
       </div>
+
+      {hasMore && !loading && (
+        <div className="flex justify-center pt-8 pb-4">
+          <button
+            onClick={() => setVisibleCount(prev => prev + 10)}
+            className="flex items-center gap-2 px-8 py-3 bg-white dark:bg-slate-900 text-[#1a73e8] dark:text-blue-400 font-bold rounded-full border border-[#dadce0] dark:border-slate-700 hover:bg-[#f1f3f4] dark:hover:bg-slate-800 transition-all shadow-sm active:scale-95 uppercase tracking-widest text-xs"
+          >
+            <ChevronDown size={16} />
+            <span>Load More Bulletins</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

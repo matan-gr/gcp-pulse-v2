@@ -1,6 +1,6 @@
 import React from 'react';
 import { FeedItem } from '../types';
-import { Sparkles, RefreshCw, Calendar, FileText, Download } from 'lucide-react';
+import { Sparkles, RefreshCw, Calendar, FileText, Download, Share2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion } from 'motion/react';
@@ -184,6 +184,19 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
     toast.success("Brief exported as rich HTML", { description: "Your download should begin shortly." });
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'GCP Pulse: Weekly Intelligence Briefing',
+        text: 'Check out this week\'s Google Cloud intelligence report!',
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard");
+    }
+  };
+
   const MarkdownComponents = {
     h1: ({children, ...props}: any) => {
       const id = typeof children === 'string' ? children.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') : undefined;
@@ -255,8 +268,12 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
             <Sparkles size={12} className="mr-1.5" />
             AI Intelligence
           </div>
-          <h1 className="text-4xl font-extrabold text-[#202124] dark:text-white tracking-tight leading-none">
+          <h1 className="text-4xl font-extrabold text-[#202124] dark:text-white tracking-tight leading-none flex items-center gap-3">
             Weekly Brief
+            <span className="flex h-3 w-3 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+            </span>
           </h1>
           <p className="text-[#5f6368] dark:text-slate-400 flex items-center text-sm font-medium">
             <Calendar size={16} className="mr-2 text-slate-400" />
@@ -270,14 +287,23 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
 
         <div className="flex items-center gap-3">
           {brief && (
-            <button
-              onClick={handleRefresh}
-              disabled={loading}
-              className="h-10 px-4 bg-white dark:bg-slate-800 border border-[#dadce0] dark:border-slate-700 rounded-xl text-xs font-bold text-[#3c4043] dark:text-slate-200 hover:bg-[#f8f9fa] dark:hover:bg-slate-700 transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95 group"
-            >
-              <RefreshCw size={14} className={`mr-2 group-hover:rotate-180 transition-transform duration-500 ${loading ? 'animate-spin' : ''}`} />
-              Regenerate
-            </button>
+            <>
+              <button
+                onClick={handleShare}
+                className="h-10 w-10 bg-white dark:bg-slate-800 border border-[#dadce0] dark:border-slate-700 rounded-xl text-[#3c4043] dark:text-slate-200 hover:bg-[#f8f9fa] dark:hover:bg-slate-700 transition-all flex items-center justify-center shadow-sm active:scale-95"
+                title="Share Brief"
+              >
+                <Share2 size={14} />
+              </button>
+              <button
+                onClick={handleRefresh}
+                disabled={loading}
+                className="h-10 px-4 bg-white dark:bg-slate-800 border border-[#dadce0] dark:border-slate-700 rounded-xl text-xs font-bold text-[#3c4043] dark:text-slate-200 hover:bg-[#f8f9fa] dark:hover:bg-slate-700 transition-all flex items-center disabled:opacity-50 shadow-sm active:scale-95 group"
+              >
+                <RefreshCw size={14} className={`mr-2 group-hover:rotate-180 transition-transform duration-500 ${loading ? 'animate-spin' : ''}`} />
+                Regenerate
+              </button>
+            </>
           )}
           <button
             onClick={handleExport}

@@ -116,14 +116,14 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
             item={item} 
             index={index}
             onSummarize={onSummarize}
-            isSummarizing={summarizingId === item.link}
+            isSummarizing={summarizingId === (item.id || item.link)}
             onSave={onSave}
             isSaved={prefs.savedPosts.includes(item.link)}
             viewMode="grid"
             subscribedCategories={prefs.subscribedCategories}
             onToggleSubscription={toggleCategorySubscription}
             onSelectCategory={handleCategoryChange}
-            analysis={analyses[item.link]}
+            analysis={analyses[item.id || item.link]}
             isPresentationMode={isPresentationMode}
             showImages={true}
             density="compact"

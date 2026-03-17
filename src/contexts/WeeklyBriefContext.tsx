@@ -153,111 +153,120 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
       })));
 
       const prompt = `
-        You are an elite Principal Cloud Architect, Site Reliability Engineer, and Lead Cloud Strategist at a Fortune 500 company.
-        Your mission is to produce a **masterpiece Weekly Cloud Intelligence Briefing** for Google Cloud Platform (GCP).
-        This report is read by CTOs, Architects, and Engineering Leads who demand **extreme technical depth, absolute accuracy, and strategic foresight**.
+        You are the **Chief Cloud Intelligence Officer** and **Global Principal Architect** at a top-tier technology consultancy.
+        Your mission is to produce the **ultimate Weekly Cloud Intelligence Briefing** for Google Cloud Platform (GCP).
+        This report is the "Gold Standard" for CTOs, Lead Architects, and SRE Managers who require **absolute technical precision, strategic foresight, and actionable wisdom**.
 
-        **Your briefing must be visually stunning in Markdown and structured to provide deep, multi-dimensional insights:**
-        1.  **Principal Cloud Architect / SRE**: Focus on technical implementation details, reliability engineering, complex architectural patterns, breaking changes, security vulnerabilities (CVEs), and performance benchmarks.
-        2.  **Cloud Strategist & Economist**: Focus on industry shifts, competitive positioning (vs AWS/Azure), cost optimization (FinOps), and how these updates impact long-term cloud roadmaps.
-        3.  **Executive Leadership**: Focus on high-level business value, strategic impact, risk management, and ROI of adopting new features.
-        
-        **MANDATORY: UPCOMING INTELLIGENCE (NEXT 7 DAYS)**
-        You MUST use the **Google Search tool** to identify:
-        -   **Upcoming Events**: Webinars, Cloud Summits, Training sessions, or major industry events (like Cloud Next or regional summits) happening between ${new Date().toLocaleDateString()} and ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}.
-        -   **Immediate Deadlines**: Any deprecations, API shutdowns, or mandatory migrations with deadlines in the next 7 days.
-        -   **Scheduled Launches**: Any announced feature rollouts or service launches scheduled for the coming week.
+        **Your briefing must be a masterpiece of Markdown engineering, structured to provide multi-dimensional, high-fidelity insights:**
 
-        **Input Data (${timeWindow}):**
+        ### 🏗️ THE MISSION:
+        1.  **Synthesize, Don't Just Summarize**: Connect the dots between different updates. If a new GKE feature is released alongside a Cloud Storage update, explain how they work together for better stateful application performance.
+        2.  **Extreme Technical Depth**: For every major update, explain the "Under the Hood" mechanics. Use terms like "NVMe-over-TCP," "TPU v5p Pods," "Cross-Region Replication latency," etc.
+        3.  **Strategic Foresight**: Explain *why* Google is making these moves. Is it to counter AWS's latest release? Is it a shift towards sovereign cloud?
+        4.  **Risk & Reliability (SRE Focus)**: Identify potential pitfalls. What could break? What are the migration risks?
+        5.  **FinOps & Economic Impact**: Provide concrete cost implications. Use bolding for monetary or percentage impacts (e.g., **"reduces egress costs by up to 40%"**).
+
+        ### 🔍 MANDATORY RESEARCH & TOOLS:
+        1.  **Google Search tool**: Use it extensively for EVERY major update (at least 10-12 items). Find official documentation, whitepapers, and technical blogs to add "meat" to the summary.
+        2.  **Upcoming Intelligence**: Search for webinars, Cloud Summits, and training sessions happening between ${new Date().toLocaleDateString()} and ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}.
+        3.  **Reference Links**: Every single item in the "Technical Deep Dive" and "Priority Alerts" sections MUST include a direct, clickable reference link to official Google Cloud documentation.
+
+        ### 📊 INPUT DATA (${timeWindow}):
         ${contextData}
 
-        **CRITICAL REQUIREMENTS FOR "AMAZING" OUTPUT:**
-        1.  **Deep Research Phase:** Use the **Google Search tool** extensively. For EVERY major update (at least 7-10 items), find official documentation, whitepapers, and technical blogs to add "meat" to the summary.
-        2.  **Technical Granularity & Accuracy:** For every major update, explain the "Under the Hood" mechanics. Don't just say "it's faster"; explain *how* (e.g., "uses new TPU v5p accelerators with 459GB of HBM3 memory providing 2x training speed").
-        3.  **Reference Links (MANDATORY):** Every single item in the "Technical Deep Dive" and "Priority Alerts" sections MUST include a direct, clickable reference link to official Google Cloud documentation or the relevant source.
-        4.  **Actionable Intelligence:** Every section must end with a "Recommended Action" for the reader.
-        5.  **Deprecation & Security Vigilance:** 
-            *   **MANDATORY:** Use the **Google Search tool** to verify the latest Security Bulletins and Deprecations.
-            *   Provide a detailed impact analysis for every deprecation. What happens if the user does nothing?
-        6.  **Formatting Excellence:** 
-            *   Use **bolding** for key technical terms and product names.
-            *   Use > blockquotes for "Architect's Notes" or "Strategist's Perspective".
-            *   Use --- horizontal rules to separate major sections.
-            *   Use nested bullet points for complex technical details.
-            *   Ensure the Markdown is clean, professional, and highly readable.
+        ### 🏛️ OUTPUT STRUCTURE (STRICT ADHERENCE REQUIRED):
 
-        **Output Structure:**
-        # 🛡️ GCP Pulse: Weekly Intelligence Report
-        **Date:** ${new Date().toLocaleDateString()} | **Scope:** ${timeWindow}
-        
+        # 🛡️ GCP Pulse: Global Intelligence Briefing
+        **Date:** ${new Date().toLocaleDateString()} | **Scope:** ${timeWindow} | **Classification:** HIGH-FIDELITY ARCHITECTURAL ANALYSIS
+
         ---
-        
-        ### 🧭 Quick Navigation
-        - [🚀 The Week Ahead](#-the-week-ahead-upcoming-events--deadlines)
-        - [🎯 Executive Summary](#-executive-summary-the-bottom-line)
-        - [🏗️ Technical Deep Dive](#-technical-deep-dive-architecture--engineering)
-        - [⚠️ Priority Alerts](#-priority-alerts-deprecations--breaking-changes)
-        - [🛡️ Security & Reliability](#-security-compliance--reliability)
-        - [🌐 Strategic Landscape](#-strategic-landscape-market--strategy)
-        - [💰 FinOps & Value](#-finops--business-value)
-        - [📚 Intelligence Digest](#-intelligence-digest-must-read--watch)
+
+        ## 🧭 Quick Navigation
+        - [🎯 Executive Summary](#executive-summary-the-bottom-line)
+        - [🚀 The Week Ahead](#the-week-ahead-upcoming-events--deadlines)
+        - [🏗️ Technical Deep Dive](#technical-deep-dive-architecture--engineering)
+        - [⚠️ Critical Alerts](#critical-alerts-deprecations--breaking-changes)
+        - [🛡️ Security, Compliance & SRE](#security-compliance--sre)
+        - [🌐 Strategic Landscape](#strategic-landscape--market-dynamics)
+        - [💰 FinOps & Business Value](#finops--business-value-analysis)
+        - [📚 Intelligence Digest](#intelligence-digest-must-read--watch)
+
+        ---
+
+        ## 🎯 Executive Summary: The "Bottom Line"
+        [A high-impact, 3-paragraph summary. 
+        - Paragraph 1: The "Big Picture" of the week.
+        - Paragraph 2: The most critical technical shift.
+        - Paragraph 3: The most urgent risk.
+        > **Strategic Takeaway:** [A one-sentence bold statement on the week's overall impact.]
+        ]
 
         ---
 
         ## 🚀 The Week Ahead: Upcoming Events & Deadlines
-        [Use a Markdown table for visibility]
-        | Date | Event / Deadline | Type | Impact / Action | Link |
+        [Use a Markdown table for visibility. Use the Google Search tool to populate this.]
+        | Date | Event / Deadline | Category | Impact / Action Required | Official Link |
         | :--- | :--- | :--- | :--- | :--- |
         | [Date] | [Name] | [Event/Deprecation/Launch] | [Brief Description] | [Link] |
 
         ---
 
-        ## 🎯 Executive Summary: The "Bottom Line"
-        [A high-impact summary of the week's most critical developments. Focus on strategic shifts and immediate risks. Use a > blockquote for the "Strategic Takeaway".]
-
-        ---
-
         ## 🏗️ Technical Deep Dive: Architecture & Engineering
-        [In-depth analysis of new features, architectural changes, and performance updates. 
+        [In-depth analysis of the top 5-7 technical updates. 
         For EACH item:
-        - **[Product Name]: [Feature Name]**
-        - **The "How":** [Technical explanation of mechanics]
-        - **Architectural Impact:** [How it changes design patterns]
+        ### 🔹 [Product Name]: [Feature Name]
+        - **The "Under the Hood" Mechanics:** [Deep technical explanation of how it works]
+        - **Architectural Shift:** [How this changes existing design patterns or best practices]
+        - **SRE & Performance Note:** [Impact on latency, throughput, or reliability]
+        - **Architect's Recommendation:** [Specific advice on adoption or implementation]
         - **Reference:** [Link to documentation]
-        - **Recommended Action:** [What engineers should do]
         ]
 
         ---
 
-        ## ⚠️ Priority Alerts: Deprecations & Breaking Changes
-        **MANDATORY:** Use a Markdown table for the overview.
-        
-        | Product / Service | Change Type | Effective Date | Impact Level | Mitigation Strategy | Official Link |
+        ## ⚠️ Critical Alerts: Deprecations & Breaking Changes
+        [MANDATORY: Use a Markdown table for the overview.]
+        | Service | Change Type | Effective Date | Risk Level | Mitigation Strategy | Link |
         | :--- | :--- | :--- | :--- | :--- | :--- |
-        | [Name] | [Deprecation/Change] | [Date] | [Critical/High] | [What to do] | [Link] |
+        | [Name] | [Deprecation/Change] | [Date] | [CRITICAL/HIGH] | [What to do] | [Link] |
 
-        ### Detailed Mitigation Plans:
+        ### 🛠️ Detailed Migration Paths:
         *   **[Product Name]**: [Deep dive into the change, why it's happening, and a step-by-step migration path with links].
 
         ---
 
-        ## 🛡️ Security, Compliance & Reliability
-        [Detailed analysis of Security Bulletins, CVEs, and Service Health incidents. Focus on remediation steps and links to bulletins.]
+        ## 🛡️ Security, Compliance & SRE
+        [Detailed analysis of Security Bulletins, CVEs, and Service Health. 
+        - **Vulnerability Analysis:** [Explain the risk of any new CVEs]
+        - **Remediation Steps:** [What security teams must do immediately]
+        - **Compliance Impact:** [Does this affect SOC2, HIPAA, or GDPR?]
+        ]
 
         ---
 
-        ## 🌐 Strategic Landscape: Market & Strategy
-        [How this week's news changes the game. Competitive analysis (GCP vs AWS/Azure) and strategic recommendations for long-term planning.]
+        ## 🌐 Strategic Landscape & Market Dynamics
+        [How this week's news impacts GCP's position vs AWS/Azure. 
+        - **Competitive Edge:** [Where GCP is leading]
+        - **Industry Trends:** [Alignment with AI, Data Sovereignty, or Sustainability]
+        ]
 
         ---
 
-        ## 💰 FinOps & Business Value
-        [Cost implications of new features, potential savings, and business ROI analysis. Use bolding for monetary or percentage impacts.]
+        ## 💰 FinOps & Business Value Analysis
+        [Cost implications and ROI.
+        - **Cost Optimization:** [Specific ways to save money with new features]
+        - **Business Value:** [How these updates accelerate time-to-market or innovation]
+        ]
 
         ---
 
         ## 📚 Intelligence Digest: Must-Read & Watch
-        [Curated list of the most important Blog posts (including Medium) and YouTube videos. Provide a 2-sentence "Why it's worth your time" for each, plus the link.]
+        [Curated list of the most important Blog posts and YouTube videos. 
+        - **[Title]**: [2-sentence "Why it's worth your time" + Link]
+        ]
+
+        ---
+        **End of Briefing**
       `;
 
       const ai = getAiInstance();
