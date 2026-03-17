@@ -49,13 +49,13 @@ export const Sidebar = React.memo<SidebarProps>(({
   }, [setIsOpen]);
 
   const menuItems = [
-    { id: 'all', label: 'Discover feed', icon: Compass },
-    { id: 'weekly-brief', label: 'Weekly brief', icon: Sparkles, badge: 'AI Generated' },
-    { id: 'updates', label: 'updates innovation', icon: Rocket },
+    { id: 'all', label: 'Discover Feed', icon: Compass },
+    { id: 'weekly-brief', label: 'Weekly Brief', icon: Sparkles, badge: 'AI Generated' },
+    { id: 'updates', label: 'Updates & Innovation', icon: Rocket },
     { id: 'cloud-blog', label: 'Cloud Blog', icon: BookOpen },
-    { id: 'release-notes', label: 'Release notes', icon: FileText },
+    { id: 'release-notes', label: 'Release Notes', icon: FileText },
     { id: 'deprecations', label: 'Product Deprecations', icon: CalendarOff },
-    { id: 'youtube', label: 'GCP YT Channel', icon: Youtube },
+    { id: 'youtube', label: 'GCP YouTube Channel', icon: Youtube },
     { id: 'incidents', label: 'Cloud Incidents', icon: Activity },
     { id: 'security', label: 'Security Bulletins', icon: ShieldAlert },
     { id: 'architecture', label: 'Architecture', icon: Layers },
