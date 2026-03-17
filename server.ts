@@ -18,7 +18,7 @@ const PORT = parseInt(process.env.PORT || '3000', 10);
 const isProduction = process.env.NODE_ENV === 'production' && fs.existsSync(path.resolve('dist', 'index.html'));
 
 // Trust Proxy for Cloud Run / Nginx
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
 // Initialize Gemini AI client lazily
 // REMOVED: AI endpoints have been moved to the frontend to comply with security guidelines.
@@ -71,9 +71,10 @@ app.use(helmet({
 // Rate Limiting Middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 2000, // Increased limit for smoother experience
+  max: 5000, // Increased limit for smoother experience
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   message: {
     status: 429,
     error: 'Rate limit exceeded',
