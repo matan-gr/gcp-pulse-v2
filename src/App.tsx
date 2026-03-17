@@ -44,11 +44,7 @@ function AppContent() {
     const path = location.pathname;
     if (path === '/') return 'all';
     const tab = path.substring(1);
-    const validTabs = [
-      'all', 'saved', 'incidents', 'deprecations', 'security', 'architecture', 'tools', 'weekly-brief', 'youtube', 
-      'cloud-blog', 'blog-ai', 'blog-data', 'blog-databases', 'blog-containers', 'blog-networking', 'blog-security', 
-      'medium-blog', 'press-corner', 'release-notes', 'gemini-enterprise', 'updates', 'ai-research'
-    ];
+    const validTabs = ['all', 'saved', 'incidents', 'deprecations', 'security', 'architecture', 'tools', 'weekly-brief', 'youtube', 'cloud-blog', 'release-notes', 'updates'];
     if (validTabs.includes(tab)) return tab as any;
     return 'all';
   }, [location.pathname]);
@@ -261,26 +257,16 @@ function AppContent() {
     else if (activeTab === 'security') items = items.filter(item => item.source === 'Security Bulletins');
     else if (activeTab === 'architecture') items = items.filter(item => item.source === 'Architecture Center');
     else if (activeTab === 'youtube') items = items.filter(item => item.source === 'Google Cloud YouTube');
-    else if (activeTab === 'blog-ai') items = items.filter(item => item.source === 'Cloud Blog - AI/ML');
-    else if (activeTab === 'blog-data') items = items.filter(item => item.source === 'Cloud Blog - Data');
-    else if (activeTab === 'blog-databases') items = items.filter(item => item.source === 'Cloud Blog - Databases');
-    else if (activeTab === 'blog-containers') items = items.filter(item => item.source === 'Cloud Blog - Containers');
-    else if (activeTab === 'blog-networking') items = items.filter(item => item.source === 'Cloud Blog - Networking');
-    else if (activeTab === 'blog-security') items = items.filter(item => item.source === 'Cloud Blog - Security');
-    else if (activeTab === 'medium-blog') items = items.filter(item => item.source === 'Medium Blog');
-    else if (activeTab === 'press-corner') items = items.filter(item => item.source === 'Press Corner');
-    else if (activeTab === 'ai-research') items = items.filter(item => item.source === 'Google AI Research');
     else if (activeTab === 'cloud-blog') {
       const sixtyDaysAgo = new Date();
       sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
       items = items.filter(item => 
-        item.source === 'Cloud Blog - Main' &&
+        ((item.source || '').startsWith('Cloud Blog') || item.source === 'Medium Blog') &&
         new Date(item.isoDate).getTime() >= sixtyDaysAgo.getTime()
       );
     }
-    else if (activeTab === 'release-notes') items = items.filter(item => item.source === 'Release Notes');
-    else if (activeTab === 'gemini-enterprise') items = items.filter(item => item.source === 'Gemini Enterprise');
-    else if (activeTab === 'updates') items = items.filter(item => item.source === 'Product Updates');
+    else if (activeTab === 'release-notes') items = items.filter(item => item.source === 'Release Notes' || item.source === 'Gemini Enterprise');
+    else if (activeTab === 'updates') items = items.filter(item => item.source === 'Product Updates' || item.source === 'Google AI Research');
 
     if (isSmartFilter && smartIndices !== null) {
       const smartItems = smartIndices.map(i => allItems[i]).filter(Boolean);
@@ -510,197 +496,7 @@ function AppContent() {
                     isPresentationMode={isPresentationMode}
                     isAiLoading={isAiLoading}
                     onClearFilters={clearAllFilters}
-                    title="Google Cloud Blog"
-                  />
-                } />
-                <Route path="/blog-ai" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="AI & Machine Learning"
-                  />
-                } />
-                <Route path="/blog-data" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Data & Analytics"
-                  />
-                } />
-                <Route path="/blog-databases" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Databases"
-                  />
-                } />
-                <Route path="/blog-containers" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Containers & GKE"
-                  />
-                } />
-                <Route path="/blog-networking" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Networking"
-                  />
-                } />
-                <Route path="/blog-security" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Security & Identity"
-                  />
-                } />
-                <Route path="/medium-blog" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Google Cloud Medium"
-                  />
-                } />
-                <Route path="/press-corner" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Press Corner"
-                  />
-                } />
-                <Route path="/gemini-enterprise" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Gemini Enterprise"
-                  />
-                } />
-                <Route path="/ai-research" element={
-                  <StandardFeedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    isAiLoading={isAiLoading}
-                    onClearFilters={clearAllFilters}
-                    title="Google AI Research"
+                    title="Google Cloud Blog Feed"
                   />
                 } />
                 <Route path="/release-notes" element={
@@ -740,6 +536,25 @@ function AppContent() {
                   />
                 } />
                 <Route path="/incidents" element={<IncidentsView items={filteredItems} loading={loading} />} />
+                <Route path="/saved" element={
+                  <SavedView
+                    items={filteredItems}
+                    loading={loading}
+                    viewMode={prefs.viewMode}
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
+                    onSave={handleSave}
+                    savedPosts={prefs.savedPosts}
+                    subscribedCategories={prefs.subscribedCategories}
+                    toggleCategorySubscription={toggleCategorySubscription}
+                    handleCategoryChange={handleCategoryChange}
+                    analyses={analyses}
+                    isPresentationMode={isPresentationMode}
+                    onClearAll={clearSavedPosts}
+                    onExplore={() => handleSetActiveTab('all')}
+                  />
+                } />
+                <Route path="/tools" element={<ToolsView />} />
                 <Route path="/deprecations" element={
                   <ProductDeprecationsView 
                     items={filteredItems} 
@@ -774,25 +589,6 @@ function AppContent() {
                     isPresentationMode={isPresentationMode}
                   />
                 } />
-                <Route path="/saved" element={
-                  <SavedView
-                    items={filteredItems}
-                    loading={loading}
-                    viewMode={prefs.viewMode}
-                    onSummarize={handleSummarize}
-                    summarizingId={summarizingId}
-                    onSave={handleSave}
-                    savedPosts={prefs.savedPosts}
-                    subscribedCategories={prefs.subscribedCategories}
-                    toggleCategorySubscription={toggleCategorySubscription}
-                    handleCategoryChange={handleCategoryChange}
-                    analyses={analyses}
-                    isPresentationMode={isPresentationMode}
-                    onClearAll={clearSavedPosts}
-                    onExplore={() => handleSetActiveTab('all')}
-                  />
-                } />
-                <Route path="/tools" element={<ToolsView />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>
