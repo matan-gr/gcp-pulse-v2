@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { FeedItem } from '../types';
-import { getAiInstance } from '../services/geminiService';
 import { toast } from 'sonner';
 import { checkRateLimit, recordUsage, getRemainingTime } from '../utils/rateLimiter';
 
@@ -187,6 +186,7 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
         ## 🧭 Quick Navigation
         - [🎯 Executive Summary](#executive-summary-the-bottom-line)
         - [🚀 The Week Ahead](#the-week-ahead-upcoming-events--deadlines)
+        - [✨ Top 5 Strategic Releases](#top-5-strategic-release-notes-new-features)
         - [🏗️ Technical Deep Dive](#technical-deep-dive-architecture--engineering)
         - [⚠️ Critical Alerts](#critical-alerts-deprecations--breaking-changes)
         - [🛡️ Security, Compliance & SRE](#security-compliance--sre)
@@ -211,6 +211,16 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
         | Date | Event / Deadline | Category | Impact / Action Required | Official Link |
         | :--- | :--- | :--- | :--- | :--- |
         | [Date] | [Name] | [Event/Deprecation/Launch] | [Brief Description] | [Link] |
+
+        ---
+
+        ## ✨ Top 5 Strategic Release Notes (New Features)
+        [Highlight the 5 most game-changing new features or releases this week. Make it punchy, engaging, and highly relevant to enterprise architects.
+        For EACH item:
+        - 🌟 **[Feature Name]**: [1-2 sentence description of the feature and its strategic value]
+        - 💡 **Why it matters**: [The business or technical impact - why should a CTO care?]
+        - 🔗 **Link**: [Official release note or documentation link]
+        ]
 
         ---
 
@@ -272,6 +282,7 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
         **End of Briefing**
       `;
 
+      const { getAiInstance } = await import('../services/geminiService');
       const ai = getAiInstance();
       setLoading(true);
       setProgress(10);

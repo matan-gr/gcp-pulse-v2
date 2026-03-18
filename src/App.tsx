@@ -15,7 +15,6 @@ import { ErrorDisplay } from './components/ErrorDisplay';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SummaryModal } from './components/SummaryModal';
 import { PageLoader } from './components/ui/PageLoader';
-import { getAiInstance } from './services/geminiService';
 import { lazyWithRetry } from './hooks/useLazyWithRetry';
 import { WeeklyBriefProvider } from './contexts/WeeklyBriefContext';
 import { Newspaper, Zap } from 'lucide-react';
@@ -261,6 +260,7 @@ function AppContent() {
           Return a JSON array of the indices (integers) of the posts that are most relevant to the user's query.
         `;
 
+        const { getAiInstance } = await import('./services/geminiService');
         const ai = getAiInstance();
         const response = await ai.models.generateContent({
           model: 'gemini-3.1-flash-lite-preview',
@@ -499,18 +499,15 @@ function AppContent() {
             transition={{ duration: 0.2 }}
           >
             <Suspense fallback={<PageLoader />}>
-              {loading && allItems.length === 0 && location.pathname !== '/weekly-brief' ? (
-                <PageLoader />
-              ) : (
-                <Routes location={location} key={location.pathname}>
-                  <Route path="/" element={
-                    <ErrorBoundary componentName="DiscoverView">
-                    <DiscoverView
-                      items={filteredItems}
-                      loading={loading}
-                      prefs={prefs}
-                      onSummarize={handleSummarize}
-                      summarizingId={summarizingId}
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={
+                  <ErrorBoundary componentName="DiscoverView">
+                  <DiscoverView
+                    items={filteredItems}
+                    loading={loading}
+                    prefs={prefs}
+                    onSummarize={handleSummarize}
+                    summarizingId={summarizingId}
                       onSave={handleSave}
                       toggleCategorySubscription={toggleCategorySubscription}
                       handleCategoryChange={handleCategoryChange}
@@ -653,7 +650,6 @@ function AppContent() {
                 } />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
-              )}
             </Suspense>
           </motion.div>
         </AnimatePresence>

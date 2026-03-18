@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { FeedItem, AnalysisResult } from '../types';
 import { extractGCPProducts } from '../utils';
-import { getAiInstance } from '../services/geminiService';
 import { checkRateLimit, recordUsage, getRemainingTime } from '../utils/rateLimiter';
 import remarkGfm from 'remark-gfm';
 
@@ -155,6 +154,7 @@ export const useSummarizer = () => {
         Content: ${contentToSummarize.slice(0, 4000)}
       `;
 
+      const { getAiInstance } = await import('../services/geminiService');
       const ai = getAiInstance();
       const result = await ai.models.generateContentStream({
         model: 'gemini-3.1-flash-lite-preview',
