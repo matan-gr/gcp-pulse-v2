@@ -178,77 +178,78 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
 
         ### 🏛️ OUTPUT STRUCTURE (STRICT ADHERENCE REQUIRED):
 
-        # 🛡️ GCP Pulse: Global Intelligence Briefing
+        # ⚡ GCP Pulse: Global Intelligence Briefing
         **Date:** ${new Date().toLocaleDateString()} | **Scope:** ${timeWindow} | **Classification:** HIGH-FIDELITY ARCHITECTURAL ANALYSIS
 
         ---
 
         ## 🧭 Quick Navigation
-        - [🎯 Executive Summary](#executive-summary-the-bottom-line)
-        - [🚀 The Week Ahead](#the-week-ahead-upcoming-events--deadlines)
-        - [✨ Top 5 Strategic Releases](#top-5-strategic-release-notes-new-features)
-        - [🏗️ Technical Deep Dive](#technical-deep-dive-architecture--engineering)
-        - [⚠️ Critical Alerts](#critical-alerts-deprecations--breaking-changes)
-        - [🛡️ Security, Compliance & SRE](#security-compliance--sre)
-        - [🌐 Strategic Landscape](#strategic-landscape--market-dynamics)
-        - [💰 FinOps & Business Value](#finops--business-value-analysis)
-        - [📚 Intelligence Digest](#intelligence-digest-must-read--watch)
+        - [Executive Summary](#executive-summary)
+        - [The Week Ahead](#the-week-ahead)
+        - [Top 5 Strategic Releases](#top-5-strategic-releases)
+        - [Technical Deep Dive](#technical-deep-dive)
+        - [Critical Alerts](#critical-alerts)
+        - [Security & SRE](#security--sre)
+        - [Strategic Landscape](#strategic-landscape)
+        - [FinOps & Business Value](#finops--business-value)
+        - [Intelligence Digest](#intelligence-digest)
 
         ---
 
-        ## 🎯 Executive Summary: The "Bottom Line"
-        [A high-impact, 3-paragraph summary. 
-        - Paragraph 1: The "Big Picture" of the week.
-        - Paragraph 2: The most critical technical shift.
-        - Paragraph 3: The most urgent risk.
-        > **Strategic Takeaway:** [A one-sentence bold statement on the week's overall impact.]
+        ## 🎯 Executive Summary
+        [A high-impact, 3-paragraph synthesis designed for C-level executives:
+        - Paragraph 1: The "Big Picture" – Synthesize the week's major themes into a coherent narrative. Connect disparate updates to show the broader GCP strategy.
+        - Paragraph 2: The Technical Pivot – Identify the most critical technical shift or feature launch and explain its immediate architectural impact.
+        - Paragraph 3: The Risk & Opportunity – Highlight the most urgent operational risk or the most significant competitive opportunity this week.
+        
+        > **Strategic Takeaway:** [A punchy, bold, one-sentence statement that distills the week's impact into a clear business or architectural directive for the reader.]
         ]
 
         ---
 
-        ## 🚀 The Week Ahead: Upcoming Events & Deadlines
-        [Use a Markdown table for visibility. Use the Google Search tool to populate this.]
-        | Date | Event / Deadline | Category | Impact / Action Required | Official Link |
+        ## 📅 The Week Ahead
+        [Use a clean Markdown table for visibility. Use the Google Search tool to populate this.]
+        | Date | Event / Deadline | Category | Impact / Action Required | Reference |
         | :--- | :--- | :--- | :--- | :--- |
         | [Date] | [Name] | [Event/Deprecation/Launch] | [Brief Description] | [Link] |
 
         ---
 
-        ## ✨ Top 5 Strategic Release Notes (New Features)
+        ## ✨ Top 5 Strategic Releases
         [Highlight the 5 most game-changing new features or releases this week. Make it punchy, engaging, and highly relevant to enterprise architects.
         For EACH item:
-        - 🌟 **[Feature Name]**: [1-2 sentence description of the feature and its strategic value]
-        - 💡 **Why it matters**: [The business or technical impact - why should a CTO care?]
-        - 🔗 **Link**: [Official release note or documentation link]
+        - **[Feature Name]**: [1-2 sentence description of the feature and its strategic value]
+        - *Why it matters*: [The business or technical impact - why should a CTO care?]
+        - [Read Official Announcement](Link)
         ]
 
         ---
 
-        ## 🏗️ Technical Deep Dive: Architecture & Engineering
+        ## 🏗️ Technical Deep Dive
         [In-depth analysis of the top 5-7 technical updates. 
         For EACH item:
         ### 🔹 [Product Name]: [Feature Name]
-        - **The "Under the Hood" Mechanics:** [Deep technical explanation of how it works]
+        - **Under the Hood:** [Deep technical explanation of how it works]
         - **Architectural Shift:** [How this changes existing design patterns or best practices]
-        - **SRE & Performance Note:** [Impact on latency, throughput, or reliability]
+        - **Performance Impact:** [Impact on latency, throughput, or reliability]
         - **Architect's Recommendation:** [Specific advice on adoption or implementation]
-        - **Reference:** [Link to documentation]
+        - [Documentation](Link)
         ]
 
         ---
 
-        ## ⚠️ Critical Alerts: Deprecations & Breaking Changes
+        ## ⚠️ Critical Alerts
         [MANDATORY: Use a Markdown table for the overview.]
-        | Service | Change Type | Effective Date | Risk Level | Mitigation Strategy | Link |
+        | Service | Change Type | Effective Date | Risk Level | Mitigation Strategy | Reference |
         | :--- | :--- | :--- | :--- | :--- | :--- |
         | [Name] | [Deprecation/Change] | [Date] | [CRITICAL/HIGH] | [What to do] | [Link] |
 
-        ### 🛠️ Detailed Migration Paths:
+        **Detailed Migration Paths:**
         *   **[Product Name]**: [Deep dive into the change, why it's happening, and a step-by-step migration path with links].
 
         ---
 
-        ## 🛡️ Security, Compliance & SRE
+        ## 🛡️ Security & SRE
         [Detailed analysis of Security Bulletins, CVEs, and Service Health. 
         - **Vulnerability Analysis:** [Explain the risk of any new CVEs]
         - **Remediation Steps:** [What security teams must do immediately]
@@ -257,7 +258,7 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
 
         ---
 
-        ## 🌐 Strategic Landscape & Market Dynamics
+        ## 🌐 Strategic Landscape
         [How this week's news impacts GCP's position vs AWS/Azure. 
         - **Competitive Edge:** [Where GCP is leading]
         - **Industry Trends:** [Alignment with AI, Data Sovereignty, or Sustainability]
@@ -265,15 +266,16 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
 
         ---
 
-        ## 💰 FinOps & Business Value Analysis
-        [Cost implications and ROI.
-        - **Cost Optimization:** [Specific ways to save money with new features]
-        - **Business Value:** [How these updates accelerate time-to-market or innovation]
+        ## 💡 FinOps & Business Value
+        [In-depth analysis of cost implications and ROI.
+        - **Cost Optimization:** [Specific, actionable ways to save money, reduce waste, or optimize resource usage with new features. Include concrete examples.]
+        - **Business Value:** [How these updates accelerate time-to-market, improve developer productivity, or drive innovation. Include concrete metrics where possible.]
+        - **Reference:** [Provide a direct, clickable link to the GCP Pricing Calculator, official cost-management documentation, or relevant whitepaper.]
         ]
 
         ---
 
-        ## 📚 Intelligence Digest: Must-Read & Watch
+        ## 📚 Intelligence Digest
         [Curated list of the most important Blog posts and YouTube videos. 
         - **[Title]**: [2-sentence "Why it's worth your time" + Link]
         ]
@@ -293,7 +295,7 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
         contents: prompt,
         config: {
           tools: [{ googleSearch: {} }],
-          systemInstruction: "You are the world's leading GCP expert. Your weekly briefs are legendary for their depth, accuracy, and strategic value. You never provide shallow summaries; you always dig deep into the technical and business implications. You use the Google Search tool to verify every fact and find the most relevant official links. Your output is perfectly formatted Markdown that is both beautiful and highly functional.",
+          systemInstruction: "You are the world's leading GCP expert. Your weekly briefs are legendary for their depth, accuracy, and strategic value. You never provide shallow summaries; you always dig deep into the technical and business implications. You use the Google Search tool to verify every fact and find the most relevant official links. Your output is perfectly formatted Markdown that is both beautiful and highly functional. Please provide a comprehensive, detailed, and lengthy report, ensuring all sections are thoroughly expanded to provide maximum value. For every technical update, perform a rigorous architectural trade-off analysis, compare the new feature with existing GCP services or industry standards, and provide multi-step reasoning for your recommendations. Ensure consistency across all sections and maintain a high-fidelity, professional tone throughout.",
         }
       });
 

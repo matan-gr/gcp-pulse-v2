@@ -211,7 +211,9 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
                 "px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all",
                 selectedCategory === cat
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  : cat === 'Last 24'
+                    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800 hover:bg-amber-200 dark:hover:bg-amber-900/50"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
               )}
             >
               {cat}

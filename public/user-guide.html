@@ -440,6 +440,25 @@
             <p>The definitive manual for using GCP Pulse to monitor platform health, track deprecations, and stay ahead of security vulnerabilities.</p>
         </header>
 
+        <section id="overview">
+            <h2 class="section-title">Overview</h2>
+            <p>GCP Pulse is an advanced intelligence platform that aggregates, analyzes, and synthesizes data from the entire Google Cloud ecosystem. It is built to solve the "information overload" problem for Cloud Architects and Platform Engineers.</p>
+        </section>
+
+        <section id="core-features">
+            <h2 class="section-title">Core Features</h2>
+            <div class="grid-cards">
+                <div class="card">
+                    <h4>AI-Powered Weekly Brief</h4>
+                    <p>Every Monday, GCP Pulse synthesizes thousands of updates into a single executive report.</p>
+                </div>
+                <div class="card">
+                    <h4>Smart Semantic Search</h4>
+                    <p>Move beyond keyword matching. Our semantic search understands technical intent.</p>
+                </div>
+            </div>
+        </section>
+
         <section id="whats-new">
             <h2 class="section-title">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -458,145 +477,50 @@
                 </ul>
             </div>
         </section>
-            <p>Managing a Google Cloud environment requires constant vigilance. Between product deprecations, critical security vulnerabilities, and new feature releases, staying informed is a full-time job.</p>
-            <p><strong>GCP Pulse</strong> solves the "information fragmentation" problem. Instead of checking five different RSS feeds, the GCP Status page, and the Google Cloud Blog, GCP Pulse aggregates, normalizes, and summarizes everything into a single, actionable dashboard.</p>
-            
-            <div class="callout success">
-                <div class="callout-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                </div>
-                <div class="callout-content">
-                    <h4>Built for Modern Cloud Teams</h4>
-                    <p>Whether you are a Cloud Architect planning a migration, a DevOps engineer troubleshooting an outage, or a Security Analyst tracking CVEs, GCP Pulse provides the exact context you need.</p>
-                </div>
-            </div>
+
+        <section id="strategic-views">
+            <h2 class="section-title">Strategic Views</h2>
+            <p>Gain high-level insights into your cloud spend, security posture, and compliance status.</p>
         </section>
 
-        <section id="dashboard">
-            <h2 class="section-title">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                2. Dashboard & Search
-            </h2>
-            <p>The Main Feed is your chronological stream of all GCP updates. To prevent information overload, GCP Pulse includes a powerful search and filtering engine.</p>
-            
-            <div class="ui-mockup">
-                <div class="ui-mockup-header">
-                    <div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div>
-                </div>
-                <div style="display: flex; gap: 1rem; align-items: center; background: var(--bg-main); padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <span style="color: var(--text-muted); font-size: 0.95rem;">Search updates, CVEs, or products...</span>
-                    <div style="margin-left: auto; display: flex; gap: 0.5rem;">
-                        <span class="badge feature">Smart Filter: ON</span>
-                    </div>
-                </div>
-            </div>
-
-            <ul class="feature-list">
-                <li><strong>Global Search:</strong> Instantly search across thousands of release notes, blogs, and security bulletins.</li>
-                <li><strong>Smart Filtering:</strong> Toggle the "Smart Filter" (Sparkles icon) to let the AI automatically interpret your search intent (e.g., searching "database" will automatically include Cloud SQL, Spanner, and Bigtable).</li>
-                <li><strong>Date Ranges:</strong> Use the calendar icon to restrict your view to a specific week, month, or custom range.</li>
-                <li><strong>Export to CSV:</strong> Need to share updates with your team or compliance department? Click the download icon to export your current filtered view to a spreadsheet.</li>
-            </ul>
+        <section id="advanced-usage">
+            <h2 class="section-title">Advanced Usage</h2>
+            <p>Leverage API integrations and custom dashboards for deeper analysis.</p>
         </section>
 
-        <section id="modules">
-            <h2 class="section-title">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                3. Core Modules
-            </h2>
-            
-            <div class="grid-cards">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        </div>
-                        <h4>Security Bulletins</h4>
-                    </div>
-                    <p>Monitors official GCP security advisories. Items are tagged by severity (<span class="badge critical">Critical</span>, <span class="badge high">High</span>). Expand any bulletin to view mitigation steps, affected versions, and links to patches.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                        </div>
-                        <h4>Deprecation Tracker</h4>
-                    </div>
-                    <p>Automatically isolates End-of-Life (EOL) announcements. Displays both the announcement date and the hard shutdown date so you can schedule migrations well in advance.</p>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                        </div>
-                        <h4>Live Incidents</h4>
-                    </div>
-                    <p>Mirrors the official GCP Status page. Active outages are pinned to the top of your feed with real-time updates from Google engineers, helping you distinguish between your bugs and platform outages.</p>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                        </div>
-                        <h4>Release Notes</h4>
-                    </div>
-                    <p>A unified stream of feature additions, bug fixes, and breaking changes across all GCP products. Filter by specific products to cut out the noise.</p>
-                </div>
-            </div>
+        <section id="limits-limitations">
+            <h2 class="section-title">Limits & Limitations</h2>
+            <p>Understand the constraints of the platform and how to work around them.</p>
         </section>
 
-        <section id="ai-briefs">
-            <h2 class="section-title">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                4. AI Weekly Briefs
-            </h2>
-            <p>Reading dozens of release notes every Friday is tedious. GCP Pulse integrates with Google's Gemini AI to do the heavy lifting for you.</p>
-            
-            <div class="callout info">
-                <div class="callout-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                </div>
-                <div class="callout-content">
-                    <h4>How to Generate a Brief</h4>
-                    <p>Navigate to the <strong>Weekly Brief</strong> tab in the sidebar. The system gathers all normalized data from the past 7 days, feeds it to the LLM, and generates a structured executive summary highlighting only the most impactful changes.</p>
-                </div>
-            </div>
+        <section id="ai-intelligence">
+            <h2 class="section-title">AI Intelligence</h2>
+            <p>How GCP Pulse uses Gemini to provide actionable insights.</p>
+        </section>
 
-            <p>The generated brief includes:</p>
-            <ul class="feature-list">
-                <li><strong>Executive Summary:</strong> A 2-3 sentence overview of the week's theme.</li>
-                <li><strong>Top Announcements:</strong> The 3-5 biggest feature releases or product launches.</li>
-                <li><strong>Security & Compliance:</strong> Any critical CVEs or security updates you must patch immediately.</li>
-                <li><strong>Action Items:</strong> A bulleted list of things your team actually needs to <em>do</em> (e.g., "Update GKE node pools to 1.28").</li>
-            </ul>
+        <section id="reliability-deployment">
+            <h2 class="section-title">Reliability & Deployment</h2>
+            <p>Best practices for deploying and maintaining GCP Pulse.</p>
+        </section>
+
+        <section id="engineering-tools">
+            <h2 class="section-title">Engineering Tools</h2>
+            <p>Tools for debugging and optimizing your cloud environment.</p>
+        </section>
+
+        <section id="shortcuts">
+            <h2 class="section-title">Shortcuts</h2>
+            <p>Keyboard shortcuts to speed up your workflow.</p>
+        </section>
+
+        <section id="troubleshooting">
+            <h2 class="section-title">Troubleshooting</h2>
+            <p>Common issues and how to resolve them.</p>
         </section>
 
         <section id="pro-tips">
-            <h2 class="section-title">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                5. Pro Tips & Best Practices
-            </h2>
-            
-            <div class="callout warning">
-                <div class="callout-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                </div>
-                <div class="callout-content">
-                    <h4>Incident First Response</h4>
-                    <p>If your application suddenly throws 500 errors or experiences high latency, check the <strong>Incidents</strong> tab in GCP Pulse <em>before</em> spending hours debugging your own code. It might be a regional GCP outage.</p>
-                </div>
-            </div>
-
-            <ul class="feature-list">
-                <li><strong>Bookmark Your Stack:</strong> Apply filters for the specific products your team uses (e.g., GKE, Cloud SQL, Pub/Sub) and bookmark the URL. This creates a personalized dashboard that loads instantly.</li>
-                <li><strong>Monday Morning Routine:</strong> Make it a habit to generate the AI Weekly Brief every Monday morning to catch up on weekend deployments or late Friday announcements.</li>
-                <li><strong>Quarterly Planning:</strong> Review the Deprecations tab before quarterly sprint planning to ensure you have allocated engineering time to migrate away from retiring services.</li>
-                <li><strong>Dark Mode:</strong> GCP Pulse automatically respects your system's color scheme preference. You can also manually toggle Dark Mode using the Moon/Sun icon in the top right of the main app header.</li>
-            </ul>
+            <h2 class="section-title">Pro Tips</h2>
+            <p>Expert advice for getting the most out of GCP Pulse.</p>
         </section>
     </main>
 

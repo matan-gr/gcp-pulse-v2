@@ -441,7 +441,7 @@ const FeedCardContent = React.memo<FeedCardProps>(({
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw, rehypeSanitize]}
                 >
-                  {item.content || item.contentSnippet || ''}
+                  {(item.content || item.contentSnippet || '').replace(/]]>/g, '')}
                 </ReactMarkdown>
             </div>
             {!isExpanded && !isPresentationMode && ((item.content && item.content.length > 100) || (item.contentSnippet && item.contentSnippet.length > 50)) && (

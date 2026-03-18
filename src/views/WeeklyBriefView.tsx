@@ -32,141 +32,112 @@ export const WeeklyBriefView = React.memo<WeeklyBriefViewProps>(({ items }) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekly Cloud Brief - ${new Date().toLocaleDateString()}</title>
+  <title>Weekly Brief - ${new Date().toLocaleDateString()}</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
     
-    :root {
-      --color-primary: #1a73e8;
-      --color-primary-dark: #1557b0;
-      --color-bg: #ffffff;
-      --color-text: #202124;
-      --color-text-muted: #5f6368;
-      --color-border: #dadce0;
-      --color-accent-bg: #e8f0fe;
-    }
-
     body {
-      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       line-height: 1.6;
-      color: var(--color-text);
-      background-color: #f8f9fa;
+      color: #202124;
+      background-color: #ffffff;
       margin: 0;
       padding: 0;
     }
 
     .container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: var(--color-bg);
-      border-radius: 24px;
-      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-      overflow: hidden;
-      border: 1px solid var(--color-border);
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 48px 16px;
     }
 
     header {
-      background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
-      color: white;
-      padding: 40px;
-      text-align: center;
+      border-bottom: 1px solid #dadce0;
+      padding-bottom: 32px;
+      margin-bottom: 32px;
     }
 
-    .logo {
+    .title {
+      font-size: 36px;
+      font-weight: 800;
+      color: #202124;
+      letter-spacing: -0.025em;
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      backdrop-filter: blur(4px);
-    }
-
-    .logo-text {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    h1 {
+      gap: 12px;
       margin: 0;
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      background-color: #3b82f6;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     .meta {
+      color: #5f6368;
       font-size: 14px;
-      opacity: 0.9;
+      font-weight: 500;
       margin-top: 8px;
     }
 
     .content {
-      padding: 40px;
+      padding: 0;
     }
 
     /* Markdown Styles */
-    .prose h1 { color: var(--color-text); font-size: 28px; border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-top: 0; font-weight: 600; }
-    .prose h2 { color: var(--color-text); font-size: 22px; margin-top: 32px; margin-bottom: 16px; font-weight: 600; }
-    .prose h3 { color: var(--color-text); font-size: 18px; margin-top: 24px; margin-bottom: 12px; font-weight: 600; }
-    .prose p { margin-bottom: 16px; }
-    .prose ul, .prose ol { margin-bottom: 16px; padding-left: 24px; }
+    .prose h1 { font-size: 30px; font-weight: 800; color: #202124; border-bottom: 1px solid #dadce0; padding-bottom: 16px; margin-top: 0; }
+    .prose h2 { font-size: 24px; font-weight: 700; color: #202124; margin-top: 40px; margin-bottom: 20px; }
+    .prose h3 { font-size: 20px; font-weight: 600; color: #202124; margin-top: 32px; margin-bottom: 16px; }
+    .prose p { margin-bottom: 20px; color: #3c4043; font-size: 16px; }
+    .prose ul, .prose ol { margin-bottom: 20px; padding-left: 20px; color: #3c4043; }
     .prose li { margin-bottom: 8px; }
     .prose blockquote {
-      border-left: 4px solid var(--color-primary);
-      background: var(--color-accent-bg);
+      border-left: 4px solid #1a73e8;
+      background: #f8f9fa;
       padding: 16px 24px;
       margin: 24px 0;
       border-radius: 0 12px 12px 0;
       font-style: italic;
+      color: #3c4043;
     }
-    .prose a { color: var(--color-primary); text-decoration: none; font-weight: 500; }
+    .prose a { color: #1a73e8; text-decoration: none; font-weight: 500; }
     .prose a:hover { text-decoration: underline; }
     .prose strong { font-weight: 600; color: #202124; }
+    .prose table { width: 100%; border-collapse: collapse; margin: 32px 0; }
+    .prose th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #dadce0; font-size: 12px; text-transform: uppercase; }
+    .prose td { padding: 16px 12px; border-bottom: 1px solid #dadce0; font-size: 14px; }
+    .prose code { background: #f1f3f4; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; color: #d63384; }
+    .prose pre { background: #202124; color: #f8f9fa; padding: 24px; border-radius: 12px; overflow-x: auto; font-family: monospace; font-size: 13px; }
 
     footer {
-      padding: 24px 40px;
-      background: #f8f9fa;
-      border-top: 1px solid var(--color-border);
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid #dadce0;
       text-align: center;
-      font-size: 13px;
-      color: var(--color-text-muted);
-    }
-
-    @media print {
-      body { background-color: white; }
-      .container { box-shadow: none; border: none; margin: 0; max-width: 100%; }
-      header { background: white; color: black; border-bottom: 2px solid black; }
-      .logo-icon { border: 1px solid black; }
+      font-size: 12px;
+      color: #5f6368;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header style="background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="m13 2-2 2.5h3L12 13h2l-4 9 1-9h-3z"/></svg>
-        </div>
-        <div class="logo-text">GCP Pulse</div>
+    <header>
+      <h1 class="title">
+        Weekly Brief
+        <span class="status-dot"></span>
+      </h1>
+      <div class="meta">
+        Updated ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
       </div>
-      <h1>Weekly Cloud Brief</h1>
-      <div class="meta">Generated on ${new Date().toLocaleDateString()}</div>
     </header>
     <div class="content prose">
       ${htmlContent}
     </div>
     <footer>
-      &copy; ${new Date().getFullYear()} GCP Pulse. All rights reserved. Generated by AI.
+      &copy; ${new Date().getFullYear()} GCP Pulse. Generated by AI.
     </footer>
   </div>
 </body>
@@ -211,15 +182,15 @@ export const WeeklyBriefView = React.memo<WeeklyBriefViewProps>(({ items }) => {
   const MarkdownComponents = {
     h1: ({children, ...props}: any) => {
       const id = typeof children === 'string' ? children.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') : undefined;
-      return <h1 id={id} className="text-3xl font-bold text-[#202124] dark:text-slate-100 mb-6 pb-4 border-b border-[#dadce0] dark:border-slate-700" {...props}>{children}</h1>;
+      return <h1 id={id} className="text-3xl font-extrabold tracking-tight text-[#202124] dark:text-slate-100 mb-6 pb-4 border-b border-[#dadce0] dark:border-slate-700" {...props}>{children}</h1>;
     },
     h2: ({children, ...props}: any) => {
       const id = typeof children === 'string' ? children.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') : undefined;
-      return <h2 id={id} className="text-2xl font-semibold text-[#202124] dark:text-slate-100 mt-8 mb-4 flex items-center" {...props}>{children}</h2>;
+      return <h2 id={id} className="text-2xl font-bold tracking-tight text-[#202124] dark:text-slate-100 mt-10 mb-5 flex items-center" {...props}>{children}</h2>;
     },
     h3: ({children, ...props}: any) => {
       const id = typeof children === 'string' ? children.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-') : undefined;
-      return <h3 id={id} className="text-xl font-semibold text-[#3c4043] dark:text-slate-300 mt-6 mb-3" {...props}>{children}</h3>;
+      return <h3 id={id} className="text-xl font-semibold tracking-tight text-[#202124] dark:text-slate-200 mt-8 mb-4" {...props}>{children}</h3>;
     },
     strong: ({...props}: any) => (
       <strong className="font-semibold text-[#202124] dark:text-slate-100" {...props} />
@@ -231,42 +202,42 @@ export const WeeklyBriefView = React.memo<WeeklyBriefViewProps>(({ items }) => {
       <ol className="space-y-2 my-4 list-decimal list-outside ml-5 text-[#3c4043] dark:text-slate-300" {...props} />
     ),
     li: ({...props}: any) => (
-      <li className="leading-relaxed pl-1">{props.children}</li>
+      <li className="leading-relaxed pl-1 text-base">{props.children}</li>
     ),
     table: ({...props}: any) => (
-      <div className="overflow-x-auto my-6 rounded-xl border border-[#dadce0] dark:border-slate-700 shadow-sm">
+      <div className="overflow-x-auto my-8 rounded-xl border border-[#dadce0] dark:border-slate-700 shadow-sm">
         <table className="w-full text-left border-collapse" {...props} />
       </div>
     ),
     thead: ({...props}: any) => (
-      <thead className="bg-[#f8f9fa] dark:bg-slate-800" {...props} />
+      <thead className="bg-slate-50 dark:bg-slate-800/80" {...props} />
     ),
     th: ({...props}: any) => (
-      <th className="px-4 py-3 text-[10px] font-bold text-[#5f6368] dark:text-slate-300 uppercase tracking-widest border-b border-[#dadce0] dark:border-slate-700" {...props} />
+      <th className="px-4 py-3 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider border-b border-[#dadce0] dark:border-slate-700" {...props} />
     ),
     td: ({...props}: any) => (
-      <td className="px-4 py-3 text-[13px] text-[#3c4043] dark:text-slate-300 border-b border-[#dadce0] dark:border-slate-700 align-top" {...props} />
+      <td className="px-4 py-4 text-sm text-[#3c4043] dark:text-slate-300 border-b border-[#dadce0] dark:border-slate-700 align-top" {...props} />
     ),
     tr: ({...props}: any) => (
-      <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" {...props} />
+      <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors" {...props} />
     ),
     blockquote: ({...props}: any) => (
-      <blockquote className="pl-6 border-l-4 border-[#1a73e8] bg-[#f8faff] dark:bg-blue-500/10 py-4 pr-6 rounded-r-2xl my-8 text-[#3c4043] dark:text-slate-300 italic shadow-sm" {...props} />
+      <blockquote className="pl-6 border-l-4 border-blue-600 bg-blue-50/50 dark:bg-blue-900/20 py-4 pr-6 rounded-r-xl my-8 text-[#3c4043] dark:text-slate-300 italic shadow-sm" {...props} />
     ),
     p: ({...props}: any) => (
-      <p className="mb-6 leading-relaxed text-[#3c4043] dark:text-slate-300 text-[15px]" {...props} />
+      <p className="mb-5 leading-relaxed text-[#3c4043] dark:text-slate-300 text-base" {...props} />
     ),
     a: ({...props}: any) => (
-      <a className="text-[#1a73e8] dark:text-blue-400 hover:text-[#1557b0] dark:hover:text-blue-300 underline underline-offset-4 decoration-2 decoration-blue-500/30 hover:decoration-blue-500 transition-all font-semibold" target="_blank" rel="noopener noreferrer" {...props} />
+      <a className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline underline-offset-4 decoration-2 decoration-blue-200 dark:decoration-blue-500/30 hover:decoration-blue-600 dark:hover:decoration-blue-500 transition-all font-medium" target="_blank" rel="noopener noreferrer" {...props} />
     ),
     hr: ({...props}: any) => (
       <hr className="my-12 border-[#dadce0] dark:border-slate-800" {...props} />
     ),
     code: ({...props}: any) => (
-      <code className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-sm font-mono text-[#d93025] dark:text-red-400 font-medium" {...props} />
+      <code className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-[13px] font-mono text-pink-600 dark:text-pink-400 font-medium" {...props} />
     ),
     pre: ({...props}: any) => (
-      <pre className="p-6 bg-[#1e293b] dark:bg-slate-950 rounded-2xl overflow-x-auto my-8 font-mono text-sm border border-slate-700 shadow-xl" {...props} />
+      <pre className="p-6 bg-slate-900 dark:bg-slate-950 rounded-xl overflow-x-auto my-8 font-mono text-[13px] text-slate-50 border border-slate-800 shadow-md" {...props} />
     ),
   };
 
@@ -275,10 +246,6 @@ export const WeeklyBriefView = React.memo<WeeklyBriefViewProps>(({ items }) => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#dadce0] dark:border-slate-800 pb-8">
         <div className="space-y-2">
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-2 border border-blue-100 dark:border-blue-500/20">
-            <Sparkles size={12} className="mr-1.5" />
-            AI Intelligence
-          </div>
           <Tooltip content="The Weekly Brief is an AI-generated synthesis of the most critical cloud updates from the past 7 days." position="right">
             <h1 className="text-4xl font-extrabold text-[#202124] dark:text-white tracking-tight leading-none flex items-center gap-3 cursor-help">
               Weekly Brief
