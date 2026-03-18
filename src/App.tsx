@@ -11,8 +11,8 @@ import { useUserPreferences } from './hooks/useUserPreferences';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSummarizer } from './hooks/useSummarizer';
-import { ErrorDisplay } from '@/components/ErrorDisplay';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ErrorDisplay } from './components/ErrorDisplay';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { SummaryModal } from './components/SummaryModal';
 import { PageLoader } from './components/ui/PageLoader';
 import { getAiInstance } from './services/geminiService';
@@ -24,17 +24,17 @@ import { Newspaper, Zap } from 'lucide-react';
 import { AppLayout } from './components/layout/AppLayout';
 
 // Lazy Loaded Views
-const DiscoverView = lazyWithRetry(() => import('@/views/DiscoverView').then(module => ({ default: module.DiscoverView })));
-const ProductDeprecationsView = lazyWithRetry(() => import('@/views/ProductDeprecationsView').then(module => ({ default: module.ProductDeprecationsView })));
-const ArchitectureView = lazyWithRetry(() => import('@/views/ArchitectureView').then(module => ({ default: module.ArchitectureView })));
-const StandardFeedView = lazyWithRetry(() => import('@/views/StandardFeedView').then(module => ({ default: module.StandardFeedView })));
-const SavedView = lazyWithRetry(() => import('@/views/SavedView').then(module => ({ default: module.SavedView })));
-const IncidentsView = lazyWithRetry(() => import('@/views/IncidentsView').then(module => ({ default: module.IncidentsView })));
-const SecurityView = lazyWithRetry(() => import('@/views/SecurityView').then(module => ({ default: module.SecurityView })));
-const ReleaseNotesView = lazyWithRetry(() => import('@/views/ReleaseNotesView').then(module => ({ default: module.ReleaseNotesView })));
-const WeeklyBriefView = lazyWithRetry(() => import('@/views/WeeklyBriefView').then(module => ({ default: module.WeeklyBriefView })));
-const ToolsView = lazyWithRetry(() => import('@/views/ToolsView').then(module => ({ default: module.ToolsView })));
-const YouTubeView = lazyWithRetry(() => import('@/views/YouTubeView').then(module => ({ default: module.YouTubeView })));
+const DiscoverView = lazyWithRetry(() => import('./views/DiscoverView').then(module => ({ default: module.DiscoverView })));
+const ProductDeprecationsView = lazyWithRetry(() => import('./views/ProductDeprecationsView').then(module => ({ default: module.ProductDeprecationsView })));
+const ArchitectureView = lazyWithRetry(() => import('./views/ArchitectureView').then(module => ({ default: module.ArchitectureView })));
+const StandardFeedView = lazyWithRetry(() => import('./views/StandardFeedView').then(module => ({ default: module.StandardFeedView })));
+const SavedView = lazyWithRetry(() => import('./views/SavedView').then(module => ({ default: module.SavedView })));
+const IncidentsView = lazyWithRetry(() => import('./views/IncidentsView').then(module => ({ default: module.IncidentsView })));
+const SecurityView = lazyWithRetry(() => import('./views/SecurityView').then(module => ({ default: module.SecurityView })));
+const ReleaseNotesView = lazyWithRetry(() => import('./views/ReleaseNotesView').then(module => ({ default: module.ReleaseNotesView })));
+const WeeklyBriefView = lazyWithRetry(() => import('./views/WeeklyBriefView').then(module => ({ default: module.WeeklyBriefView })));
+const ToolsView = lazyWithRetry(() => import('./views/ToolsView').then(module => ({ default: module.ToolsView })));
+const YouTubeView = lazyWithRetry(() => import('./views/YouTubeView').then(module => ({ default: module.YouTubeView })));
 
 function AppContent() {
   const location = useLocation();
@@ -268,7 +268,8 @@ function AppContent() {
           config: { responseMimeType: 'application/json' }
         });
 
-        const indices = JSON.parse(response.text || '[]');
+        const aiResponseText = response.text || "";
+        const indices = (aiResponseText && aiResponseText.trim()) ? JSON.parse(aiResponseText) : [];
         
         setSmartIndices(indices);
         indices.length === 0 

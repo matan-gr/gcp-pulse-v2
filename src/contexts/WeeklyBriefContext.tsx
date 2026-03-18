@@ -33,7 +33,10 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
     try {
       const res = await fetch('/api/weekly-brief');
       if (res.ok) {
-        return await res.json();
+        const text = await res.text();
+        if (text && text.trim()) {
+          return JSON.parse(text);
+        }
       }
     } catch (e) {
       console.error("Failed to fetch weekly brief cache", e);
@@ -61,8 +64,8 @@ export const WeeklyBriefProvider: React.FC<{ children: React.ReactNode, items: F
       // 2. Check local cache
       try {
         const localCache = localStorage.getItem('GCP_PULSE_WEEKLY_BRIEF_CACHE');
-        if (localCache) {
-          const { content, timestamp } = JSON.parse(localCache);
+        if (localCache && localCache.trim()) {
+          const { content, timestamp } = JSON.parse(localCache.trim());
           const age = Date.now() - timestamp;
           if (age < CACHE_DURATION_MS) {
             setBrief(content);

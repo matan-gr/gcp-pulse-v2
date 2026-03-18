@@ -3,7 +3,7 @@ export const checkRateLimit = (key: string, limit: number, windowMinutes: number
     const now = Date.now();
     const windowMs = windowMinutes * 60 * 1000;
     const stored = localStorage.getItem(`rate_limit_${key}`);
-    let timestamps: number[] = stored ? JSON.parse(stored) : [];
+    let timestamps: number[] = (stored && stored.trim()) ? JSON.parse(stored) : [];
     
     timestamps = timestamps.filter(ts => now - ts < windowMs);
     
@@ -19,7 +19,7 @@ export const recordUsage = (key: string, windowMinutes: number) => {
     const now = Date.now();
     const windowMs = windowMinutes * 60 * 1000;
     const stored = localStorage.getItem(`rate_limit_${key}`);
-    let timestamps: number[] = stored ? JSON.parse(stored) : [];
+    let timestamps: number[] = (stored && stored.trim()) ? JSON.parse(stored) : [];
     
     timestamps = timestamps.filter(ts => now - ts < windowMs);
     timestamps.push(now);
@@ -34,7 +34,7 @@ export const getRemainingTime = (key: string, limit: number, windowMinutes: numb
     const now = Date.now();
     const windowMs = windowMinutes * 60 * 1000;
     const stored = localStorage.getItem(`rate_limit_${key}`);
-    let timestamps: number[] = stored ? JSON.parse(stored) : [];
+    let timestamps: number[] = (stored && stored.trim()) ? JSON.parse(stored) : [];
     
     timestamps = timestamps.filter(ts => now - ts < windowMs);
     

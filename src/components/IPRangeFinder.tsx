@@ -24,7 +24,11 @@ const fetchIPRanges = async (): Promise<CloudIPRanges> => {
   if (!response.ok) {
     throw new Error('Failed to fetch IP ranges');
   }
-  return response.json();
+  const text = await response.text();
+  if (!text || !text.trim()) {
+    return { syncToken: "", creationTime: "", prefixes: [] };
+  }
+  return JSON.parse(text);
 };
 
 export const IPRangeFinder: React.FC = () => {

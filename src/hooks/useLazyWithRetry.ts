@@ -11,9 +11,8 @@ export function lazyWithRetry<T extends ComponentType<any>>(
   return lazy(async () => {
     let pageHasAlreadyBeenForceRefreshed = false;
     try {
-      pageHasAlreadyBeenForceRefreshed = JSON.parse(
-        window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
-      );
+      const stored = window.sessionStorage.getItem('page-has-been-force-refreshed');
+      pageHasAlreadyBeenForceRefreshed = (stored && stored.trim()) ? JSON.parse(stored) : false;
     } catch (e) {
       console.warn('Failed to access sessionStorage in lazyWithRetry:', e);
     }

@@ -48,15 +48,18 @@ export const useSummarizer = () => {
     try {
       const res = await fetch(`/api/summaries/${encodeURIComponent(itemId)}`);
       if (res.ok) {
-        const cachedAnalysis = await res.json();
-        setAnalyses(prev => ({ ...prev, [itemId]: cachedAnalysis }));
-        setSummaryModal({
-          isOpen: true,
-          title: item.title,
-          analysis: cachedAnalysis,
-          isStreaming: false
-        });
-        return;
+        const text = await res.text();
+        if (text && text.trim()) {
+          const cachedAnalysis = JSON.parse(text);
+          setAnalyses(prev => ({ ...prev, [itemId]: cachedAnalysis }));
+          setSummaryModal({
+            isOpen: true,
+            title: item.title,
+            analysis: cachedAnalysis,
+            isStreaming: false
+          });
+          return;
+        }
       }
     } catch (e) {
       console.error("Failed to fetch summary from backend cache", e);
@@ -175,9 +178,9 @@ export const useSummarizer = () => {
       // Parse the final result to extract JSON
       const jsonMatch = fullText.match(/```json\s*([\s\S]*?)\s*```/);
       let chartData = undefined;
-      if (jsonMatch) {
+      if (jsonMatch && jsonMatch[1] && jsonMatch[1].trim()) {
         try {
-          chartData = JSON.parse(jsonMatch[1]);
+          chartData = JSON.parse(jsonMatch[1].trim());
         } catch (e) {
           console.error("Failed to parse chart data JSON", e);
         }

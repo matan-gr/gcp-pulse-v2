@@ -64,25 +64,38 @@ const GUIDE_SECTIONS = [
               }}
               transition={{ duration: 4, repeat: Infinity }}
             >
-              <Sparkles size={56} className="text-white/90 mx-auto mb-4 drop-shadow-lg" />
+              <div className="w-20 h-20 flex items-center justify-center overflow-hidden mx-auto mb-4 drop-shadow-lg">
+                <img src="/favicon.svg" alt="GCP Pulse Logo" className="w-full h-full object-contain" />
+              </div>
             </motion.div>
-            <h4 className="text-3xl font-black text-white tracking-tighter mb-2">GCP Pulse v2.6</h4>
-            <p className="text-blue-100 text-sm font-bold uppercase tracking-widest opacity-80">The Intelligence Layer for Google Cloud</p>
+            <h4 className="text-3xl font-black text-white tracking-tighter mb-2">GCP Pulse v2.7</h4>
+            <p className="text-blue-100 text-sm font-bold uppercase tracking-widest opacity-80">Enterprise Intelligence & Reliability</p>
           </div>
         </div>
         <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg font-medium italic">
-          "Transforming the noise of the cloud into the signal of strategy."
+          "The definitive intelligence layer for Google Cloud Platform."
         </p>
-        <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-          GCP Pulse is an enterprise-grade intelligence platform designed for Cloud Architects, SREs, and Engineering Leaders. It synthesizes real-time data from across the Google Cloud ecosystem using <strong>Gemini 3.1 Pro</strong> to provide actionable insights, security alerts, and architectural guidance.
-        </p>
+        <div className="space-y-4">
+          <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            GCP Pulse is an advanced intelligence platform that aggregates, analyzes, and synthesizes data from the entire Google Cloud ecosystem. It is built to solve the "information overload" problem for Cloud Architects and Platform Engineers.
+          </p>
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h5 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-tighter">Technical Architecture</h5>
+            <ul className="text-xs space-y-2 text-slate-500 dark:text-slate-400 list-disc pl-4">
+              <li><strong>Real-time Aggregation:</strong> Multi-threaded polling of 15+ RSS, Atom, and HTML sources.</li>
+              <li><strong>AI Synthesis:</strong> Deep integration with Gemini 3.1 Pro for semantic understanding and summarization.</li>
+              <li><strong>Reliability:</strong> Built-in deployment self-healing with automatic cache synchronization.</li>
+              <li><strong>Performance:</strong> Edge-optimized delivery with aggressive server-side and client-side caching.</li>
+            </ul>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 transition-all hover:shadow-md group">
             <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400 font-bold mb-2">
               <Globe size={18} />
               <span className="text-xs uppercase tracking-wider">Aggregate</span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Unified feed from 12+ official GCP sources including Blog, Release Notes, and YouTube.</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Unified feed from 15+ official GCP sources including Blog, Release Notes, and YouTube.</p>
           </div>
           <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-2xl border border-purple-100 dark:border-purple-800 transition-all hover:shadow-md group">
             <div className="flex items-center gap-3 text-purple-600 dark:text-purple-400 font-bold mb-2">
@@ -103,6 +116,107 @@ const GUIDE_SECTIONS = [
     )
   },
   {
+    id: 'core-features',
+    title: 'Core Features',
+    icon: Zap,
+    content: (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-4">
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <FileText size={18} className="text-blue-500" />
+              1. AI-Powered Weekly Brief
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Every Monday, GCP Pulse synthesizes thousands of updates into a single executive report. It categorizes changes by product family (Compute, Data, AI, etc.) and identifies the top 3 items that require immediate architectural attention.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <Search size={18} className="text-purple-500" />
+              2. Smart Semantic Search
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Move beyond keyword matching. Our semantic search understands technical intent. Searching for "GKE security" will find updates about "Kubernetes vulnerabilities," "container hardening," and "IAM roles" even if the word "security" isn't in the title.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <Zap size={18} className="text-amber-500" />
+              3. Instant Technical Summaries
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Don't read 10-page blog posts. Click "Summarize" to get a 3-bullet point breakdown: <strong>What changed</strong>, <strong>Who is affected</strong>, and <strong>What to do next</strong>. Powered by Gemini 3.1 Pro.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <Calendar size={18} className="text-emerald-500" />
+              4. Interactive Deprecations Timeline
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              A dedicated view for tracking end-of-life services. See exactly when an API version or service will be retired and get AI-suggested migration paths to modern alternatives.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <Activity size={18} className="text-red-500" />
+              5. Real-time Service Health
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Integrated monitoring of the official GCP Service Health dashboard. Filter by your specific regions and services to see active incidents and historical reliability trends.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <ShieldAlert size={18} className="text-indigo-500" />
+              6. Security Bulletin CVE Mapping
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Stay ahead of vulnerabilities. Our security feed maps bulletins to specific CVE IDs and provides direct links to mitigation steps and official patches.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <Server size={18} className="text-cyan-500" />
+              7. GKE Version & Skew Intelligence
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Track GKE version availability across Rapid, Regular, and Stable channels. The Skew Validator ensures your control plane and node pools are always in a supported state.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <Globe size={18} className="text-teal-500" />
+              8. Enterprise IP Management
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Quickly find and filter official Google Cloud IP ranges. Essential for firewall configuration and allowlisting. Supports CIDR lookup and service-specific filtering.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <RotateCw size={18} className="text-orange-500" />
+              9. Deployment Self-Healing
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Our platform automatically detects new deployments and clears browser caches/local storage to prevent "ChunkLoadErrors" and ensure you're always using the latest version.
+            </p>
+          </div>
+          <div className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <Monitor size={18} className="text-pink-500" />
+              10. Presentation Mode
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Optimized for team syncs and large screens. Toggle with the "P" key to hide sidebars and navigation, focusing entirely on the intelligence feed.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
     id: 'whats-new',
     title: "What's New",
     icon: History,
@@ -111,31 +225,38 @@ const GUIDE_SECTIONS = [
         <div className="p-6 bg-emerald-50 dark:bg-emerald-900/10 rounded-3xl border border-emerald-100 dark:border-emerald-800">
           <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold mb-4">
             <CheckCircle2 size={20} />
-            <span className="text-lg">Release Notes v2.6 (March 2026)</span>
+            <span className="text-lg">Release Notes v2.7 (March 2026)</span>
           </div>
-          <ul className="space-y-4">
-            <li className="flex gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex gap-3">
+              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><RotateCw size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
+              <div>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Deployment Self-Healing</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Automatic cache flushing and version synchronization during new Cloud Run deployments. No more stale assets.</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
               <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><Clock size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Product Deprecations Timeline</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">A new specialized view to track end-of-life services. Visualize deprecation dates on a timeline and get AI-powered migration advice.</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">"Last 24" Filter</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Instantly view the 24 most recent release notes. Optimized for mobile and desktop quick-checks.</p>
               </div>
-            </li>
-            <li className="flex gap-3">
-              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><Bookmark size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
+            </div>
+            <div className="flex gap-3">
+              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><ShieldCheck size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Console Shortcuts v2</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Expanded library of 20+ direct links to GCP services. New categories for Databases, Serverless, and Security Management.</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">CVE Severity Mapping</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Security bulletins now include direct severity scores and links to official CVE databases for deeper analysis.</p>
               </div>
-            </li>
-            <li className="flex gap-3">
-              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><Monitor size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
+            </div>
+            <div className="flex gap-3">
+              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><Zap size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Presentation Mode Enhancements</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Optimized grid layouts for large screens and projectors. Toggle with the "P" key to hide sidebars and focus on content during team syncs.</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Gemini 3.1 Integration</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Upgraded intelligence engine for faster summarization and more accurate semantic search results.</p>
               </div>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -282,16 +403,19 @@ const GUIDE_SECTIONS = [
         <div className="p-6 bg-purple-50 dark:bg-purple-900/10 rounded-3xl border border-purple-100 dark:border-purple-800">
           <h4 className="font-bold text-purple-700 dark:text-purple-400 mb-4 flex items-center gap-2">
             <Sparkles size={18} />
-            Gemini-Powered Features
+            Gemini 3.1 Pro Integration
           </h4>
+          <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+            GCP Pulse leverages the latest <strong>Gemini 3.1 Pro</strong> model to provide deep technical insights. Unlike standard LLMs, our integration is tuned specifically for Google Cloud's technical documentation and release patterns.
+          </p>
           <div className="space-y-4">
             <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
               <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl h-fit">
                 <Zap size={20} className="text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Instant Summarization</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Click the "Summarize" button on any card to generate a concise technical summary. Gemini extracts key takeaways, technical impact, and action items.</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Context-Aware Summarization</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Our summarization engine doesn't just shorten text; it identifies <strong>breaking changes</strong>, <strong>new API endpoints</strong>, and <strong>pricing updates</strong>. It provides a "Migration Difficulty" score (Low/Medium/High) for major updates.</p>
               </div>
             </div>
             <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
@@ -299,18 +423,46 @@ const GUIDE_SECTIONS = [
                 <Search size={20} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Smart Semantic Search</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Toggle the sparkle icon in the search bar to use semantic search. Instead of keyword matching, Gemini understands the intent of your query (e.g., "security issues in GKE").</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Semantic Intent Mapping</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">When you search, Gemini maps your query to the underlying GCP service hierarchy. A search for "serverless scaling" will automatically include Cloud Run, Cloud Functions, and App Engine results.</p>
               </div>
             </div>
             <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
               <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl h-fit">
-                <FileText size={20} className="text-emerald-600 dark:text-emerald-400" />
+                <TrendingUp size={20} className="text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Weekly Intelligence Brief</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">The Weekly Brief uses AI to synthesize the most important updates from the past 7 days into a structured report, categorized by product area.</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Trend Analysis</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">The AI monitors the frequency of updates across product areas to identify "Hot Topics" in the GCP ecosystem, helping you focus your learning and architectural reviews.</p>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 'reliability',
+    title: 'Reliability & Deployment',
+    icon: ShieldCheck,
+    content: (
+      <div className="space-y-6">
+        <div className="p-6 bg-emerald-50 dark:bg-emerald-900/10 rounded-3xl border border-emerald-100 dark:border-emerald-800">
+          <h4 className="font-bold text-emerald-700 dark:text-emerald-400 mb-4 flex items-center gap-2">
+            <RotateCw size={18} />
+            Self-Healing Infrastructure
+          </h4>
+          <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+            To ensure zero-interruption updates, GCP Pulse implements a sophisticated deployment synchronization system.
+          </p>
+          <div className="space-y-4">
+            <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Automatic Cache Invalidation</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">When a new version is detected, the app automatically clears LocalStorage, SessionStorage, and Cache Storage. This prevents "stale state" bugs and ensures you always see the latest data.</p>
+            </div>
+            <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Chunk Load Recovery</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">If a network error occurs during a version transition (e.g., a script chunk is missing), the Global Error Boundary catches it and performs a "Hard Reset" to restore application health.</p>
             </div>
           </div>
         </div>
@@ -326,7 +478,7 @@ const GUIDE_SECTIONS = [
         <div className="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-800">
           <h4 className="font-bold text-blue-700 dark:text-blue-400 mb-4 flex items-center gap-2">
             <Wrench size={18} />
-            Built-in Utilities
+            Platform Engineering Utilities
           </h4>
           <div className="grid grid-cols-1 gap-4">
             <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
@@ -334,8 +486,8 @@ const GUIDE_SECTIONS = [
                 <Globe size={20} className="text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">IP Range Finder</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Search and filter official Google Cloud IP ranges. Supports CIDR lookup and service-specific filtering (e.g., CloudFront, Googlebot).</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">IP Range Intelligence</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Access a searchable database of all Google Cloud IP ranges. Filter by service (e.g., "Googlebot", "CloudFront") or region. Includes CIDR validation and export capabilities.</p>
               </div>
             </div>
             <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
@@ -343,8 +495,8 @@ const GUIDE_SECTIONS = [
                 <Server size={20} className="text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">GKE Lifecycle Tracker</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Monitor GKE version availability across Rapid, Regular, and Stable channels. Includes end-of-life dates and upgrade recommendations.</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">GKE Lifecycle Management</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Visualize GKE version availability across all release channels. Includes "Auto-Upgrade" windows and "End of Support" alerts for your specific cluster versions.</p>
               </div>
             </div>
             <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
@@ -352,17 +504,8 @@ const GUIDE_SECTIONS = [
                 <GitMerge size={20} className="text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">GKE Skew Validator</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Validate control plane and node pool version compatibility against official Google Cloud skew policies to prevent upgrade failures.</p>
-              </div>
-            </div>
-            <div className="flex gap-4 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-xl h-fit">
-                <Bookmark size={20} className="text-amber-600 dark:text-amber-400" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">Console Shortcuts</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Quick access to the most used Google Cloud Console pages. Filter by category to find Compute, Storage, or Networking resources instantly.</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Version Skew Validator</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Ensure your Kubernetes control plane and worker nodes are compatible. Our validator uses official GCP skew policies to highlight potential upgrade risks.</p>
               </div>
             </div>
           </div>
@@ -376,36 +519,43 @@ const GUIDE_SECTIONS = [
     icon: Keyboard,
     content: (
       <div className="space-y-6">
-        <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-          <h4 className="font-bold text-slate-900 dark:text-white mb-4">Global Keyboard Shortcuts</h4>
-          <div className="grid grid-cols-1 gap-3 text-sm">
-            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors">
+        <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-200 dark:border-slate-700">
+          <h4 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+            <Keyboard size={18} />
+            Global Keyboard Shortcuts
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
               <span className="text-slate-600 dark:text-slate-400">Focus Search Bar</span>
-              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm">/</kbd>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">/</kbd>
             </div>
-            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors">
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
               <span className="text-slate-600 dark:text-slate-400">Toggle Presentation Mode</span>
-              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm">P</kbd>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">P</kbd>
             </div>
-            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors">
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
+              <span className="text-slate-600 dark:text-slate-400">Open User Guide</span>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">G</kbd>
+            </div>
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
+              <span className="text-slate-600 dark:text-slate-400">Force Refresh Data</span>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">R</kbd>
+            </div>
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
               <span className="text-slate-600 dark:text-slate-400">Switch to Weekly Brief</span>
-              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm">Ctrl + 1</kbd>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">Ctrl + 1</kbd>
             </div>
-            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors">
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
               <span className="text-slate-600 dark:text-slate-400">Switch to Discover Feed</span>
-              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm">Ctrl + 2</kbd>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">Ctrl + 2</kbd>
             </div>
-            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors">
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
               <span className="text-slate-600 dark:text-slate-400">Switch to Service Health</span>
-              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm">Ctrl + 3</kbd>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">Ctrl + 3</kbd>
             </div>
-            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors">
+            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors group">
               <span className="text-slate-600 dark:text-slate-400">Switch to Security Bulletins</span>
-              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm">Ctrl + 4</kbd>
-            </div>
-            <div className="flex justify-between p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-blue-500 transition-colors">
-              <span className="text-slate-600 dark:text-slate-400">Switch to Engineering Tools</span>
-              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm">Ctrl + 9</kbd>
+              <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-xs font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">Ctrl + 4</kbd>
             </div>
           </div>
         </div>
@@ -419,44 +569,54 @@ const GUIDE_SECTIONS = [
     content: (
       <div className="space-y-4">
         <div className="space-y-3">
-          <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-red-500/30 transition-colors">
-            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1 flex items-center gap-2">
-              <Lock size={14} className="text-red-500" />
+          <div className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-red-500/30 transition-colors shadow-sm">
+            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2 flex items-center gap-2">
+              <Lock size={16} className="text-red-500" />
               "Quota Exceeded" (429 Error)
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              <strong>Cause:</strong> You've exceeded the Gemini API rate limit.<br/>
-              <strong>Solution:</strong> Wait 5-10 minutes. Avoid rapid-fire summarization. The quota resets hourly.
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <strong>Cause:</strong> You've exceeded the Gemini API rate limit for your project.<br/>
+              <strong>Solution:</strong> Wait 5-10 minutes. Avoid rapid-fire summarization. The quota resets hourly. If you are an enterprise user, consider upgrading your API tier.
             </p>
           </div>
-          <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500/30 transition-colors">
-            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1 flex items-center gap-2">
-              <Search size={14} className="text-blue-500" />
+          <div className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500/30 transition-colors shadow-sm">
+            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2 flex items-center gap-2">
+              <Search size={16} className="text-blue-500" />
               "No Results Found"
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               <strong>Cause:</strong> Over-restrictive filters or search query.<br/>
-              <strong>Solution:</strong> Click "Clear All Filters" in the empty state view. Ensure the "Smart Filter" is off if you are looking for exact keywords.
+              <strong>Solution:</strong> Click "Clear All Filters" in the empty state view. Ensure the "Smart Filter" is off if you are looking for exact keywords. Check if you have accidentally selected a category with no recent updates.
             </p>
           </div>
-          <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500/30 transition-colors">
-            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1 flex items-center gap-2">
-              <RotateCw size={14} className="text-emerald-500" />
-              Feed is Stale
+          <div className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500/30 transition-colors shadow-sm">
+            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2 flex items-center gap-2">
+              <RotateCw size={16} className="text-emerald-500" />
+              Feed is Stale or Not Updating
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               <strong>Cause:</strong> Browser cache or proxy delay.<br/>
-              <strong>Solution:</strong> Use the "Force Refresh" button in the header. This sends a `refresh=true` flag to the backend to purge the RSS cache.
+              <strong>Solution:</strong> Use the "Force Refresh" button (top right) or press <kbd className="px-1 bg-slate-100 dark:bg-slate-700 rounded text-[9px]">R</kbd>. This sends a `refresh=true` flag to the backend to purge the RSS cache and fetch fresh data from Google's servers.
             </p>
           </div>
-          <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-amber-500/30 transition-colors">
-            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1 flex items-center gap-2">
-              <AlertTriangle size={14} className="text-amber-500" />
+          <div className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-amber-500/30 transition-colors shadow-sm">
+            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2 flex items-center gap-2">
+              <AlertTriangle size={16} className="text-amber-500" />
               Summarization "Hallucinations"
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              <strong>Cause:</strong> AI interpreting sparse metadata.<br/>
-              <strong>Solution:</strong> Always verify critical technical details by clicking "View Original" to read the source documentation.
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <strong>Cause:</strong> AI interpreting sparse metadata or complex technical jargon.<br/>
+              <strong>Solution:</strong> Always verify critical technical details by clicking "View Original" to read the source documentation. AI summaries are intended as a guide, not a replacement for official docs.
+            </p>
+          </div>
+          <div className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-purple-500/30 transition-colors shadow-sm">
+            <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2 flex items-center gap-2">
+              <Zap size={16} className="text-purple-500" />
+              Application "Repairing..." Screen
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <strong>Cause:</strong> A new version of the app was deployed and your browser had stale assets.<br/>
+              <strong>Solution:</strong> Wait for the repair to complete. The app will automatically clear its cache and reload to ensure you're on the latest, most secure version.
             </p>
           </div>
         </div>
@@ -469,36 +629,48 @@ const GUIDE_SECTIONS = [
     icon: Zap,
     content: (
       <div className="space-y-6">
-        <div className="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-800">
-          <h4 className="font-bold text-indigo-700 dark:text-indigo-400 mb-3 flex items-center gap-2">
+        <div className="p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-800">
+          <h4 className="font-bold text-indigo-700 dark:text-indigo-400 mb-4 flex items-center gap-2">
             <Sparkles size={18} />
-            Strategic Intelligence
+            Strategic Intelligence Hacks
           </h4>
           <div className="space-y-4">
             <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Cross-Reference Security</p>
-              <p className="text-xs text-slate-600 dark:text-slate-400">When viewing a Security Bulletin, use the <strong>Smart Search</strong> to find related Release Notes. Often, a security patch is accompanied by a product update that might require configuration changes.</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Cross-Reference Security & Releases</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">When viewing a Security Bulletin, use <strong>Smart Search</strong> to find related Release Notes. Often, a security patch is accompanied by a product update that might require configuration changes or offer new hardening features.</p>
             </div>
             <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Architecture Synthesis</p>
-              <p className="text-xs text-slate-600 dark:text-slate-400">The <strong>Architecture</strong> view isn't just for reading. Use it to understand how Google Cloud recommends building for scale. The AI summaries here focus on "Why" rather than just "How".</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Architecture Synthesis for Design</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">The <strong>Architecture</strong> view isn't just for reading. Use it to understand how Google Cloud recommends building for scale. The AI summaries here focus on "Why" (the architectural rationale) rather than just "How" (the implementation steps).</p>
+            </div>
+            <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Mastering Smart Semantic Filters</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Combine the <strong>Smart Filter</strong> with specific product names (e.g., "GKE", "BigQuery") to quickly isolate noise from signal during major product launches like Google Cloud Next or I/O.</p>
+            </div>
+            <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Leveraging the "Last 24" Filter</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Use the <strong>Last 24</strong> filter in Release Notes to instantly see the most recent announcements. This is perfect for your daily morning sync to ensure you haven't missed any overnight breaking changes.</p>
             </div>
           </div>
         </div>
 
-        <div className="p-5 bg-emerald-50 dark:bg-emerald-900/10 rounded-3xl border border-emerald-100 dark:border-emerald-800">
-          <h4 className="font-bold text-emerald-700 dark:text-emerald-400 mb-3 flex items-center gap-2">
+        <div className="p-6 bg-emerald-50 dark:bg-emerald-900/10 rounded-3xl border border-emerald-100 dark:border-emerald-800">
+          <h4 className="font-bold text-emerald-700 dark:text-emerald-400 mb-4 flex items-center gap-2">
             <Zap size={18} />
-            Efficiency Hacks
+            Efficiency & Productivity Hacks
           </h4>
           <div className="space-y-4">
             <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Force Refresh for Critical Updates</p>
-              <p className="text-xs text-slate-600 dark:text-slate-400">During major events (like Google Cloud Next), use the <strong>Force Refresh</strong> button (top right) to bypass the 15-minute RSS cache and get updates as they hit the wire.</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Force Refresh for Critical Events</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">During major events (like Google Cloud Next), use the <strong>Force Refresh</strong> button (top right) to bypass the 5-minute RSS cache and get updates as they hit the wire.</p>
             </div>
             <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Deep Linking</p>
-              <p className="text-xs text-slate-600 dark:text-slate-400">Every card has a direct link to the source. If a summary mentions a specific CLI command or API, click the source link to jump directly to the official documentation for the full syntax.</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Presentation Mode for Standups</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Press <kbd className="px-1 bg-slate-100 dark:bg-slate-700 rounded text-[9px]">P</kbd> during team standups to hide navigation and focus on the feed. It makes it much easier for everyone to see the content on a shared screen.</p>
+            </div>
+            <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+              <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Deep Linking to Bulletins</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Every card has a unique URL state. You can copy the URL from your browser's address bar after selecting a card to share that specific update directly with your team.</p>
             </div>
           </div>
         </div>

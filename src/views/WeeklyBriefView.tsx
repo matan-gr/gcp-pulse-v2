@@ -185,13 +185,23 @@ export const WeeklyBriefView = React.memo<WeeklyBriefViewProps>(({ items }) => {
     toast.success("Brief exported as rich HTML", { description: "Your download should begin shortly." });
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (navigator.share) {
-      navigator.share({
-        title: 'GCP Pulse: Weekly Intelligence Briefing',
-        text: 'Check out this week\'s Google Cloud intelligence report!',
-        url: window.location.href,
-      }).catch(console.error);
+      try {
+        await navigator.share({
+          title: 'GCP Pulse: Weekly Intelligence Briefing',
+          text: 'Check out this week\'s Google Cloud intelligence report!',
+          url: window.location.href,
+        });
+      } catch (err: any) {
+        // Silently handle user cancellation
+        if (err.name === 'AbortError') return;
+        
+        // For other errors (like NotAllowedError in iframes), fallback to clipboard
+        console.warn('Web Share API failed, falling back to clipboard:', err);
+        navigator.clipboard.writeText(window.location.href);
+        toast.success("Link copied to clipboard", { description: "Sharing was restricted, so we copied the link for you." });
+      }
     } else {
       navigator.clipboard.writeText(window.location.href);
       toast.success("Link copied to clipboard");

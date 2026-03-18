@@ -24,6 +24,23 @@
           document.documentElement.classList.add('light');
         }
       })();
+
+      // Global error handler for initial load failures (e.g., ChunkLoadError)
+      window.addEventListener('error', function(e) {
+        if (e.message && (e.message.includes('ChunkLoadError') || e.message.includes('Failed to fetch dynamically imported module'))) {
+          console.warn('Initial load failure detected. Flushing caches and reloading...');
+          localStorage.clear();
+          sessionStorage.clear();
+          if ('caches' in window) {
+            caches.keys().then(names => {
+              for (let name of names) caches.delete(name);
+            });
+          }
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
+      }, true);
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

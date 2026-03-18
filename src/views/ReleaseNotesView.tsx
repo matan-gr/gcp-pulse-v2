@@ -121,16 +121,29 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
     parsedReleaseNotes.forEach(item => {
       item.categories?.forEach(cat => cats.add(cat));
     });
-    return ['All', ...Array.from(cats).sort()];
+    return ['All', 'Last 24', ...Array.from(cats).sort()];
   }, [parsedReleaseNotes]);
 
   // 3. Group items by month and filter
   const filteredItems = useMemo(() => {
-    return parsedReleaseNotes.filter(item => {
-      if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase()) && !item.content.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      if (selectedCategory !== 'All' && !item.categories?.includes(selectedCategory)) return false;
-      return true;
-    });
+    let items = parsedReleaseNotes;
+    
+    // Apply category/Last 24 filter
+    if (selectedCategory === 'Last 24') {
+      items = items.slice(0, 24);
+    } else if (selectedCategory !== 'All') {
+      items = items.filter(item => item.categories?.includes(selectedCategory));
+    }
+    
+    // Apply search filter
+    if (searchQuery) {
+      items = items.filter(item => 
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        item.content.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return items;
   }, [parsedReleaseNotes, searchQuery, selectedCategory]);
 
   const displayedItems = useMemo(() => {

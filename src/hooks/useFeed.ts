@@ -10,14 +10,21 @@ export const fetchFeed = async (force = false): Promise<Feed> => {
     if (!response.ok) {
       let errorMessage = `Error ${response.status}: ${response.statusText}`;
       try {
-        const errorData = await response.json();
-        if (errorData.message) errorMessage = errorData.message;
+        const text = await response.text();
+        if (text && text.trim()) {
+          const errorData = JSON.parse(text);
+          if (errorData.message) errorMessage = errorData.message;
+        }
       } catch (e) {
         // Fallback to status text if JSON parsing fails
       }
       throw new Error(errorMessage);
     }
-    const data = await response.json();
+    const text = await response.text();
+    if (!text || !text.trim()) {
+      return { items: [], lastUpdated: new Date().toISOString() } as any;
+    }
+    const data = JSON.parse(text);
     return data;
   } catch (error) {
     console.error("Fetch Feed Error:", error);
@@ -248,12 +255,17 @@ export const useIncidents = () => {
       if (!response.ok) {
         let errorMessage = `Error ${response.status}: ${response.statusText}`;
         try {
-          const errorData = await response.json();
-          if (errorData.message) errorMessage = errorData.message;
+          const text = await response.text();
+          if (text && text.trim()) {
+            const errorData = JSON.parse(text);
+            if (errorData.message) errorMessage = errorData.message;
+          }
         } catch (e) { /* Ignore */ }
         throw new Error(errorMessage);
       }
-      const data = await response.json();
+      const text = await response.text();
+      if (!text || !text.trim()) return [];
+      const data = JSON.parse(text);
       return data;
     },
     staleTime: 1000 * 60 * 60,

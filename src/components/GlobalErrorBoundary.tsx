@@ -9,6 +9,7 @@ interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
+  isRepairing: boolean;
 }
 
 export class GlobalErrorBoundary extends Component<Props, State> {
@@ -16,25 +17,65 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     hasError: false,
     error: null,
     errorInfo: null,
+    isRepairing: false,
   };
 
   public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error, errorInfo: null };
+    return { hasError: true, error, errorInfo: null, isRepairing: false };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
     
     // Check if it's a chunk load error (common in Vite/React after redeploys)
-    if (error.name === 'ChunkLoadError' || error.message.includes('Failed to fetch dynamically imported module')) {
-      console.warn('Chunk load error detected. Suggesting refresh.');
+    const isChunkError = error.name === 'ChunkLoadError' || error.message.includes('Failed to fetch dynamically imported module');
+    
+    if (isChunkError) {
+      console.warn('Chunk load error detected. Automatically flushing caches and refreshing...');
+      this.flushCachesAndReload();
     }
     
     this.setState({ errorInfo });
   }
 
+  private flushCachesAndReload = async () => {
+    this.setState({ isRepairing: true });
+    try {
+      // 1. Clear Local Storage
+      localStorage.clear();
+      
+      // 2. Clear Session Storage
+      sessionStorage.clear();
+      
+      // 3. Clear Cache Storage (Service Workers / Assets)
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+      }
+
+      // 4. Unregister Service Workers
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(r => r.unregister()));
+      }
+
+      console.log('Caches flushed successfully. Reloading...');
+      
+      // Give the user a moment to see the error message before refreshing
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (err) {
+      console.error('Failed to flush caches:', err);
+      // Still reload even if cache flush fails
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    }
+  };
+
   private handleReload = () => {
-    window.location.reload();
+    this.flushCachesAndReload();
   };
 
   private handleGoHome = () => {
@@ -64,25 +105,36 @@ export class GlobalErrorBoundary extends Component<Props, State> {
             </div>
             
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              {isChunkError ? 'Update Available' : 'Something went wrong'}
+              {this.state.isRepairing ? 'Repairing...' : (isChunkError ? 'Update Available' : 'Something went wrong')}
             </h1>
             
             <p className="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
-              {isChunkError 
-                ? 'A new version of the application is available. Please reload to continue.'
-                : 'We encountered an unexpected error. Our team has been notified. Please try reloading the page.'}
+              {this.state.isRepairing 
+                ? 'We are automatically clearing caches and reloading to fix the issue. Please wait...'
+                : (isChunkError 
+                  ? 'A new version of the application is available. We will automatically reload to update.'
+                  : 'We encountered an unexpected error. Our team has been notified. Please try reloading the page.')}
             </p>
 
             {this.state.error && (
-              <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/10 rounded-lg text-left overflow-hidden max-h-40 overflow-y-auto custom-scrollbar">
-                <p className="text-xs font-mono text-red-600 dark:text-red-400 break-words">
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/10 rounded-xl text-left overflow-hidden max-h-60 overflow-y-auto custom-scrollbar border border-red-100 dark:border-red-900/30">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-red-500">Error Details</span>
+                  <span className="text-[10px] text-slate-400 font-mono">{new Date().toISOString()}</span>
+                </div>
+                <p className="text-xs font-mono text-red-600 dark:text-red-400 break-words font-bold mb-2">
                   {this.state.error.toString()}
                 </p>
-                {this.state.errorInfo && (
-                   <p className="text-[10px] font-mono text-red-500/80 mt-2 whitespace-pre-wrap">
-                     {this.state.errorInfo.componentStack}
-                   </p>
-                )}
+                <div className="space-y-1">
+                  <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                    <span className="font-bold">URL:</span> {window.location.href}
+                  </p>
+                  {this.state.errorInfo && (
+                    <p className="text-[10px] font-mono text-red-500/80 mt-2 whitespace-pre-wrap leading-tight">
+                      {this.state.errorInfo.componentStack}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 

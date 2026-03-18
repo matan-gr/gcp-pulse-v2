@@ -31,8 +31,8 @@ export function useUserPreferences() {
   const [prefs, setPrefs] = useState<UserPreferences>(() => {
     try {
       const saved = localStorage.getItem('user_prefs');
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      if (saved && saved.trim()) {
+        const parsed = JSON.parse(saved.trim());
         // Ensure new columns are added to the end if missing
         const currentDefaults = ['Product Updates', 'Release Notes', 'Google AI Research', 'Gemini Enterprise'];
         const savedOrder = parsed.columnOrder || [];

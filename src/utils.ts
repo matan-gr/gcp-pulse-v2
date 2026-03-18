@@ -17,9 +17,8 @@ export function lazyWithRetry<T extends React.ComponentType<any>>(
   return lazy(async () => {
     let pageHasBeenForceRefreshed = false;
     try {
-      pageHasBeenForceRefreshed = JSON.parse(
-        window.localStorage.getItem('page-has-been-force-refreshed') || 'false'
-      );
+      const stored = window.localStorage.getItem('page-has-been-force-refreshed');
+      pageHasBeenForceRefreshed = (stored && stored.trim()) ? JSON.parse(stored) : false;
     } catch (e) {
       console.warn('Failed to access localStorage in lazyWithRetry:', e);
     }
