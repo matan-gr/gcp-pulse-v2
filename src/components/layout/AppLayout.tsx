@@ -152,7 +152,7 @@ export const AppLayout = React.memo<AppLayoutProps>(({
               {isPresentationMode && (
                 <div className="flex items-center space-x-2 mr-4 group cursor-pointer">
                   <div className="w-7 h-7 flex items-center justify-center overflow-hidden">
-                    <img src="/favicon.svg" alt="GCP Pulse Logo" className="w-full h-full object-contain" />
+                    <img src="/logo.svg" alt="GCP Pulse Logo" className="w-full h-full object-contain" />
                   </div>
                   <span className="text-md font-medium text-[#202124] dark:text-[var(--color-text-dark)] tracking-tight">GCP Pulse</span>
                 </div>

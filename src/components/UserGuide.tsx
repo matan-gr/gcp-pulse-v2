@@ -65,7 +65,7 @@ const GUIDE_SECTIONS = [
               transition={{ duration: 4, repeat: Infinity }}
             >
               <div className="w-20 h-20 flex items-center justify-center overflow-hidden mx-auto mb-4 drop-shadow-lg">
-                <img src="/favicon.svg" alt="GCP Pulse Logo" className="w-full h-full object-contain" />
+                <img src="/logo.svg" alt="GCP Pulse Logo" className="w-full h-full object-contain" />
               </div>
             </motion.div>
             <h4 className="text-3xl font-black text-white tracking-tighter mb-2">GCP Pulse v2.7</h4>
@@ -254,6 +254,27 @@ const GUIDE_SECTIONS = [
               <div>
                 <p className="text-sm font-bold text-slate-900 dark:text-white">Gemini 3.1 Integration</p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">Upgraded intelligence engine for faster summarization and more accurate semantic search results.</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><Server size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
+              <div>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">GKE Version & Skew Intelligence</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Track GKE version availability and ensure control plane/node pool compatibility.</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><Globe size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
+              <div>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Enterprise IP Management</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Searchable database of official Google Cloud IP ranges for firewall config.</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-800 rounded-md h-fit"><Monitor size={12} className="text-emerald-600 dark:text-emerald-400" /></div>
+              <div>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Presentation Mode</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Optimized UI for team syncs and large screens. Toggle with the "P" key.</p>
               </div>
             </div>
           </div>

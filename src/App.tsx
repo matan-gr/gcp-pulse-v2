@@ -499,9 +499,12 @@ function AppContent() {
             transition={{ duration: 0.2 }}
           >
             <Suspense fallback={<PageLoader />}>
-              <Routes location={location} key={location.pathname}>
-                <Route path="/" element={
-                  <ErrorBoundary componentName="DiscoverView">
+              {loading && allItems.length === 0 && location.pathname !== '/weekly-brief' ? (
+                <PageLoader />
+              ) : (
+                <Routes location={location} key={location.pathname}>
+                  <Route path="/" element={
+                    <ErrorBoundary componentName="DiscoverView">
                     <DiscoverView
                       items={filteredItems}
                       loading={loading}
@@ -650,6 +653,7 @@ function AppContent() {
                 } />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
+              )}
             </Suspense>
           </motion.div>
         </AnimatePresence>
