@@ -1,14 +1,15 @@
 import React, { useState, Suspense } from 'react';
-import { Globe, Server, Loader2, Wrench, GitMerge, ChevronRight } from 'lucide-react';
+import { Globe, Server, Loader2, Wrench, GitMerge, ChevronRight, Bookmark, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Lazy load tool components
 const IPRangeFinder = React.lazy(() => import('../components/IPRangeFinder').then(module => ({ default: module.IPRangeFinder })));
 const GKEVersionTracker = React.lazy(() => import('../components/GKEVersionTracker').then(module => ({ default: module.GKEVersionTracker })));
 const GKESkewValidator = React.lazy(() => import('../components/tools/GKESkewValidator').then(module => ({ default: module.GKESkewValidator })));
+const ConsoleShortcuts = React.lazy(() => import('../components/tools/ConsoleShortcuts').then(module => ({ default: module.ConsoleShortcuts })));
 const SystemSettings = React.lazy(() => import('../components/tools/SystemSettings').then(module => ({ default: module.SystemSettings })));
 
-type ToolId = 'ip-ranges' | 'gke-tracker' | 'gke-skew' | 'system-settings';
+type ToolId = 'ip-ranges' | 'gke-tracker' | 'gke-skew' | 'console-shortcuts' | 'system-settings';
 
 interface ToolDef {
   id: ToolId;
@@ -45,10 +46,18 @@ const TOOLS: ToolDef[] = [
     bgColor: 'bg-emerald-50 dark:bg-emerald-900/20'
   },
   {
+    id: 'console-shortcuts',
+    title: 'Console Shortcuts',
+    description: 'Quick access to the most used Google Cloud Console pages and services.',
+    icon: Bookmark,
+    color: 'text-amber-600 dark:text-amber-400',
+    bgColor: 'bg-amber-50 dark:bg-amber-900/20'
+  },
+  {
     id: 'system-settings',
     title: 'System Settings',
     description: 'Manage application cache and system preferences.',
-    icon: Server,
+    icon: Settings,
     color: 'text-slate-600 dark:text-slate-400',
     bgColor: 'bg-slate-100 dark:bg-slate-800'
   }
@@ -149,6 +158,7 @@ export const ToolsView: React.FC = () => {
                 {activeTool === 'ip-ranges' && <IPRangeFinder />}
                 {activeTool === 'gke-tracker' && <GKEVersionTracker />}
                 {activeTool === 'gke-skew' && <GKESkewValidator />}
+                {activeTool === 'console-shortcuts' && <ConsoleShortcuts />}
                 {activeTool === 'system-settings' && <SystemSettings />}
               </Suspense>
             </motion.div>

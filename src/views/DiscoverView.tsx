@@ -3,9 +3,10 @@ import { FeedItem, AnalysisResult } from '../types';
 import { FeedCard } from '../components/FeedCard';
 import { CardSkeleton } from '../components/SkeletonLoader';
 import { EmptyState } from '../components/EmptyState';
-import { SearchX, Sparkles, ChevronDown } from 'lucide-react';
+import { SearchX, Sparkles, ChevronDown, RotateCw, HelpCircle } from 'lucide-react';
 import { UserPreferences } from '../hooks/useUserPreferences';
 import { AILoading } from '../components/ui/AILoading';
+import { Tooltip } from '../components/ui/Tooltip';
 import { extractImage } from '../utils';
 
 const ITEMS_PER_PAGE = 12;
@@ -25,10 +26,11 @@ interface DiscoverViewProps {
   onToggleColumnVisibility: (column: string) => void;
   onUpdateColumnOrder: (order: string[]) => void;
   onClearFilters?: () => void;
+  onRefresh?: () => void;
   search?: string;
 }
 
-export const DiscoverView: React.FC<DiscoverViewProps> = ({
+export const DiscoverView = React.memo<DiscoverViewProps>(({
   items,
   loading,
   prefs,
@@ -41,6 +43,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
   isPresentationMode,
   isAiLoading,
   onClearFilters,
+  onRefresh,
 }) => {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   
@@ -85,13 +88,24 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
 
   if (items.length === 0) {
     return (
-      <EmptyState 
-        icon={SearchX}
-        title="No updates found"
-        description="We couldn't find any recent updates. Please check back later."
-        actionLabel="Clear Filters"
-        onAction={onClearFilters}
-      />
+      <div className="flex flex-col items-center justify-center space-y-4">
+        <EmptyState 
+          icon={SearchX}
+          title="No updates found"
+          description="We couldn't find any recent updates. This might be due to active filters or a temporary data issue."
+          actionLabel="Clear Filters"
+          onAction={onClearFilters}
+        />
+        {onRefresh && (
+          <button
+            onClick={onRefresh}
+            className="flex items-center gap-2 px-6 py-2 text-[#1a73e8] dark:text-blue-400 font-bold rounded-full border border-[#dadce0] dark:border-[var(--color-border-dark)] hover:bg-[#f8f9fa] dark:hover:bg-[var(--color-bg-app-dark)] transition-all shadow-sm text-xs uppercase tracking-widest"
+          >
+            <RotateCw size={14} />
+            <span>Force Refresh Data</span>
+          </button>
+        )}
+      </div>
     );
   }
 
@@ -103,10 +117,17 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         </div>
       )}
 
-      <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
-        <Sparkles size={20} className="stroke-[2.5]" />
-        <h2 className="text-xl font-bold tracking-tight">Discover</h2>
-      </div>
+      <header className="mb-12">
+        <Tooltip content="The Discover feed shows a curated selection of the most important recent updates across all Google Cloud sources." position="right">
+          <div className="flex items-center gap-3 mb-4 cursor-help">
+            <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-500/20">
+              <Sparkles size={24} />
+            </div>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Discover</h1>
+          </div>
+        </Tooltip>
+        <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl">A curated selection of the most important recent updates, product launches, and technical insights from across the Google Cloud ecosystem.</p>
+      </header>
 
       {/* Uniform Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -134,7 +155,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
       </div>
 
       {hasMore && (
-        <div className="flex justify-center pt-8">
+        <div className="flex justify-center pt-8 pb-12">
           <button
             onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
             className="flex items-center gap-2 px-8 py-3 bg-white dark:bg-[var(--color-bg-card-dark)] text-[#1a73e8] dark:text-blue-400 font-bold rounded-full border border-[#dadce0] dark:border-[var(--color-border-dark)] hover:bg-[#f8f9fa] dark:hover:bg-[var(--color-bg-app-dark)] transition-all shadow-sm active:scale-95 uppercase tracking-widest text-xs"
@@ -146,4 +167,4 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
       )}
     </div>
   );
-};
+});

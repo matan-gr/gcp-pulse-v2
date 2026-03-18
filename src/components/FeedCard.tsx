@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FeedItem } from '../types';
 import { extractImage, extractGCPProducts, cn, getCategoryColor, getCategoryStyles } from '../utils';
@@ -74,7 +74,7 @@ export const FeedCard = React.memo<FeedCardProps>((props) => {
   );
 });
 
-const FeedCardContent: React.FC<FeedCardProps> = ({ 
+const FeedCardContent = React.memo<FeedCardProps>(({ 
   item, 
   index, 
   onSummarize, 
@@ -111,19 +111,19 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
     iconColor
   } = useFeedCardLogic(item, analysis);
 
-  const dateObj = new Date(item.isoDate);
-  const date = format(dateObj, 'MMM d');
+  const dateObj = useMemo(() => new Date(item.isoDate), [item.isoDate]);
+  const date = useMemo(() => format(dateObj, 'MMM d'), [dateObj]);
 
   const isCompact = density === 'compact' || isSecurityBulletin;
   const isListView = viewMode === 'list' && !isPresentationMode;
 
-  const handleCopyLink = (e: React.MouseEvent) => {
+  const handleCopyLink = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(item.link);
     toast.success("Link copied to clipboard", { description: "You can now share this article." });
-  };
+  }, [item.link]);
 
-  const getSourceStyles = (source: string) => {
+  const getSourceStyles = useMemo(() => (source: string) => {
     if (source.startsWith('Cloud Blog')) return 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20';
     if (source === 'Medium Blog') return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
     switch (source) {
@@ -138,9 +138,9 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
       case 'Google Cloud YouTube': return 'bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20';
       default: return 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700';
     }
-  };
+  }, []);
 
-  const SourceIcon = ({ source, size = 10 }: { source: string, size?: number }) => {
+  const SourceIcon = useCallback(({ source, size = 10 }: { source: string, size?: number }) => {
     if (source.startsWith('Cloud Blog')) return <BookOpen size={size} />;
     if (source === 'Medium Blog') return <BookOpen size={size} />;
     switch (source) {
@@ -155,9 +155,9 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
       case 'Google Cloud YouTube': return <Youtube size={size} />;
       default: return <Tag size={size} />;
     }
-  };
+  }, []);
 
-  const getBorderColor = (source: string) => {
+  const getBorderColor = useMemo(() => (source: string) => {
     if (source.startsWith('Cloud Blog')) return 'border-l-blue-500';
     if (source === 'Medium Blog') return 'border-l-slate-800 dark:border-l-slate-400';
     switch (source) {
@@ -171,7 +171,7 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
       case 'Google Cloud YouTube': return 'border-l-red-500';
       default: return 'border-l-transparent';
     }
-  };
+  }, []);
 
   // Incident Card Design
   if (isIncident) {
@@ -190,10 +190,16 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                 {status}
               </span>
            </div>
-           <span className="text-[10px] text-slate-500 dark:text-[var(--color-text-muted-dark)] font-medium flex items-center">
-              <Clock size={12} className="mr-1.5" />
-              {new Date(item.isoDate).toLocaleString()}
-           </span>
+           <div className="flex items-center gap-3">
+              <span className="text-[10px] text-slate-500 dark:text-[var(--color-text-muted-dark)] font-medium flex items-center">
+                <Clock size={12} className="mr-1.5" />
+                {new Date(item.isoDate).toLocaleString()}
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-[var(--color-text-muted-dark)] font-medium flex items-center">
+                <BookOpen size={12} className="mr-1.5" />
+                {readingTime}
+              </span>
+           </div>
         </div>
 
         <div className={`${isCompact ? 'p-4' : 'p-5 sm:p-6'} flex flex-col flex-1 relative`}>
@@ -336,20 +342,22 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
           <div className={`${isCompact ? 'p-6' : 'p-6 sm:p-8'} ${featured ? 'shrink-0' : 'flex-1'} flex flex-col min-w-0 ${isListView ? 'justify-between' : ''}`}>
           <div className="w-full min-w-0">
             <div className={`flex items-center justify-between w-full ${isCompact ? 'mb-2' : 'mb-4'}`}>
-               <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+               <div className="flex items-center space-x-2">
                   {isNew && !isPresentationMode && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-600 text-white dark:bg-blue-500 uppercase tracking-[0.1em] shadow-lg shadow-blue-500/20">
                       <Sparkles size={9} className="fill-current" />
                       NEW
                     </span>
                   )}
-                  <span className={cn(
-                    "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all duration-300 shadow-sm group-hover:scale-105",
-                    getSourceStyles(item.source)
-                  )}>
-                    <SourceIcon source={item.source} size={10} />
-                    {item.source}
-                  </span>
+                  <Tooltip content={`Source: ${item.source}. Click to filter by this source.`} position="top">
+                    <span className={cn(
+                      "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all duration-300 shadow-sm group-hover:scale-105 cursor-help",
+                      getSourceStyles(item.source)
+                    )}>
+                      <SourceIcon source={item.source} size={10} />
+                      {item.source}
+                    </span>
+                  </Tooltip>
                   {item.severity && (
                     <span className={cn(
                       "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all duration-300 shadow-sm",
@@ -376,8 +384,14 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                     </span>
                   )}
                </div>
-               <span className="text-[10px] text-slate-400 dark:text-slate-400 font-bold uppercase tracking-[0.2em] tabular-nums shrink-0 ml-3 bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-lg">
-                  {date}
+            </div>
+            <div className="flex items-center gap-2 mb-4">
+               <span className="text-[10px] text-slate-400 dark:text-slate-400 font-bold uppercase tracking-[0.2em] tabular-nums bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-lg">
+                 {date}
+               </span>
+               <span className="text-[10px] text-slate-400 dark:text-slate-400 font-bold uppercase tracking-[0.2em] tabular-nums bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-lg flex items-center gap-1">
+                 <Clock size={10} />
+                 {readingTime}
                </span>
             </div>
             
@@ -506,25 +520,25 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
                     </button>
                   </Tooltip>
 
-                  <Tooltip content={isSaved ? "Remove" : "Save"} position="top">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSave(item);
-                      }}
-                      className={cn(
-                        "w-7 h-7 flex items-center justify-center rounded-lg transition-all duration-300 border",
-                        isSaved 
-                          ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20 shadow-inner' 
-                          : 'text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 border-transparent hover:border-blue-100 dark:hover:border-blue-500/20'
-                      )}
-                      aria-label={isSaved ? "Remove from Read Later" : "Read Later"}
-                    >
-                      <Bookmark size={14} className={isSaved ? "fill-current" : ""} />
-                    </button>
-                  </Tooltip>
+                  <Tooltip content="Save this update to your 'Read Later' list for quick access later." position="top">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSave(item);
+                    }}
+                    className={cn(
+                      "w-7 h-7 flex items-center justify-center rounded-lg transition-all duration-300 border",
+                      isSaved 
+                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20 shadow-inner' 
+                        : 'text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 border-transparent hover:border-blue-100 dark:hover:border-blue-500/20'
+                    )}
+                    aria-label={isSaved ? "Remove from Read Later" : "Read Later"}
+                  >
+                    <Bookmark size={14} className={isSaved ? "fill-current" : ""} />
+                  </button>
+                </Tooltip>
 
-                <Tooltip content="AI Summary" position="top">
+                <Tooltip content="Generate an AI-powered summary of this update to save time." position="top">
                   <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -545,4 +559,4 @@ const FeedCardContent: React.FC<FeedCardProps> = ({
         </div>
       </motion.div>
   );
-};
+});

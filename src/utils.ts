@@ -86,6 +86,14 @@ export function cleanText(text: string | undefined): string {
     .trim();
 }
 
+export function calculateReadingTime(text: string | undefined): string {
+  if (!text) return "1 min read";
+  const cleaned = cleanText(text);
+  const words = cleaned.trim().split(/\s+/).filter(w => w.length > 0).length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+  return `${minutes} min read`;
+}
+
 export function extractGCPProducts(text: string): string[] {
   if (!text) return [];
   const found = new Set<string>();

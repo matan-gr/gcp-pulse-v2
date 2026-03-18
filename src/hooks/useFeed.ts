@@ -3,9 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Feed, FeedItem } from '../types';
 import { extractGCPProducts, cleanText } from '../utils';
 
-const fetchFeed = async (): Promise<Feed> => {
+export const fetchFeed = async (force = false): Promise<Feed> => {
   try {
-    const response = await fetch('/api/feed');
+    const url = force ? '/api/feed?refresh=true' : '/api/feed';
+    const response = await fetch(url);
     if (!response.ok) {
       let errorMessage = `Error ${response.status}: ${response.statusText}`;
       try {
@@ -16,7 +17,8 @@ const fetchFeed = async (): Promise<Feed> => {
       }
       throw new Error(errorMessage);
     }
-    return response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Fetch Feed Error:", error);
     throw error;
@@ -26,7 +28,7 @@ const fetchFeed = async (): Promise<Feed> => {
 export const useFeed = () => {
   return useQuery({
     queryKey: ['feed'],
-    queryFn: fetchFeed,
+    queryFn: () => fetchFeed(false),
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
   });
@@ -35,7 +37,7 @@ export const useFeed = () => {
 export const useProductDeprecations = () => {
   return useQuery({
     queryKey: ['feed'], // Share cache with useFeed
-    queryFn: fetchFeed,
+    queryFn: () => fetchFeed(false),
     staleTime: 1000 * 60 * 5,
     select: (data: Feed) => {
       return data.items.filter(item => item.source === 'Product Deprecations')
@@ -107,7 +109,7 @@ export const useProductDeprecations = () => {
 export const useSecurityBulletins = () => {
   return useQuery({
     queryKey: ['feed'], // Share cache with useFeed
-    queryFn: fetchFeed,
+    queryFn: () => fetchFeed(false),
     staleTime: 1000 * 60 * 5,
     select: (data: Feed) => {
       const thirtyDaysAgo = new Date();
@@ -169,7 +171,7 @@ export const useSecurityBulletins = () => {
 export const useArchitectureUpdates = () => {
   return useQuery({
     queryKey: ['feed'], // Share cache with useFeed
-    queryFn: fetchFeed,
+    queryFn: () => fetchFeed(false),
     staleTime: 1000 * 60 * 5,
     select: (data: Feed) => {
       return data.items.filter(item => item.source === 'Architecture Center').map(item => {
@@ -261,7 +263,7 @@ export const useIncidents = () => {
 export const useYouTubeFeed = () => {
   return useQuery({
     queryKey: ['feed'], // Share cache with useFeed
-    queryFn: fetchFeed,
+    queryFn: () => fetchFeed(false),
     staleTime: 1000 * 60 * 5,
     select: (data: Feed) => {
       return data.items.filter(item => item.source === 'Google Cloud YouTube');

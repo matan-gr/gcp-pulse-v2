@@ -4,9 +4,10 @@ import { FeedCard } from '../components/FeedCard';
 import { TimelineSkeleton } from '../components/SkeletonLoader';
 import { EmptyState } from '../components/EmptyState';
 import { AnalysisResult } from '../types';
-import { Loader2, SearchX, FileText, ChevronDown } from 'lucide-react';
+import { Loader2, SearchX, FileText, ChevronDown, RotateCw, HelpCircle } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { extractGCPProducts } from '../utils';
+import { Tooltip } from '../components/ui/Tooltip';
 import { cn } from '../utils';
 
 const ITEMS_PER_PAGE = 10;
@@ -25,6 +26,7 @@ interface ReleaseNotesViewProps {
   analyses: Record<string, AnalysisResult>;
   isPresentationMode: boolean;
   onClearFilters?: () => void;
+  onRefresh?: () => void;
 }
 
 export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
@@ -40,32 +42,31 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
   handleCategoryChange,
   analyses,
   isPresentationMode,
-  onClearFilters
+  onClearFilters,
+  onRefresh,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
-  // Filter items to ONLY include the GCP Release Notes RSS feed
+  // Filter items to include both GCP Release Notes and Gemini Enterprise
   const releaseNotesItems = useMemo(() => {
-    return items.filter(item => item.source === 'Release Notes');
+    return items.filter(item => item.source === 'Release Notes' || item.source === 'Gemini Enterprise');
   }, [items]);
 
   // 1. First, split the release notes into individual announcements and extract products
   const parsedReleaseNotes = useMemo(() => {
     const parsed: FeedItem[] = [];
-    const ninetyDaysAgo = new Date();
-    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90); // Increased to 90 days for better history
+    // Removed 90-day filter to prevent "zero results" issue
+    // Older items will still be available if the feed provides them
 
     releaseNotesItems.forEach(item => {
-      const date = parseISO(item.isoDate);
-      if (date < ninetyDaysAgo) return; 
-
-      // Robust split: look for h1, h2, or h3 tags to separate announcements
-      const splitContent = item.content.split(/<h[1-3][^>]*>/i);
+      // Robust split: look for h1, h2, h3, or h4 tags to separate announcements
+      // Some feeds use h4 for individual items
+      const splitContent = item.content.split(/<h[1-4][^>]*>/i);
       
       splitContent.forEach((contentPart, index) => {
-        if (index === 0 && !item.content.match(/<h[1-3][^>]*>/i)) {
+        if (index === 0 && !item.content.match(/<h[1-4][^>]*>/i)) {
             const detectedProducts = extractGCPProducts(item.title + " " + item.content);
             const allLabels = Array.from(new Set([...detectedProducts, ...(item.categories || [])]));
             parsed.push({
@@ -76,8 +77,8 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
         }
         if (index === 0) return; // Skip intro part if headers exist
         
-        const announcementContent = contentPart.split(/<\/h[1-3]>/i)[1] || "";
-        const title = contentPart.split(/<\/h[1-3]>/i)[0] || item.title;
+        const announcementContent = contentPart.split(/<\/h[1-4]>/i)[1] || "";
+        const title = contentPart.split(/<\/h[1-4]>/i)[0] || item.title;
         
         // Ensure content is not empty, fallback to title or snippet
         const finalContent = announcementContent.trim() || item.contentSnippet || title;
@@ -164,12 +165,14 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <header className="mb-12">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-500/20">
-            <FileText size={24} />
+        <Tooltip content="Official Google Cloud release notes, parsed and categorized for easy consumption." position="right">
+          <div className="flex items-center gap-3 mb-4 cursor-help">
+            <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-500/20">
+              <FileText size={24} />
+            </div>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Release Notes</h1>
           </div>
-          <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Release Notes</h1>
-        </div>
+        </Tooltip>
         <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl">Stay up-to-date with the latest features, improvements, and changes across Google Cloud Platform.</p>
       </header>
 
@@ -211,13 +214,24 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
           ))}
         </div>
       ) : Object.keys(sortedGroupedItems).length === 0 ? (
-        <EmptyState 
-          icon={SearchX}
-          title="No release notes found"
-          description="Try adjusting your search or filters to find what you're looking for."
-          actionLabel="Clear All Filters"
-          onAction={() => { setSearchQuery(''); setSelectedCategory('All'); onClearFilters?.(); }}
-        />
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <EmptyState 
+            icon={SearchX}
+            title="No release notes found"
+            description="Try adjusting your search or filters to find what you're looking for."
+            actionLabel="Clear All Filters"
+            onAction={() => { setSearchQuery(''); setSelectedCategory('All'); onClearFilters?.(); }}
+          />
+          {onRefresh && (
+            <button
+              onClick={onRefresh}
+              className="flex items-center gap-2 px-6 py-2 text-[#1a73e8] dark:text-blue-400 font-bold rounded-full border border-[#dadce0] dark:border-[var(--color-border-dark)] hover:bg-[#f8f9fa] dark:hover:bg-[var(--color-bg-app-dark)] transition-all shadow-sm text-xs uppercase tracking-widest"
+            >
+              <RotateCw size={14} />
+              <span>Force Refresh Data</span>
+            </button>
+          )}
+        </div>
       ) : (
         <div className="space-y-16">
           {monthKeys.map(month => (
@@ -250,7 +264,7 @@ export const ReleaseNotesView: React.FC<ReleaseNotesViewProps> = ({
       )}
 
       {hasMore && !loading && (
-        <div className="flex justify-center pt-12 pb-8">
+        <div className="flex justify-center pt-12 pb-12">
           <button
             onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
             className="flex items-center gap-2 px-8 py-3 bg-white dark:bg-[#1a1b1e] text-blue-600 dark:text-blue-400 font-bold rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all shadow-sm active:scale-95 uppercase tracking-widest text-xs"

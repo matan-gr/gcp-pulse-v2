@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, Suspense, useRef, useCallback } from 'rea
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
-import { useFeed, useProductDeprecations, useSecurityBulletins, useArchitectureUpdates, useIncidents, useYouTubeFeed } from './hooks/useFeed';
+import { useFeed, useProductDeprecations, useSecurityBulletins, useArchitectureUpdates, useIncidents, useYouTubeFeed, fetchFeed } from './hooks/useFeed';
 import { Toaster } from './components/ui/Toaster';
 import { FeedItem } from './types';
 import { useDebounce } from './hooks/useDebounce';
@@ -11,29 +11,30 @@ import { useUserPreferences } from './hooks/useUserPreferences';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSummarizer } from './hooks/useSummarizer';
-import { ErrorDisplay } from './components/ErrorDisplay';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { ErrorDisplay } from '@/components/ErrorDisplay';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { SummaryModal } from './components/SummaryModal';
 import { PageLoader } from './components/ui/PageLoader';
 import { getAiInstance } from './services/geminiService';
 import { lazyWithRetry } from './hooks/useLazyWithRetry';
 import { WeeklyBriefProvider } from './contexts/WeeklyBriefContext';
+import { Newspaper, Zap } from 'lucide-react';
 
 // Layout & Navigation
 import { AppLayout } from './components/layout/AppLayout';
 
 // Lazy Loaded Views
-const DiscoverView = lazyWithRetry(() => import('./views/DiscoverView').then(module => ({ default: module.DiscoverView })));
-const ProductDeprecationsView = lazyWithRetry(() => import('./views/ProductDeprecationsView').then(module => ({ default: module.ProductDeprecationsView })));
-const ArchitectureView = lazyWithRetry(() => import('./views/ArchitectureView').then(module => ({ default: module.ArchitectureView })));
-const StandardFeedView = lazyWithRetry(() => import('./views/StandardFeedView').then(module => ({ default: module.StandardFeedView })));
-const SavedView = lazyWithRetry(() => import('./views/SavedView').then(module => ({ default: module.SavedView })));
-const IncidentsView = lazyWithRetry(() => import('./views/IncidentsView').then(module => ({ default: module.IncidentsView })));
-const SecurityView = lazyWithRetry(() => import('./views/SecurityView').then(module => ({ default: module.SecurityView })));
-const ReleaseNotesView = lazyWithRetry(() => import('./views/ReleaseNotesView').then(module => ({ default: module.ReleaseNotesView })));
-const WeeklyBriefView = lazyWithRetry(() => import('./views/WeeklyBriefView').then(module => ({ default: module.WeeklyBriefView })));
-const ToolsView = lazyWithRetry(() => import('./views/ToolsView').then(module => ({ default: module.ToolsView })));
-const YouTubeView = lazyWithRetry(() => import('./views/YouTubeView').then(module => ({ default: module.YouTubeView })));
+const DiscoverView = lazyWithRetry(() => import('@/views/DiscoverView').then(module => ({ default: module.DiscoverView })));
+const ProductDeprecationsView = lazyWithRetry(() => import('@/views/ProductDeprecationsView').then(module => ({ default: module.ProductDeprecationsView })));
+const ArchitectureView = lazyWithRetry(() => import('@/views/ArchitectureView').then(module => ({ default: module.ArchitectureView })));
+const StandardFeedView = lazyWithRetry(() => import('@/views/StandardFeedView').then(module => ({ default: module.StandardFeedView })));
+const SavedView = lazyWithRetry(() => import('@/views/SavedView').then(module => ({ default: module.SavedView })));
+const IncidentsView = lazyWithRetry(() => import('@/views/IncidentsView').then(module => ({ default: module.IncidentsView })));
+const SecurityView = lazyWithRetry(() => import('@/views/SecurityView').then(module => ({ default: module.SecurityView })));
+const ReleaseNotesView = lazyWithRetry(() => import('@/views/ReleaseNotesView').then(module => ({ default: module.ReleaseNotesView })));
+const WeeklyBriefView = lazyWithRetry(() => import('@/views/WeeklyBriefView').then(module => ({ default: module.WeeklyBriefView })));
+const ToolsView = lazyWithRetry(() => import('@/views/ToolsView').then(module => ({ default: module.ToolsView })));
+const YouTubeView = lazyWithRetry(() => import('@/views/YouTubeView').then(module => ({ default: module.YouTubeView })));
 
 function AppContent() {
   const location = useLocation();
@@ -54,6 +55,20 @@ function AppContent() {
 
   // Data Fetching with React Query
   const { data: feed, isLoading: feedLoading, error: queryError, refetch: refetchFeed, isRefetching: feedRefetching } = useFeed();
+  
+  const handleForceRefresh = useCallback(async () => {
+    try {
+      toast.loading("Refreshing feed...", { id: 'force-refresh' });
+      await queryClient.fetchQuery({
+        queryKey: ['feed'],
+        queryFn: () => fetchFeed(true),
+      });
+      toast.success("Feed refreshed successfully", { id: 'force-refresh' });
+    } catch (e) {
+      console.error("Force Refresh Error:", e);
+      toast.error("Failed to refresh feed", { id: 'force-refresh' });
+    }
+  }, []);
   const { data: deprecations, isLoading: deprecationsLoading, error: deprecationsError } = useProductDeprecations();
   const { data: securityBulletins, isLoading: securityLoading, error: securityError } = useSecurityBulletins();
   const { data: architectureUpdates, isLoading: architectureLoading, error: architectureError } = useArchitectureUpdates();
@@ -84,11 +99,38 @@ function AppContent() {
 
   // Error Handling
   useEffect(() => {
-    if (queryError) toast.error("Failed to load feed updates", { description: "Please check your connection and try again." });
-    if (deprecationsError) toast.error("Failed to load product deprecations", { description: "Please check your connection and try again." });
-    if (architectureError) toast.error("Failed to load architecture updates", { description: "Please check your connection and try again." });
-    if (incidentsError) toast.error("Failed to load incidents", { description: "Please check your connection and try again." });
-  }, [queryError, deprecationsError, architectureError, incidentsError]);
+    if (queryError) {
+      toast.error("Critical: Failed to load feed updates", { 
+        description: "The main intelligence engine is unreachable. Please check your connection.",
+        duration: 8000
+      });
+    }
+    
+    // Check for partial feed errors
+    if (feed?.errors && feed.errors.length > 0) {
+      const errorCount = feed.errors.length;
+      toast.warning(`${errorCount} feed sources failed to load`, {
+        description: "Some updates might be missing. Click 'Help' to see troubleshooting steps.",
+        action: {
+          label: "View Errors",
+          onClick: () => {
+            console.table(feed.errors);
+            toast.info("Technical details logged to console", {
+              description: "Report these to matangr@google.com if they persist."
+            });
+          }
+        },
+        duration: 10000
+      });
+      
+      // Simulated notification to matangr@google.com
+      console.log(`[MONITORING] Reporting ${errorCount} feed failures to matangr@google.com`);
+    }
+
+    if (deprecationsError) toast.error("Failed to load product deprecations");
+    if (architectureError) toast.error("Failed to load architecture updates");
+    if (incidentsError) toast.error("Failed to load incidents");
+  }, [queryError, deprecationsError, architectureError, incidentsError, feed?.errors]);
 
   // Search & Filter State
   const [searchMap, setSearchMap] = useState<Record<string, string>>({});
@@ -221,7 +263,7 @@ function AppContent() {
 
         const ai = getAiInstance();
         const response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
+          model: 'gemini-3.1-flash-lite-preview',
           contents: prompt,
           config: { responseMimeType: 'application/json' }
         });
@@ -258,11 +300,12 @@ function AppContent() {
     else if (activeTab === 'architecture') items = items.filter(item => item.source === 'Architecture Center');
     else if (activeTab === 'youtube') items = items.filter(item => item.source === 'Google Cloud YouTube');
     else if (activeTab === 'cloud-blog') {
-      const sixtyDaysAgo = new Date();
-      sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+      // Relaxed date filter to 180 days to avoid "zero results"
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setDate(sixMonthsAgo.getDate() - 180);
       items = items.filter(item => 
         ((item.source || '').startsWith('Cloud Blog') || item.source === 'Medium Blog') &&
-        new Date(item.isoDate).getTime() >= sixtyDaysAgo.getTime()
+        new Date(item.isoDate).getTime() >= sixMonthsAgo.getTime()
       );
     }
     else if (activeTab === 'release-notes') items = items.filter(item => item.source === 'Release Notes' || item.source === 'Gemini Enterprise');
@@ -404,8 +447,13 @@ function AppContent() {
 
   if (queryError) {
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-            <ErrorDisplay message="We couldn't load the latest updates." onRetry={() => refetchFeed()} />
+        <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center p-6">
+            <ErrorDisplay 
+              title="Intelligence Engine Offline"
+              message="The platform is currently unable to reach the GCP intelligence feeds. This could be due to a network interruption or a temporary service outage." 
+              details={queryError instanceof Error ? queryError.stack || queryError.message : String(queryError)}
+              onRetry={() => refetchFeed()} 
+            />
         </div>
     );
   }
@@ -439,6 +487,7 @@ function AppContent() {
         onExportCSV={handleExportCSV}
         isAnyFilterActive={isAnyFilterActive}
         onClearFilters={clearAllFilters}
+        onRefresh={handleForceRefresh}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -474,6 +523,7 @@ function AppContent() {
                       }}
                       onUpdateColumnOrder={(order) => updatePrefs({ columnOrder: order })}
                       onClearFilters={clearAllFilters}
+                      onRefresh={handleForceRefresh}
                       search={search}
                     />
                   </ErrorBoundary>
@@ -496,7 +546,11 @@ function AppContent() {
                     isPresentationMode={isPresentationMode}
                     isAiLoading={isAiLoading}
                     onClearFilters={clearAllFilters}
-                    title="Google Cloud Blog Feed"
+                    onRefresh={handleForceRefresh}
+                    title="Google Cloud Blog"
+                    description="Deep dives, technical tutorials, and strategic insights from Google Cloud experts and the developer community."
+                    icon={Newspaper}
+                    tooltip="Official Google Cloud and Medium blog posts."
                   />
                 } />
                 <Route path="/release-notes" element={
@@ -514,6 +568,7 @@ function AppContent() {
                     analyses={analyses}
                     isPresentationMode={isPresentationMode}
                     onClearFilters={clearAllFilters}
+                    onRefresh={handleForceRefresh}
                   />
                 } />
                 <Route path="/updates" element={
@@ -533,6 +588,9 @@ function AppContent() {
                     isAiLoading={isAiLoading}
                     onClearFilters={clearAllFilters}
                     title="Product Updates & Research"
+                    description="The latest product announcements, feature launches, and cutting-edge research from Google AI and Cloud teams."
+                    icon={Zap}
+                    tooltip="Interleaved feed of Product Updates and Google AI Research."
                   />
                 } />
                 <Route path="/incidents" element={<IncidentsView items={filteredItems} loading={loading} />} />
@@ -603,7 +661,7 @@ function AppContent() {
             analysis={summaryModal.analysis}
             streamContent={summaryModal.streamContent}
             isStreaming={summaryModal.isStreaming}
-            model="gemini-3-flash-preview"
+            model="gemini-3.1-flash-lite-preview"
           />
         )}
       </AppLayout>

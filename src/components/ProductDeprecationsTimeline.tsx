@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { FeedItem } from '../types';
-import { Calendar, AlertTriangle, ArrowRight, CheckCircle2, AlertOctagon, Clock, CalendarDays, Download, Filter } from 'lucide-react';
+import { Calendar, AlertTriangle, ArrowRight, CheckCircle2, AlertOctagon, Clock, CalendarDays, Download, Filter, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ErrorBoundary } from './ErrorBoundary';
 import { toast } from 'sonner';
@@ -134,12 +134,21 @@ const ProductDeprecationsTimelineContent: React.FC<ProductDeprecationsTimelinePr
       <div className="mb-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center">
-              <CalendarDays className="mr-3 text-blue-600" size={32} />
+            <div className="flex items-center gap-2 mb-2">
+              <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-200 dark:border-blue-800 flex items-center gap-1">
+                <Sparkles size={10} />
+                Strategic Intelligence
+              </span>
+              <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-200 dark:border-emerald-800">
+                v2.6
+              </span>
+            </div>
+            <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tight flex items-center">
+              <CalendarDays className="mr-3 text-blue-600" size={36} />
               Product Deprecations
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg">
-              Timeline of upcoming service retirements and deprecations.
+            <p className="text-slate-600 dark:text-slate-400 text-lg font-medium">
+              Timeline of upcoming service retirements and critical API sunsets.
             </p>
           </div>
           
@@ -359,40 +368,49 @@ const TimelineCard = ({
       </div>
 
       {/* Card */}
-      <div className={`w-full md:w-[calc(50%-2.5rem)] ml-12 md:ml-0 p-6 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all duration-300 ${borderColors[color as keyof typeof borderColors]}`}>
-        <div className="flex justify-between items-start mb-3">
+      <div className={`w-full md:w-[calc(50%-2.5rem)] ml-12 md:ml-0 p-6 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 group-hover:-translate-y-1 ${borderColors[color as keyof typeof borderColors]}`}>
+        <div className="flex justify-between items-start mb-4">
           <div className="flex flex-col gap-2">
-            <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 w-fit`}>
+            <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 w-fit shadow-sm`}>
               {item.eolDate ? item.eolDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD'}
             </span>
             {item.categories?.includes('Change') && (
-              <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/50 dark:text-amber-200 dark:border-amber-800 w-fit">
+              <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/50 dark:text-amber-200 dark:border-amber-800 w-fit flex items-center gap-1">
+                <AlertTriangle size={10} />
                 Critical Change
               </span>
             )}
           </div>
           {item.daysUntil !== null && item.daysUntil > 0 && (
-            <span className={`text-xs font-bold ${item.daysUntil < 90 ? 'text-red-600 animate-pulse' : 'text-slate-500'}`}>
-              {item.daysUntil} Days Left
-            </span>
+            <div className={`flex flex-col items-end`}>
+              <span className={`text-xs font-black ${item.daysUntil < 90 ? 'text-red-600 animate-pulse' : 'text-slate-500'}`}>
+                {item.daysUntil} Days Left
+              </span>
+              <div className={`w-12 h-1 rounded-full bg-slate-100 dark:bg-slate-800 mt-1 overflow-hidden`}>
+                <div 
+                  className={`h-full ${item.daysUntil < 90 ? 'bg-red-500' : 'bg-blue-500'}`} 
+                  style={{ width: `${Math.max(0, Math.min(100, (item.daysUntil / 365) * 100))}%` }}
+                />
+              </div>
+            </div>
           )}
         </div>
         
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-tight">
+        <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 leading-tight tracking-tight">
           <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">
             {item.title}
           </a>
         </h3>
         
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-3">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 line-clamp-3 leading-relaxed">
           {item.contentSnippet}
         </p>
 
-        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
            <div className="flex gap-2">
              {item.categories?.slice(0, 2).map(cat => (
                <span key={cat} className={cn(
-                 "px-2 py-0.5 text-[9px] font-black rounded-lg uppercase tracking-widest border transition-all duration-300",
+                 "px-2.5 py-1 text-[9px] font-black rounded-full uppercase tracking-widest border transition-all duration-300",
                  getCategoryStyles(cat)
                )}>
                  {cat}
@@ -409,28 +427,28 @@ const TimelineCard = ({
                  }}
                  disabled={isSummarizing}
                  className={cn(
-                   "text-xs font-bold flex items-center transition-all duration-300",
+                   "text-xs font-black flex items-center transition-all duration-300 px-3 py-1.5 rounded-xl border",
                    isSummarizing 
-                     ? "text-slate-400 cursor-not-allowed" 
-                     : "text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+                     ? "bg-slate-50 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 cursor-not-allowed" 
+                     : "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border-emerald-100 dark:border-emerald-800"
                  )}
                >
                  {isSummarizing ? (
                    <>
-                     <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mr-1.5" />
+                     <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mr-2" />
                      Analyzing...
                    </>
                  ) : (
                    <>
-                     <CalendarDays size={12} className="mr-1" />
-                     AI Analysis
+                     <Sparkles size={12} className="mr-2" />
+                     AI Insight
                    </>
                  )}
                </button>
              )}
              
-             <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-blue-600 hover:underline flex items-center">
-               Migration Guide <ArrowRight size={12} className="ml-1" />
+             <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-blue-600 hover:text-blue-700 flex items-center group/link">
+               Migration <ArrowRight size={14} className="ml-1 group-hover/link:translate-x-1 transition-transform" />
              </a>
            </div>
         </div>

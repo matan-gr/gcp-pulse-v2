@@ -154,7 +154,7 @@ export const useSummarizer = () => {
 
       const ai = getAiInstance();
       const result = await ai.models.generateContentStream({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-3.1-flash-lite-preview',
         contents: prompt,
       });
 

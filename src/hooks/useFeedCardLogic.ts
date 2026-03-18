@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
 import { FeedItem, AnalysisResult } from '../types';
-import { extractImage, extractGCPProducts } from '../utils';
+import { extractImage, extractGCPProducts, calculateReadingTime } from '../utils';
 
 export const useFeedCardLogic = (item: FeedItem, analysis?: AnalysisResult) => {
   return useMemo(() => {
     const image = item.thumbnailUrl || item.enclosure?.url || extractImage(item.content, item.link);
     const dateObj = new Date(item.isoDate);
     
-    const wordCount = (item.contentSnippet || '').split(/\s+/).length;
-    const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+    const readingTime = calculateReadingTime(item.content || item.contentSnippet);
 
     const now = new Date();
     const hoursSince = (now.getTime() - dateObj.getTime()) / (1000 * 60 * 60);

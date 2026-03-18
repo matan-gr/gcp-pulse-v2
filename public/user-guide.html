@@ -9,18 +9,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Light Theme Variables (Matches App) */
             --primary: #1a73e8;
             --primary-hover: #1557b0;
+            --primary-bg: #e8f0fe;
             --text-main: #202124;
             --text-muted: #5f6368;
-            --bg-main: #ffffff;
-            --bg-sidebar: #f8f9fa;
+            --bg-main: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
             --border: #dadce0;
             --accent-red: #d93025;
+            --accent-red-bg: #fce8e6;
             --accent-orange: #f29900;
+            --accent-orange-bg: #fef7e0;
             --accent-green: #1e8e3e;
-            --radius: 8px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --accent-green-bg: #e6f4ea;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Dark Theme Variables (Matches App) */
+                --primary: #8ab4f8;
+                --primary-hover: #aecbfa;
+                --primary-bg: rgba(138, 180, 248, 0.15);
+                --text-main: #e8eaed;
+                --text-muted: #9aa0a6;
+                --bg-main: #121212;
+                --bg-card: #1e1e1e;
+                --bg-sidebar: #1a1a1a;
+                --border: #3c4043;
+                --accent-red: #f28b82;
+                --accent-red-bg: rgba(242, 139, 130, 0.15);
+                --accent-orange: #fdd663;
+                --accent-orange-bg: rgba(253, 214, 99, 0.15);
+                --accent-green: #81c995;
+                --accent-green-bg: rgba(129, 201, 149, 0.15);
+                --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+            }
         }
 
         * {
@@ -29,13 +60,18 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-main);
             background-color: var(--bg-main);
             line-height: 1.6;
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Sidebar Navigation */
@@ -44,182 +80,312 @@
             background-color: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             padding: 2rem 1.5rem;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
             height: 100vh;
             overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
         }
 
         .sidebar h2 {
-            font-size: 1.2rem;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
         }
 
         .sidebar ul {
             list-style: none;
-        }
-
-        .sidebar li {
-            margin-bottom: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
         .sidebar a {
             text-decoration: none;
             color: var(--text-muted);
             font-weight: 500;
-            display: block;
-            padding: 0.5rem 0.75rem;
-            border-radius: var(--radius);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
             transition: all 0.2s ease;
         }
 
-        .sidebar a:hover {
-            background-color: rgba(26, 115, 232, 0.1);
+        .sidebar a svg {
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: var(--primary-bg);
             color: var(--primary);
         }
 
-        /* Main Content */
-        .content {
-            flex: 1;
-            padding: 3rem 4rem;
-            max-width: 900px;
+        .sidebar a:hover svg, .sidebar a.active svg {
+            opacity: 1;
         }
 
-        header {
-            margin-bottom: 3rem;
-            padding-bottom: 1.5rem;
+        /* Main Content */
+        .content-wrapper {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            max-width: 1000px;
+        }
+
+        .hero {
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
             border-bottom: 2px solid var(--border);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            color: var(--text-main);
         }
 
-        .subtitle {
-            font-size: 1.2rem;
+        .hero p {
+            font-size: 1.25rem;
             color: var(--text-muted);
+            max-width: 600px;
+        }
+
+        section {
+            margin-bottom: 5rem;
+            scroll-margin-top: 2rem;
         }
 
         h2.section-title {
-            font-size: 1.8rem;
-            margin: 3rem 0 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             color: var(--text-main);
         }
 
         h3 {
             font-size: 1.3rem;
+            font-weight: 600;
             margin: 2rem 0 1rem;
-            color: var(--primary);
+            color: var(--text-main);
         }
 
         p {
             margin-bottom: 1.2rem;
-            color: var(--text-muted);
+            font-size: 1.05rem;
         }
 
-        ul.feature-list {
-            margin-bottom: 1.5rem;
-            padding-left: 1.5rem;
-            color: var(--text-muted);
-        }
-
-        ul.feature-list li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Cards for Features */
+        /* Feature Grid */
         .grid-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin: 2rem 0;
         }
 
         .card {
-            background: #fff;
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: var(--radius-md);
             padding: 1.5rem;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-bg);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .card h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 1.15rem;
+            font-weight: 600;
             color: var(--text-main);
         }
 
         .card p {
             font-size: 0.95rem;
+            color: var(--text-muted);
             margin-bottom: 0;
         }
 
-        /* Callouts / Alerts */
+        /* Callouts */
         .callout {
-            padding: 1.2rem 1.5rem;
-            border-radius: var(--radius);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
             margin: 2rem 0;
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             align-items: flex-start;
+            border: 1px solid var(--border);
         }
 
         .callout.info {
-            background-color: #e8f0fe;
-            border-left: 4px solid var(--primary);
+            background-color: var(--primary-bg);
+            border-color: rgba(26, 115, 232, 0.2);
         }
         
         .callout.warning {
-            background-color: #fef7e0;
-            border-left: 4px solid var(--accent-orange);
+            background-color: var(--accent-orange-bg);
+            border-color: rgba(242, 153, 0, 0.2);
+        }
+
+        .callout.success {
+            background-color: var(--accent-green-bg);
+            border-color: rgba(30, 142, 62, 0.2);
         }
 
         .callout-icon {
             flex-shrink: 0;
-            margin-top: 2px;
+            background: var(--bg-card);
+            padding: 0.5rem;
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
         }
 
+        .callout.info .callout-icon { color: var(--primary); }
+        .callout.warning .callout-icon { color: var(--accent-orange); }
+        .callout.success .callout-icon { color: var(--accent-green); }
+
         .callout-content h4 {
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
             color: var(--text-main);
         }
 
         .callout-content p {
             margin-bottom: 0;
             font-size: 0.95rem;
+            color: var(--text-muted);
         }
 
-        /* Badge */
+        /* Badges */
         .badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            border: 1px solid transparent;
         }
-        .badge.critical { background: #fce8e6; color: var(--accent-red); }
-        .badge.high { background: #fef7e0; color: var(--accent-orange); }
+        .badge.critical { background: var(--accent-red-bg); color: var(--accent-red); border-color: rgba(217, 48, 37, 0.2); }
+        .badge.high { background: var(--accent-orange-bg); color: var(--accent-orange); border-color: rgba(242, 153, 0, 0.2); }
+        .badge.feature { background: var(--primary-bg); color: var(--primary); border-color: rgba(26, 115, 232, 0.2); }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .feature-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+        }
+
+        .feature-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.4rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+        }
+
+        .feature-list strong {
+            color: var(--text-main);
+        }
+
+        /* UI Mockups / Images */
+        .ui-mockup {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ui-mockup-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ui-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+        }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                padding: 2rem;
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -232,8 +398,19 @@
                 border-bottom: 1px solid var(--border);
                 padding: 1.5rem;
             }
-            .content {
+            .content-wrapper {
+                margin-left: 0;
                 padding: 2rem 1.5rem;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .sidebar ul {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .sidebar a {
+                padding: 0.5rem 0.75rem;
             }
         }
     </style>
@@ -241,107 +418,158 @@
 <body>
 
     <aside class="sidebar">
-        <h2>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7-5-7 5v4H4a2 2 0 0 0-2 2v6Z"/><path d="M17 12v10"/><path d="M13 12v10"/><path d="M9 16v6"/></svg>
-            GCP Pulse
-        </h2>
-        <ul>
-            <li><a href="#introduction">1. Introduction</a></li>
-            <li><a href="#getting-started">2. Getting Started</a></li>
-            <li><a href="#core-features">3. Core Features</a></li>
-            <li><a href="#ai-briefs">4. AI Weekly Briefs</a></li>
-            <li><a href="#data-sources">5. Data Sources</a></li>
-            <li><a href="#pro-tips">6. Pro Tips & Best Practices</a></li>
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7-5-7 5v4H4a2 2 0 0 0-2 2v6Z"/><path d="M17 12v10"/><path d="M13 12v10"/><path d="M9 16v6"/></svg>
+            </div>
+            <h2>GCP Pulse</h2>
+        </div>
+        <ul id="nav-links">
+            <li><a href="#introduction" class="active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Introduction</a></li>
+            <li><a href="#dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Dashboard & Search</a></li>
+            <li><a href="#modules"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Core Modules</a></li>
+            <li><a href="#ai-briefs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> AI Weekly Briefs</a></li>
+            <li><a href="#pro-tips"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Pro Tips</a></li>
         </ul>
     </aside>
 
-    <main class="content">
-        <header>
-            <h1>GCP Pulse User Guide</h1>
-            <p class="subtitle">The definitive manual for monitoring your Google Cloud ecosystem.</p>
+    <main class="content-wrapper">
+        <header class="hero">
+            <h1>Master Your Google Cloud Environment.</h1>
+            <p>The definitive manual for using GCP Pulse to monitor platform health, track deprecations, and stay ahead of security vulnerabilities.</p>
         </header>
 
         <section id="introduction">
-            <h2 class="section-title">1. Introduction</h2>
-            <p>Welcome to <strong>GCP Pulse</strong>. Managing a Google Cloud environment requires constant vigilance. Between product deprecations, critical security vulnerabilities, and new feature releases, staying informed is a full-time job.</p>
-            <p>GCP Pulse solves the "information fragmentation" problem. Instead of checking five different RSS feeds, the GCP Status page, and the Google Cloud Blog, GCP Pulse aggregates, normalizes, and summarizes everything into a single, actionable dashboard.</p>
+            <h2 class="section-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                1. Introduction
+            </h2>
+            <p>Managing a Google Cloud environment requires constant vigilance. Between product deprecations, critical security vulnerabilities, and new feature releases, staying informed is a full-time job.</p>
+            <p><strong>GCP Pulse</strong> solves the "information fragmentation" problem. Instead of checking five different RSS feeds, the GCP Status page, and the Google Cloud Blog, GCP Pulse aggregates, normalizes, and summarizes everything into a single, actionable dashboard.</p>
+            
+            <div class="callout success">
+                <div class="callout-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="callout-content">
+                    <h4>Built for Modern Cloud Teams</h4>
+                    <p>Whether you are a Cloud Architect planning a migration, a DevOps engineer troubleshooting an outage, or a Security Analyst tracking CVEs, GCP Pulse provides the exact context you need.</p>
+                </div>
+            </div>
         </section>
 
-        <section id="getting-started">
-            <h2 class="section-title">2. Getting Started</h2>
-            <p>When you first open GCP Pulse, you are presented with the <strong>Main Feed</strong>. This is your chronological stream of all GCP updates, sorted by the most recent events.</p>
+        <section id="dashboard">
+            <h2 class="section-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                2. Dashboard & Search
+            </h2>
+            <p>The Main Feed is your chronological stream of all GCP updates. To prevent information overload, GCP Pulse includes a powerful search and filtering engine.</p>
             
-            <h3>Navigation & Filtering</h3>
-            <p>The interface is designed to help you cut through the noise quickly:</p>
+            <div class="ui-mockup">
+                <div class="ui-mockup-header">
+                    <div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center; background: var(--bg-main); padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span style="color: var(--text-muted); font-size: 0.95rem;">Search updates, CVEs, or products...</span>
+                    <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                        <span class="badge feature">Smart Filter: ON</span>
+                    </div>
+                </div>
+            </div>
+
             <ul class="feature-list">
-                <li><strong>Global Search:</strong> Use the search bar at the top to find specific CVEs, product names (e.g., "BigQuery"), or update types.</li>
-                <li><strong>Category Filters:</strong> Toggle between <em>Release Notes</em>, <em>Security Bulletins</em>, <em>Incidents</em>, and <em>Blog Posts</em>.</li>
-                <li><strong>Product Filters:</strong> Select only the GCP services you actively use in your tech stack to hide irrelevant updates.</li>
+                <li><strong>Global Search:</strong> Instantly search across thousands of release notes, blogs, and security bulletins.</li>
+                <li><strong>Smart Filtering:</strong> Toggle the "Smart Filter" (Sparkles icon) to let the AI automatically interpret your search intent (e.g., searching "database" will automatically include Cloud SQL, Spanner, and Bigtable).</li>
+                <li><strong>Date Ranges:</strong> Use the calendar icon to restrict your view to a specific week, month, or custom range.</li>
+                <li><strong>Export to CSV:</strong> Need to share updates with your team or compliance department? Click the download icon to export your current filtered view to a spreadsheet.</li>
             </ul>
         </section>
 
-        <section id="core-features">
-            <h2 class="section-title">3. Core Features Deep-Dive</h2>
+        <section id="modules">
+            <h2 class="section-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                3. Core Modules
+            </h2>
             
             <div class="grid-cards">
                 <div class="card">
-                    <h4>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        Security Bulletins
-                    </h4>
-                    <p>Monitors official GCP security advisories. Items are tagged by severity (<span class="badge critical">Critical</span>, <span class="badge high">High</span>). Click any bulletin to view mitigation steps and affected versions.</p>
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h4>Security Bulletins</h4>
+                    </div>
+                    <p>Monitors official GCP security advisories. Items are tagged by severity (<span class="badge critical">Critical</span>, <span class="badge high">High</span>). Expand any bulletin to view mitigation steps, affected versions, and links to patches.</p>
                 </div>
                 
                 <div class="card">
-                    <h4>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                        Deprecation Tracker
-                    </h4>
-                    <p>Automatically isolates End-of-Life (EOL) announcements. Displays both the announcement date and the hard shutdown date so you can schedule migrations.</p>
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                        </div>
+                        <h4>Deprecation Tracker</h4>
+                    </div>
+                    <p>Automatically isolates End-of-Life (EOL) announcements. Displays both the announcement date and the hard shutdown date so you can schedule migrations well in advance.</p>
                 </div>
 
                 <div class="card">
-                    <h4>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                        Live Incidents
-                    </h4>
-                    <p>Mirrors the official GCP Status page. Active outages are pinned to the top of your feed with real-time updates from Google engineers.</p>
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <h4>Live Incidents</h4>
+                    </div>
+                    <p>Mirrors the official GCP Status page. Active outages are pinned to the top of your feed with real-time updates from Google engineers, helping you distinguish between your bugs and platform outages.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <h4>Release Notes</h4>
+                    </div>
+                    <p>A unified stream of feature additions, bug fixes, and breaking changes across all GCP products. Filter by specific products to cut out the noise.</p>
                 </div>
             </div>
         </section>
 
         <section id="ai-briefs">
-            <h2 class="section-title">4. AI Weekly Briefs</h2>
+            <h2 class="section-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                4. AI Weekly Briefs
+            </h2>
             <p>Reading dozens of release notes every Friday is tedious. GCP Pulse integrates with Google's Gemini AI to do the heavy lifting for you.</p>
             
             <div class="callout info">
                 <div class="callout-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                 </div>
                 <div class="callout-content">
-                    <h4>How it works</h4>
-                    <p>Click the <strong>"Generate AI Brief"</strong> button. The system gathers all normalized data from the past 7 days, feeds it to the LLM, and generates a structured executive summary highlighting only the most impactful changes.</p>
+                    <h4>How to Generate a Brief</h4>
+                    <p>Navigate to the <strong>Weekly Brief</strong> tab in the sidebar. The system gathers all normalized data from the past 7 days, feeds it to the LLM, and generates a structured executive summary highlighting only the most impactful changes.</p>
                 </div>
             </div>
-        </section>
 
-        <section id="data-sources">
-            <h2 class="section-title">5. Data Sources</h2>
-            <p>GCP Pulse is only as good as its data. We continuously ingest and normalize data from the following official sources:</p>
+            <p>The generated brief includes:</p>
             <ul class="feature-list">
-                <li><strong>Google Cloud Release Notes:</strong> Comprehensive tracking of feature additions, changes, and deprecations.</li>
-                <li><strong>Google Cloud Security Bulletins:</strong> Official CVEs and security advisories affecting GCP products.</li>
-                <li><strong>GCP Service Health Dashboard:</strong> Real-time incident reporting and outage tracking.</li>
-                <li><strong>Google Cloud Blog & Architecture Center:</strong> High-level announcements, reference architectures, and best practices.</li>
+                <li><strong>Executive Summary:</strong> A 2-3 sentence overview of the week's theme.</li>
+                <li><strong>Top Announcements:</strong> The 3-5 biggest feature releases or product launches.</li>
+                <li><strong>Security & Compliance:</strong> Any critical CVEs or security updates you must patch immediately.</li>
+                <li><strong>Action Items:</strong> A bulleted list of things your team actually needs to <em>do</em> (e.g., "Update GKE node pools to 1.28").</li>
             </ul>
         </section>
 
         <section id="pro-tips">
-            <h2 class="section-title">6. Pro Tips & Best Practices</h2>
+            <h2 class="section-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                5. Pro Tips & Best Practices
+            </h2>
             
             <div class="callout warning">
                 <div class="callout-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                 </div>
                 <div class="callout-content">
                     <h4>Incident First Response</h4>
@@ -350,12 +578,38 @@
             </div>
 
             <ul class="feature-list">
-                <li><strong>Bookmark Your Stack:</strong> Apply filters for the specific products your team uses (e.g., GKE, Cloud SQL, Pub/Sub) and bookmark the URL. This creates a personalized dashboard.</li>
+                <li><strong>Bookmark Your Stack:</strong> Apply filters for the specific products your team uses (e.g., GKE, Cloud SQL, Pub/Sub) and bookmark the URL. This creates a personalized dashboard that loads instantly.</li>
                 <li><strong>Monday Morning Routine:</strong> Make it a habit to generate the AI Weekly Brief every Monday morning to catch up on weekend deployments or late Friday announcements.</li>
                 <li><strong>Quarterly Planning:</strong> Review the Deprecations tab before quarterly sprint planning to ensure you have allocated engineering time to migrate away from retiring services.</li>
+                <li><strong>Dark Mode:</strong> GCP Pulse automatically respects your system's color scheme preference. You can also manually toggle Dark Mode using the Moon/Sun icon in the top right of the main app header.</li>
             </ul>
         </section>
     </main>
 
+    <script>
+        // Simple ScrollSpy to highlight active sidebar link
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#nav-links a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= (sectionTop - 150)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

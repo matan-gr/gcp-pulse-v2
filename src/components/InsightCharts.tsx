@@ -39,10 +39,10 @@ export const InsightCharts: React.FC<InsightChartsProps> = ({ data }) => {
                   borderRadius: '16px', 
                   border: 'none', 
                   boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', 
-                  backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                  backgroundColor: 'var(--color-tooltip-bg)',
                   padding: '12px 16px'
                 }}
-                itemStyle={{ color: '#1a73e8', fontWeight: '700', fontSize: '12px' }}
+                itemStyle={{ color: 'var(--color-primary)', fontWeight: '700', fontSize: '12px' }}
               />
             </RadarChart>
           </ResponsiveContainer>

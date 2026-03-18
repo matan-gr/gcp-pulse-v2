@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Sidebar } from '../Sidebar';
+import { UserGuide } from '../UserGuide';
 import { 
   Menu, 
   Sun, 
@@ -11,7 +12,8 @@ import {
   MessageSquarePlus,
   X,
   Filter,
-  BookOpen
+  BookOpen,
+  RotateCw
 } from 'lucide-react';
 import { GlobalSearch } from '../GlobalSearch';
 import { useTheme } from '../../hooks/useTheme';
@@ -48,6 +50,7 @@ interface AppLayoutProps {
   onExportCSV: () => void;
   isAnyFilterActive?: boolean;
   onClearFilters?: () => void;
+  onRefresh?: () => void;
 }
 
 const CurrentTime = () => {
@@ -95,14 +98,19 @@ export const AppLayout = React.memo<AppLayoutProps>(({
   onViewModeChange,
   onExportCSV,
   isAnyFilterActive,
-  onClearFilters
+  onClearFilters,
+  onRefresh
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-app)] dark:bg-[var(--color-bg-app-dark)] font-sans text-slate-950 dark:text-slate-50 flex">
       
+      {/* User Guide Modal */}
+      <UserGuide isOpen={isUserGuideOpen} onClose={() => setIsUserGuideOpen(false)} />
+
       {/* Sidebar Navigation */}
       <Sidebar 
         activeTab={activeTab} 
@@ -184,17 +192,29 @@ export const AppLayout = React.memo<AppLayoutProps>(({
 
             {/* Right: Controls */}
             <div className="flex items-center gap-2 sm:gap-3">
+               {/* Refresh Button */}
+               {onRefresh && (
+                 <Tooltip content="Force Refresh Feed" position="bottom">
+                   <button
+                    onClick={onRefresh}
+                    className="p-1.5 rounded-full text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-bg-card-dark)] transition-all border border-[#dadce0] dark:border-[var(--color-border-dark)] bg-white dark:bg-[var(--color-bg-card-dark)] flex items-center justify-center"
+                   >
+                     <RotateCw size={16} />
+                   </button>
+                 </Tooltip>
+               )}
+
                {/* User Guide Link */}
-               <Tooltip content="User Guide" position="bottom">
-                 <a 
-                   href="/user-guide.html"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   className="p-1.5 rounded-full text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-bg-card-dark)] transition-all border border-[#dadce0] dark:border-[var(--color-border-dark)] bg-white dark:bg-[var(--color-bg-card-dark)] flex items-center justify-center"
-                 >
-                   <BookOpen size={16} />
-                 </a>
-               </Tooltip>
+               <div className="flex items-center">
+                 <Tooltip content="Open the comprehensive user guide to learn about all features and shortcuts." position="bottom">
+                   <button 
+                     onClick={() => setIsUserGuideOpen(true)}
+                     className="p-1.5 rounded-full text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-bg-card-dark)] transition-all border border-[#dadce0] dark:border-[var(--color-border-dark)] bg-white dark:bg-[var(--color-bg-card-dark)] flex items-center justify-center"
+                   >
+                     <BookOpen size={16} />
+                   </button>
+                 </Tooltip>
+               </div>
 
                {/* Author Link */}
                <Tooltip content="Contact Author" position="bottom">
@@ -248,7 +268,7 @@ export const AppLayout = React.memo<AppLayoutProps>(({
            )}
         </div>
 
-        <div className="p-3 sm:p-4 md:p-6 pb-24 max-w-[1600px] mx-auto min-h-[calc(100vh-160px)]">
+        <div className="p-3 sm:p-4 md:p-6 pb-40 max-w-[1600px] mx-auto min-h-[calc(100vh-160px)]">
           {isAnyFilterActive && onClearFilters && (
             <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#e8f0fe] dark:bg-[#3b82f6]/10 border border-[#d2e3fc] dark:border-[#3b82f6]/30 rounded-2xl sm:rounded-[24px] animate-in fade-in slide-in-from-top-2 duration-300 gap-4">
               <div className="flex items-center gap-3">

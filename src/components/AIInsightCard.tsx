@@ -8,7 +8,7 @@ interface AIInsightCardProps {
   isCompact?: boolean;
 }
 
-export const AIInsightCard: React.FC<AIInsightCardProps> = ({ analysis, isCompact }) => {
+export const AIInsightCard = React.memo<AIInsightCardProps>(({ analysis, isCompact }) => {
   const isHighPriority = (analysis.chartData?.actionPriority ?? 0) > 70;
 
   return (
@@ -76,4 +76,4 @@ export const AIInsightCard: React.FC<AIInsightCardProps> = ({ analysis, isCompac
       </div>
     </div>
   );
-};
+});

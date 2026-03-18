@@ -1,10 +1,11 @@
 import React from 'react';
 import { FeedItem } from '../types';
-import { Sparkles, RefreshCw, Calendar, FileText, Download, Share2 } from 'lucide-react';
+import { Sparkles, RefreshCw, Calendar, FileText, Download, Share2, HelpCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion } from 'motion/react';
 import { useWeeklyBrief } from '../hooks/useWeeklyBrief';
+import { Tooltip } from '../components/ui/Tooltip';
 import { toast } from 'sonner';
 import { marked } from 'marked';
 import { AILoading } from '../components/ui/AILoading';
@@ -13,7 +14,7 @@ interface WeeklyBriefViewProps {
   items: FeedItem[];
 }
 
-export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
+export const WeeklyBriefView = React.memo<WeeklyBriefViewProps>(({ items }) => {
   const { brief, loading, progress, status, lastUpdated, error, generateBrief } = useWeeklyBrief(items);
 
   const handleRefresh = () => {
@@ -268,13 +269,15 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
             <Sparkles size={12} className="mr-1.5" />
             AI Intelligence
           </div>
-          <h1 className="text-4xl font-extrabold text-[#202124] dark:text-white tracking-tight leading-none flex items-center gap-3">
-            Weekly Brief
-            <span className="flex h-3 w-3 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-            </span>
-          </h1>
+          <Tooltip content="The Weekly Brief is an AI-generated synthesis of the most critical cloud updates from the past 7 days." position="right">
+            <h1 className="text-4xl font-extrabold text-[#202124] dark:text-white tracking-tight leading-none flex items-center gap-3 cursor-help">
+              Weekly Brief
+              <span className="flex h-3 w-3 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+              </span>
+            </h1>
+          </Tooltip>
           <p className="text-[#5f6368] dark:text-slate-400 flex items-center text-sm font-medium">
             <Calendar size={16} className="mr-2 text-slate-400" />
             {lastUpdated 
@@ -409,4 +412,4 @@ export const WeeklyBriefView: React.FC<WeeklyBriefViewProps> = ({ items }) => {
       </div>
     </div>
   );
-};
+});

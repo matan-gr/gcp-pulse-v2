@@ -18,7 +18,7 @@ interface SummaryModalProps {
   model?: string;
 }
 
-export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, title, analysis, streamContent, isStreaming, model }) => {
+export const SummaryModal = React.memo<SummaryModalProps>(({ isOpen, onClose, title, analysis, streamContent, isStreaming, model }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -272,4 +272,4 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({ isOpen, onClose, tit
       )}
     </AnimatePresence>
   );
-};
+});

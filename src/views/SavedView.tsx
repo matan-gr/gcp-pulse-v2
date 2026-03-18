@@ -3,9 +3,10 @@ import { FeedItem } from '../types';
 import { FeedCard } from '../components/FeedCard';
 import { CardSkeleton } from '../components/SkeletonLoader';
 import { AnalysisResult } from '../types';
-import { Bookmark, Trash2, BookOpen, ArrowRight } from 'lucide-react';
+import { Bookmark, Trash2, BookOpen, ArrowRight, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSavedView } from '../hooks/useSavedView';
+import { Tooltip } from '../components/ui/Tooltip';
 
 interface SavedViewProps {
   items: FeedItem[];
@@ -83,7 +84,11 @@ export const SavedView: React.FC<SavedViewProps> = ({
             <BookOpen size={20} />
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Reading List</h2>
+            <Tooltip content="Your personal reading list. Items saved here are stored in your browser's local storage." position="right">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2 cursor-help">
+                Reading List
+              </h2>
+            </Tooltip>
             <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{items.length} articles saved</p>
           </div>
         </div>

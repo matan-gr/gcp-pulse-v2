@@ -31,12 +31,22 @@ export interface FeedItem {
   likeCount?: number;
   isDeprecation?: boolean;
   categoryType?: 'New Feature' | 'Security' | 'Deprecation' | 'General';
+  readingTime?: string;
+}
+
+export interface FeedError {
+  source: string;
+  url: string;
+  message: string;
+  timestamp: string;
 }
 
 export interface Feed {
   title: string;
   description: string;
   items: FeedItem[];
+  errors?: FeedError[];
+  lastUpdated?: string;
 }
 
 export interface ChartData {

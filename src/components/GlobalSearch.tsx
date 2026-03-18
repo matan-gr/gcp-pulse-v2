@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, SlidersHorizontal, Sparkles, X, Calendar, Tag, LayoutGrid, List, Download, Command } from 'lucide-react';
+import { Search, SlidersHorizontal, Sparkles, X, Calendar, Tag, LayoutGrid, List, Download, Command, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tooltip } from './ui/Tooltip';
 
@@ -27,7 +27,7 @@ interface GlobalSearchProps {
   onClearFilters?: () => void;
 }
 
-export const GlobalSearch: React.FC<GlobalSearchProps> = ({
+export const GlobalSearch = React.memo<GlobalSearchProps>(({
   value,
   onChange,
   isSmartFilter,
@@ -88,10 +88,12 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
         
         {/* Shortcut Hint */}
         <div className="absolute inset-y-0 right-14 flex items-center pointer-events-none z-20 hidden lg:flex">
-          <div className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-[var(--color-bg-card-dark)] border border-[#dadce0] dark:border-[var(--color-border-dark)] rounded text-[10px] font-bold text-[#5f6368] dark:text-[var(--color-text-muted-dark)]">
-            <Command size={10} />
-            <span>K</span>
-          </div>
+          <Tooltip content="Press Cmd+K to quickly focus the search bar." position="bottom">
+            <div className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-[var(--color-bg-card-dark)] border border-[#dadce0] dark:border-[var(--color-border-dark)] rounded text-[10px] font-bold text-[#5f6368] dark:text-[var(--color-text-muted-dark)] cursor-help pointer-events-auto">
+              <Command size={10} />
+              <span>K</span>
+            </div>
+          </Tooltip>
         </div>
         
         {/* Right Actions */}
@@ -108,18 +110,20 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
           )}
 
           {/* Smart Filter Toggle */}
-          <Tooltip content="Toggle AI Smart Search" position="bottom">
-            <button
-              onClick={onToggleSmartFilter}
-              className={`p-2 rounded-full transition-all ${
-                isSmartFilter 
-                  ? 'bg-[#e8f0fe] text-[#1a73e8] dark:bg-[#3b82f6]/20 dark:text-[#3b82f6]' 
-                  : 'text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:text-[#1a73e8] dark:hover:text-[#3b82f6] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-border-dark)]'
-              }`}
-            >
-              <Sparkles size={18} className={loading ? 'animate-pulse' : ''} />
-            </button>
-          </Tooltip>
+          <div className="flex items-center">
+            <Tooltip content="AI Smart Search uses natural language to find relevant updates across all sources." position="bottom">
+              <button
+                onClick={onToggleSmartFilter}
+                className={`p-2 rounded-full transition-all ${
+                  isSmartFilter 
+                    ? 'bg-[#e8f0fe] text-[#1a73e8] dark:bg-[#3b82f6]/20 dark:text-[#3b82f6]' 
+                    : 'text-[#5f6368] dark:text-[var(--color-text-muted-dark)] hover:text-[#1a73e8] dark:hover:text-[#3b82f6] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-border-dark)]'
+                }`}
+              >
+                <Sparkles size={18} className={loading ? 'animate-pulse' : ''} />
+              </button>
+            </Tooltip>
+          </div>
         </div>
       </div>
 
@@ -182,4 +186,4 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
       {/* Expanded Filters Panel Removed */}
     </div>
   );
-};
+});

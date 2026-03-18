@@ -18,6 +18,12 @@
   --color-brand-accent: #d93025; /* Google Red (slightly muted) */
   --color-brand-yellow: #f9ab00; /* Google Yellow (slightly muted) */
   
+  /* Text and Borders */
+  --color-text: #202124;
+  --color-text-muted: #5f6368;
+  --color-border: #dadce0;
+  --color-bg-hover: #f1f3f4;
+
   /* Backgrounds - Light (Refined) */
   --color-bg-app: #f8f9fa; 
   --color-bg-card: #ffffff;
@@ -30,11 +36,18 @@
   --color-border-dark: #1e293b; /* Slate 800 */
   --color-text-dark: #f8fafc; /* Slate 50 */
   --color-text-muted-dark: #cbd5e1; /* Slate 300 for better contrast */
+  --color-bg-hover-dark: #1e293b; /* Slate 800 */
+  --color-tooltip-bg: #ffffff;
+  --color-tooltip-bg-dark: #1e293b; /* Slate 800 */
 }
 
 body {
   font-family: var(--font-sans);
   @apply antialiased text-sm text-[#202124] dark:text-[var(--color-text-dark)] bg-[var(--color-bg-app)] dark:bg-[var(--color-bg-app-dark)];
+}
+
+.dark {
+  --color-tooltip-bg: var(--color-tooltip-bg-dark);
 }
 
 h1, h2, h3, h4, h5, h6 {
