@@ -59,7 +59,7 @@ export const SummaryModal = React.memo<SummaryModalProps>(({ isOpen, onClose, ti
               </div>
               
               {/* Content */}
-              <div className="p-8 overflow-y-auto custom-scrollbar bg-[#f8f9fa] dark:bg-[var(--color-bg-app-dark)]">
+              <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar bg-[#f8f9fa] dark:bg-[var(--color-bg-app-dark)]">
                 {streamContent ? (
                    <div className="prose prose-lg prose-blue dark:prose-invert max-w-none">
                        <ReactMarkdown
@@ -93,7 +93,7 @@ export const SummaryModal = React.memo<SummaryModalProps>(({ isOpen, onClose, ti
                 ) : analysis ? (
                   <div className="space-y-10">
                     {/* Executive Summary */}
-                    <section className="bg-white dark:bg-[var(--color-bg-card-dark)] p-8 rounded-[24px] shadow-sm border border-[#dadce0] dark:border-[var(--color-border-dark)]">
+                    <section className="bg-white dark:bg-[var(--color-bg-card-dark)] p-5 sm:p-8 rounded-[24px] shadow-sm border border-[#dadce0] dark:border-[var(--color-border-dark)]">
                       <h3 className="text-[11px] font-bold text-[#1a73e8] dark:text-blue-400 uppercase tracking-widest mb-5 flex items-center">
                         <Sparkles size={14} className="mr-2" /> Executive Summary
                       </h3>
@@ -114,7 +114,7 @@ export const SummaryModal = React.memo<SummaryModalProps>(({ isOpen, onClose, ti
 
                     {/* Strategic Importance */}
                     {analysis.strategicImportance && (
-                      <section className="bg-gradient-to-br from-[#f8f9fa] to-white dark:from-[var(--color-bg-card-dark)] dark:to-[var(--color-bg-app-dark)] p-8 rounded-[24px] shadow-sm border border-[#dadce0] dark:border-[var(--color-border-dark)]">
+                      <section className="bg-gradient-to-br from-[#f8f9fa] to-white dark:from-[var(--color-bg-card-dark)] dark:to-[var(--color-bg-app-dark)] p-5 sm:p-8 rounded-[24px] shadow-sm border border-[#dadce0] dark:border-[var(--color-border-dark)]">
                         <h3 className="text-[11px] font-bold text-[#1a73e8] dark:text-blue-400 uppercase tracking-widest mb-5 flex items-center">
                           <TrendingUp size={14} className="mr-2" /> Strategic Importance
                         </h3>
@@ -136,7 +136,7 @@ export const SummaryModal = React.memo<SummaryModalProps>(({ isOpen, onClose, ti
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {/* Impact Analysis */}
-                      <section className="bg-[#fef7e0] dark:bg-[#f9ab00]/10 p-8 rounded-[24px] border border-[#fce8b2] dark:border-[#f9ab00]/30 shadow-sm">
+                      <section className="bg-[#fef7e0] dark:bg-[#f9ab00]/10 p-5 sm:p-8 rounded-[24px] border border-[#fce8b2] dark:border-[#f9ab00]/30 shadow-sm">
                         <h3 className="text-[11px] font-bold text-[#e37400] dark:text-[#fdd663] uppercase tracking-widest mb-5 flex items-center">
                           <Zap size={14} className="mr-2" /> Impact Analysis
                         </h3>
@@ -155,7 +155,7 @@ export const SummaryModal = React.memo<SummaryModalProps>(({ isOpen, onClose, ti
                       </section>
 
                       {/* Role-Based Insights */}
-                      <section className="bg-[#e8f0fe] dark:bg-blue-500/10 p-8 rounded-[24px] border border-[#d2e3fc] dark:border-blue-500/30 shadow-sm">
+                      <section className="bg-[#e8f0fe] dark:bg-blue-500/10 p-5 sm:p-8 rounded-[24px] border border-[#d2e3fc] dark:border-blue-500/30 shadow-sm">
                         <h3 className="text-[11px] font-bold text-[#1a73e8] dark:text-blue-400 uppercase tracking-widest mb-5 flex items-center">
                           <Target size={14} className="mr-2" /> Role-Based Insights
                         </h3>
@@ -184,7 +184,7 @@ export const SummaryModal = React.memo<SummaryModalProps>(({ isOpen, onClose, ti
 
                     {/* Action Items */}
                     {analysis.actionItems && analysis.actionItems.length > 0 && (
-                      <section className="bg-[#e6f4ea] dark:bg-[#1e8e3e]/10 p-8 rounded-[24px] border border-[#ceead6] dark:border-[#1e8e3e]/30 shadow-sm">
+                      <section className="bg-[#e6f4ea] dark:bg-[#1e8e3e]/10 p-5 sm:p-8 rounded-[24px] border border-[#ceead6] dark:border-[#1e8e3e]/30 shadow-sm">
                         <h3 className="text-[11px] font-bold text-[#188038] dark:text-[#81c995] uppercase tracking-widest mb-5 flex items-center">
                           <ListChecks size={14} className="mr-2" /> Recommended Action Items
                         </h3>

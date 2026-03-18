@@ -19,6 +19,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../utils';
 import { Tooltip } from './ui/Tooltip';
 
+import { useMediaQuery } from '../hooks/useMediaQuery';
+
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: any) => void;
@@ -36,18 +38,11 @@ export const Sidebar = React.memo<SidebarProps>(({
   setIsOpen,
   isDesktopOpen
 }) => {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setIsDesktop(desktop);
-      if (desktop) setIsOpen(false); // Close mobile menu state when switching to desktop
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [setIsOpen]);
+    if (isDesktop) setIsOpen(false);
+  }, [isDesktop, setIsOpen]);
 
   const menuItems = [
     { id: 'all', label: 'Discover Feed', icon: Compass, hint: 'Personalized feed aggregating all GCP sources.' },

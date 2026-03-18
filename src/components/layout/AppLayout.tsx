@@ -13,11 +13,13 @@ import {
   X,
   Filter,
   BookOpen,
-  RotateCw
+  RotateCw,
+  Search
 } from 'lucide-react';
 import { GlobalSearch } from '../GlobalSearch';
 import { useTheme } from '../../hooks/useTheme';
 import { Tooltip } from '../ui/Tooltip';
+import { motion, AnimatePresence } from 'motion/react';
 import { ScrollToTopButton } from '../ui/ScrollToTopButton';
 import { Breadcrumbs } from './Breadcrumbs';
 
@@ -103,6 +105,7 @@ export const AppLayout = React.memo<AppLayoutProps>(({
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
 
   return (
@@ -165,7 +168,7 @@ export const AppLayout = React.memo<AppLayoutProps>(({
             </div>
 
             {/* Center: Global Search */}
-            <div className="flex-1 max-w-xl mx-4 hidden md:block">
+            <div className="flex-1 max-w-md xl:max-w-xl mx-2 sm:mx-4 hidden md:block">
                {!isPresentationMode && activeTab !== 'tools' && (
                   <GlobalSearch 
                     value={search} 
@@ -192,6 +195,16 @@ export const AppLayout = React.memo<AppLayoutProps>(({
 
             {/* Right: Controls */}
             <div className="flex items-center gap-2 sm:gap-3">
+               {/* Mobile Search Toggle */}
+               {!isPresentationMode && activeTab !== 'tools' && (
+                 <button
+                  onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                  className="md:hidden p-2 text-[#5f6368] hover:bg-[#f1f3f4] dark:hover:bg-[var(--color-bg-card-dark)] rounded-full transition-all"
+                 >
+                   {isMobileSearchOpen ? <X size={20} /> : <Search size={20} />}
+                 </button>
+               )}
+
                {/* Refresh Button */}
                {onRefresh && (
                  <Tooltip content="Force Refresh Feed" position="bottom">
@@ -268,7 +281,41 @@ export const AppLayout = React.memo<AppLayoutProps>(({
            )}
         </div>
 
-        <div className="p-3 sm:p-4 md:p-6 pb-40 max-w-[1600px] mx-auto min-h-[calc(100vh-160px)]">
+        {/* Mobile Search Bar */}
+        <AnimatePresence>
+          {isMobileSearchOpen && !isPresentationMode && activeTab !== 'tools' && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden bg-white dark:bg-[var(--color-bg-app-dark)] border-b border-[#dadce0] dark:border-[var(--color-border-dark)] px-4 py-3 overflow-hidden"
+            >
+              <GlobalSearch 
+                value={search} 
+                onChange={setSearch} 
+                isSmartFilter={isSmartFilter}
+                onToggleSmartFilter={() => setIsSmartFilter(!isSmartFilter)}
+                loading={isAiLoading}
+                categories={categories}
+                selectedCategories={selectedCategories}
+                filterType={filterType}
+                onSelectCategory={handleCategoryChange}
+                onFilterTypeChange={handleFilterTypeChange}
+                dateRange={dateRange}
+                onDateRangeChange={handleDateRangeChange}
+                sortBy={sortBy}
+                sortDirection={sortDirection}
+                onSortChange={handleSortChange}
+                viewMode={viewMode}
+                onViewModeChange={onViewModeChange}
+                onExportCSV={onExportCSV}
+                onClearFilters={onClearFilters}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="p-3 sm:p-4 md:p-6 pb-40 max-w-[1600px] mx-auto min-h-[calc(100vh-160px)] w-full overflow-x-hidden">
           {isAnyFilterActive && onClearFilters && (
             <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#e8f0fe] dark:bg-[#3b82f6]/10 border border-[#d2e3fc] dark:border-[#3b82f6]/30 rounded-2xl sm:rounded-[24px] animate-in fade-in slide-in-from-top-2 duration-300 gap-4">
               <div className="flex items-center gap-3">

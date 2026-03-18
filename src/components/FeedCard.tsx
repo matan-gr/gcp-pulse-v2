@@ -17,6 +17,8 @@ import { Tooltip } from './ui/Tooltip';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useFeedCardLogic } from '../hooks/useFeedCardLogic';
 
+import { useMediaQuery } from '../hooks/useMediaQuery';
+
 interface FeedCardProps {
   item: FeedItem;
   index: number;
@@ -114,8 +116,9 @@ const FeedCardContent = React.memo<FeedCardProps>(({
   const dateObj = useMemo(() => new Date(item.isoDate), [item.isoDate]);
   const date = useMemo(() => format(dateObj, 'MMM d'), [dateObj]);
 
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const isCompact = density === 'compact' || isSecurityBulletin;
-  const isListView = viewMode === 'list' && !isPresentationMode;
+  const isListView = viewMode === 'list' && !isPresentationMode && !isMobile;
 
   const handleCopyLink = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -275,7 +278,7 @@ const FeedCardContent = React.memo<FeedCardProps>(({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
         className={cn(
-          "flex group relative rounded-[2.5rem] overflow-hidden transition-all duration-700 bg-white dark:bg-[var(--color-bg-card-dark)] border border-slate-200/60 dark:border-[var(--color-border-dark)] shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:border-blue-500/30 dark:hover:border-blue-400/30 border-l-[6px]",
+          "flex group relative rounded-3xl sm:rounded-[2.5rem] overflow-hidden transition-all duration-700 bg-white dark:bg-[var(--color-bg-card-dark)] border border-slate-200/60 dark:border-[var(--color-border-dark)] shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:border-blue-500/30 dark:hover:border-blue-400/30 border-l-[6px]",
           item.severity === 'Critical' ? "border-l-rose-500" :
           item.severity === 'High' ? "border-l-orange-500" :
           item.severity === 'Medium' ? "border-l-amber-500" :
