@@ -1,45 +1,8 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { lazy } from 'react';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/**
- * A wrapper around React.lazy that attempts to reload the page if a chunk fails to load.
- * This is useful for handling "Failed to fetch dynamically imported module" errors
- * which often occur after a new deployment.
- */
-export function lazyWithRetry<T extends React.ComponentType<any>>(
-  componentImport: () => Promise<{ default: T }>
-) {
-  return lazy(async () => {
-    let pageHasBeenForceRefreshed = false;
-    try {
-      const stored = window.localStorage.getItem('page-has-been-force-refreshed');
-      pageHasBeenForceRefreshed = (stored && stored.trim()) ? JSON.parse(stored) : false;
-    } catch (e) {
-      console.warn('Failed to access localStorage in lazyWithRetry:', e);
-    }
-
-    try {
-      const component = await componentImport();
-      try {
-        window.localStorage.setItem('page-has-been-force-refreshed', 'false');
-      } catch (e) { /* Ignore */ }
-      return component;
-    } catch (error) {
-      if (!pageHasBeenForceRefreshed) {
-        try {
-          window.localStorage.setItem('page-has-been-force-refreshed', 'true');
-        } catch (e) { /* Ignore */ }
-        window.location.reload();
-        return new Promise(() => {}) as any;
-      }
-      throw error;
-    }
-  });
 }
 
 export function extractImage(content: string, link?: string): string | null {
@@ -105,23 +68,6 @@ export function extractGCPProducts(text: string): string[] {
   });
   
   return Array.from(found);
-}
-
-export function classifyUpdateType(item: { title: string; content: string }): 'New Feature' | 'Security' | 'Deprecation' | 'General' {
-  const text = (item.title + " " + item.content).toLowerCase();
-  if (text.includes('deprecation') || text.includes('end of life') || text.includes('eol')) return 'Deprecation';
-  if (text.includes('security') || text.includes('vulnerability') || text.includes('cve')) return 'Security';
-  if (text.includes('new') || text.includes('introducing') || text.includes('now available') || text.includes('launch')) return 'New Feature';
-  return 'General';
-}
-
-export function getUpdateTypeStyles(type: string) {
-  switch (type) {
-    case 'New Feature': return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800';
-    case 'Security': return 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:border-rose-800';
-    case 'Deprecation': return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800';
-    default: return 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
-  }
 }
 
 export function getCategoryColor(cat: string) {
